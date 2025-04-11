@@ -60,10 +60,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /root/ws_pcap
+CMAKE_SOURCE_DIR = /root/ws_relay
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /root/ws_pcap
+CMAKE_BINARY_DIR = /root/ws_relay
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -90,9 +90,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /root/ws_pcap/CMakeFiles /root/ws_pcap//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /root/ws_relay/CMakeFiles /root/ws_relay//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /root/ws_pcap/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /root/ws_relay/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -120,17 +120,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named keti_pcap
+# Target rules for targets named keti_relay_inno
 
 # Build rule for target.
-keti_pcap: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 keti_pcap
-.PHONY : keti_pcap
+keti_relay_inno: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 keti_relay_inno
+.PHONY : keti_relay_inno
 
 # fast build rule for target.
-keti_pcap/fast:
-	$(MAKE) $(MAKESILENT) -f src/app/KETI_PRO/CMakeFiles/keti_pcap.dir/build.make src/app/KETI_PRO/CMakeFiles/keti_pcap.dir/build
-.PHONY : keti_pcap/fast
+keti_relay_inno/fast:
+	$(MAKE) $(MAKESILENT) -f src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/build.make src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/build
+.PHONY : keti_relay_inno/fast
 
 # Help Target
 help:
@@ -140,7 +140,7 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... keti_pcap"
+	@echo "... keti_relay_inno"
 .PHONY : help
 
 

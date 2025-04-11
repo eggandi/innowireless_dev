@@ -17,5 +17,5 @@ SET(PROJECT_ROOT ${CMAKE_CURRENT_LIST_DIR})
 
 ADD_COMPILE_OPTIONS(-Wall -W -Wshadow -Wextra) 
 
-ADD_SUBDIRECTORY(src/app/KETI_PRO)
+ADD_SUBDIRECTORY(src/app/keti_relay_inno)
 
