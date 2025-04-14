@@ -31,6 +31,9 @@
 			"relay_v2x_j2735.h": "c",
 			"ffasn1-dot2-2021.h": "c",
 			"ltev2x-hal-defines.h": "c",
-			"ltev2x-hal-api-params.h": "c"
+			"ltev2x-hal-api-params.h": "c",
+			"relay-internal-system.h": "c",
+			"relay-extern-defines.h": "c",
+			"relay_v2x_rx.h": "c"
 		}
 }

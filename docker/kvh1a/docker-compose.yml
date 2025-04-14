@@ -1,0 +1,10 @@
+version: '3'
+services:
+  kvh1a-22.04-service:
+    build: 
+      context: .
+      dockerfile: ./Dockerfile
+    image: kvh1a-22.04:latest
+    container_name: kvh1a-22.04-container
+    volumes:
+      - "../..:/workspace/kvh"

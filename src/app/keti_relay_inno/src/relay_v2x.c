@@ -1,18 +1,12 @@
-/**
- * @file
- * @brief
- * @date 2025-04-09
- * @author dong
- */
-
 #include "relay_v2x.h"
+#include "relay_config.h"
 
 /**
  * @brief V2X 라이브러리들을 초기화한다.
  * @retval 0: 성공
  * @retval -1: 실패
  */
-API int RELAY_INNO_V2X_Init(void)
+EXTERN_API int RELAY_INNO_V2X_Init(void)
 {
   LTEV2XHALLogLevel hal_log_level = (LTEV2XHALLogLevel ) G_relay_inno_config.v2x.lib_dbg;
 
@@ -26,9 +20,9 @@ API int RELAY_INNO_V2X_Init(void)
 	
   ret = Dot2_Init(hal_log_level, 100, NULL, 5);
   if (ret < 0) {
-    Err("Fail to initialize dot2 library - Dot2_Init() failed: %d\n", ret);
-    goto out;
-  }else{
+    _DEBUG_PRINT("Fail to initialize dot2 library - Dot2_Init() failed: %d\n", ret);
+		return -2;
+	}else{
 		_DEBUG_PRINT("Success to initialize dot2 library\n");
 
 	}
@@ -58,30 +52,30 @@ API int RELAY_INNO_V2X_Init(void)
 
 extern int RELAY_INNO_V2X_Psid_Filter(unsigned int psid)
 {
-	int ret;
+	int ret = -1;
 	switch(psid)
 	{
     case 32:{	goto add;	break;}//BSM
-		case 135:{	goto add;	break;}//WSA
-		case 82056:{	goto add;	break;}//MAP
-		case 82055:{	goto add;	break;}//SPAT
+		case 135:{	goto out;	break;}//WSA
+		case 82056:{	goto out;	break;}//MAP
+		case 82055:{	goto out;	break;}//SPAT
 		case 82051:{	goto out;	break;}//PVD
 		case 82053:{	goto out;	break;}//RSA
-		case 82057:{	goto add;	break;}//RTCM
-		case 82054:{	goto add;	break;}//TIM
+		case 82057:{	goto out;	break;}//RTCM
+		case 82054:{	goto out;	break;}//TIM
 		default :
 		{
-add:
-			ret = Dot3_AddWSR(psid);
-      _DEBUG_PRINT("Success to Add WSR(psid: %u)\n", psid);
 			break;
 		}
 	}		
+	add:
+		ret = 0;
+		_DEBUG_PRINT("Success to Add WSR(psid: %u)\n", psid);
 	if (ret < 0) {
 		_DEBUG_PRINT("Fail to add WSR(psid: %u) - %d\n", psid, ret);
 		return -1;
 	}
 out:
-	return 0;
+	return ret;
 
 }

@@ -1,12 +1,9 @@
-/**
- * @file
- * @brief
- * @date 2025-04-09
- * @author dong
- */
 
-// 어플리케이션 헤더 파일
 #include "relay_v2x_dot2.h"
+#include "relay_config.h"
+
+static void RELAY_INNO_LoadCMHFFiles(const char *dir_path);
+
 
 extern int RELAY_INNO_V2X_Dot2_Security_Init()
 {
@@ -50,28 +47,30 @@ extern int RELAY_INNO_V2X_Dot2_Security_Init()
   profile.tx.sign_type = kDot2SecProfileSign_Compressed;
   profile.tx.ecp_format = kDot2SecProfileEcPointFormat_Compressed;
   profile.tx.interval = 100; // 100msec 주기로 송신
-  if (g_bsmd_mib.op == kBSMDOperation_TxOnly) {
-    profile.rx.verify_data = false; // 수신 기능은 사용하지 않는다.
-  } else {
-    profile.rx.verify_data = true;
-    profile.rx.relevance_check.replay = false;
-    profile.rx.relevance_check.gen_time_in_past = false;
-    profile.rx.relevance_check.validity_period = 10000ULL; // 10msec
-    profile.rx.relevance_check.gen_time_in_future = false;
-    profile.rx.relevance_check.acceptable_future_data_period = 60000000ULL; // 1분
-    profile.rx.relevance_check.gen_time_src = kDot2RelevanceTimeSource_SecurityHeader;
-    profile.rx.relevance_check.exp_time = false;
-    profile.rx.relevance_check.exp_time_src = kDot2RelevanceTimeSource_SecurityHeader;
-    profile.rx.relevance_check.gen_location_distance = false;
-    profile.rx.relevance_check.cert_expiry = false;
-    profile.rx.consistency_check.gen_location = false;
-  }
+
+	profile.rx.verify_data = true;
+	profile.rx.relevance_check.replay = false;
+	profile.rx.relevance_check.gen_time_in_past = false;
+	profile.rx.relevance_check.validity_period = 10000ULL; // 10msec
+	profile.rx.relevance_check.gen_time_in_future = false;
+	profile.rx.relevance_check.acceptable_future_data_period = 60000000ULL; // 1분
+	profile.rx.relevance_check.gen_time_src = kDot2RelevanceTimeSource_SecurityHeader;
+	profile.rx.relevance_check.exp_time = false;
+	profile.rx.relevance_check.exp_time_src = kDot2RelevanceTimeSource_SecurityHeader;
+	profile.rx.relevance_check.gen_location_distance = false;
+	profile.rx.relevance_check.cert_expiry = false;
+	profile.rx.consistency_check.gen_location = false;
+  
 
 	unsigned int psid_arry[8] = {32,135,82056,82055,82051,82053,82057,82054};
 	for(int  i = 0; i < 8; i++)
 	{
 		profile.psid = psid_arry[i];
-		profile.rx.verify_data = true;
+		if (G_relay_inno_config.v2x.j2735.bsm.rx_enable) {
+			profile.rx.verify_data = false; // 수신 기능은 사용하지 않는다.
+		} else {
+			profile.rx.verify_data = true;
+		}
 		if(profile.rx.verify_data == true)
 		{
 			ret = RELAY_INNO_V2X_Psid_Filter(profile.psid);
@@ -85,6 +84,8 @@ extern int RELAY_INNO_V2X_Dot2_Security_Init()
 		if (ret < 0) {
 			_DEBUG_PRINT("Fail to register security profile - Dot2_AddSecProfile() failed: %d\n", ret);
 			return -1;
+		}else{
+			_DEBUG_PRINT("Success to register security profile - PSID: %u\n", profile.psid);
 		}
 	}
 
@@ -92,6 +93,7 @@ extern int RELAY_INNO_V2X_Dot2_Security_Init()
   return 0;
 }
 
+#if 0
 static int REALY_INNO_LoadCACertFiles(const char *dir_path)
 {
   _DEBUG_PRINT("Load CA certificate files in %s\n", dir_path);
@@ -103,7 +105,7 @@ static int REALY_INNO_LoadCACertFiles(const char *dir_path)
   struct dirent *ent;
   dir = opendir(dir_path);
   if (dir == NULL) {
-    _DEBUG_PRINT("Fail to load CA certificate files in %s - opendir() failed : %s\n", dir_path);
+    _DEBUG_PRINT("Fail to load CA certificate files in %s - opendir() failed\n", dir_path);
     return -1;
   }
 
@@ -156,7 +158,7 @@ static int REALY_INNO_LoadCACertFiles(const char *dir_path)
   _DEBUG_PRINT("Sucess to load %u CA certificate files\n", add_cnt);
   return 0;
 }
-
+#endif
 /**
  * @brief 특정 디렉토리에 저장되어 있는 모든 CMHF 파일들을 dot2 라이브러리에 로딩한다.
  * @param[in] dir_path CMHF 파일들이 저장된 디렉토리 경로 (상대경로, 절대경로 모두 가능)
@@ -176,7 +178,7 @@ static void RELAY_INNO_LoadCMHFFiles(const char *dir_path)
   /*
    * CMHF 파일의 경로가 저장될 버퍼를 할당한다.
    */
-  size_t file_path_size = strlen(dir_path) + MAXLINE;
+  size_t file_path_size = strlen(dir_path) + 128;
   char *file_path = (char *)calloc(1, file_path_size);
   assert(file_path);
 
@@ -237,5 +239,3 @@ void RELAY_INNO_ProcessSPDUCallback(Dot2ResultCode result, void *priv)
 out:
   V2X_FreePacketParseData(parsed);
 }
-
-

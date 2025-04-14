@@ -1,32 +1,21 @@
-#include <stdio.h>     // 사용된 함수: printf, fprintf, perror, snprintf
-#include <stdlib.h>    // 사용된 함수: malloc, free, exit, strdup
-#include <stdint.h>    // 사용된 타입: uint8_t, uint16_t 등
-#include <string.h>    // 사용된 함수: memset, memcpy, strlen, strdup
-#include <sys/stat.h>  // stat(), mkdir() (Linux/macOS)
-#include <sys/types.h> // stat(), mkdir()
-#include <unistd.h>    // 사용된 함수: access, mkdir
-#include <stdbool.h>   // 사용된 타입: bool, true, false
-#include <fcntl.h>     // 사용된 함수: open, O_RDWR, O_NOCTTY, O_SYNC
-#include <inttypes.h>  // 사용된 매크로: PRIu64
-
-#include "dot2-2016/dot2.h"
-#include "dot3-2016/dot3.h"
-
-#include "ltev2x-hal/ltev2x-hal.h"
-#include "ffasn1c/ffasn1-dot2-2021.h"
-#include "ffasn1c/ffasn1-dot3-2016.h"
-#include "ffasn1c/ffasn1-j2735-2016.h"
+#include "relay-internal-system.h"
+#include "relay-extern-defines.h"
 
 #ifndef _D_HEADER_RELAY_INNO_V2X
 #define _D_HEADER_RELAY_INNO_V2X
-#include "relay_main.h"
-#include "relay_utils.h"
-#include "relay_config.h"
-#include "relay_gnss.h"
 
+#ifndef _D_HEADER_RELAY_INNO_V2X_TX
 #include "relay_v2x_tx.h"
+#endif
+#ifndef _D_HEADER_RELAY_INNO_V2X_RX
+#include "relay_v2x_rx.h"
+#endif
+#ifndef _D_HEADER_RELAY_INNO_V2X_DOT2
 #include "relay_v2x_dot2.h"
+#endif
+#ifndef _D_HEADER_RELAY_INNO_V2X_J2735
 #include "relay_v2x_j2735.h"
+#endif
 
 /**
  * @brief 어플리케이션 동작 유형
@@ -60,23 +49,23 @@ typedef unsigned int DbgMsgLevel; ///< @ref eDbgMsgLevel
 struct relay_inno_config_v2x_t
 {
   Operation op; ///< 어플리케이션 동작 유형
-  char dev_name[256]; ///< LTE-V2X 통신 디바이스 이름
-  LTEV2XHALTxFlowType tx_type; ///< 송신 유형
+  char dev_name[128]; ///< LTE-V2X 통신 디바이스 이름
+  unsigned int tx_type; ///< 송신 유형
   unsigned int psid; ///< 송신 또는 수신하고자 하는 PSID
   DbgMsgLevel dbg; ///< 디버그 메시지 출력 레벨
   unsigned int lib_dbg; ///< V2X 라이브러리 디버그 메시지 출력 레벨
   unsigned int chan_num; ///< WSM 송신 채널번호 (실제 전송에는 사용되지 않고 WSM 확장 헤더에 수납되는 용도로만 사용)
   unsigned int tx_datarate; ///< WSM 송신 데이터레이트 (실제 전송에는 사용되지 않고 WSM 확장 헤더에 수납되는 용도로만 사용)
-  LTEV2XHALPower tx_power; ///< WSM 송신 파워 (실제 전송에도 사용되며, WSM 확장 헤더에도 수납된다)
-  LTEV2XHALPriority tx_priority; ///< WSM 송신에 사용되는 우선순위
-  LTEV2XHALMSDUSize tx_wsm_body_len; ///< 송신 WSM body 의 길이
+  int tx_power; ///< WSM 송신 파워 (실제 전송에도 사용되며, WSM 확장 헤더에도 수납된다)
+  unsigned int  tx_priority; ///< WSM 송신에 사용되는 우선순위
   unsigned int tx_interval; ///< 송신 주기 (usec 단위)
-
-  bool tx_running;
+	bool tx_running;
+	struct relay_inno_config_v2x_rx_t rx;
+	struct relay_inno_config_v2x_dot2_t dot2;
+	struct relay_inno_config_v2x_j2735_t j2735;
 };
 
 #endif //?_D_HEADER_RELAY_INNO_V2X
 
 extern int RELAY_INNO_V2X_Psid_Filter(unsigned int psid);
-
-API int RELAY_INNO_V2X_Init(void);
+EXTERN_API int RELAY_INNO_V2X_Init(void);

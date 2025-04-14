@@ -1,8 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <stdbool.h>
+#include "relay-internal-system.h"
+#include "relay-extern-defines.h"
 
 #ifndef _D_HEADER_RELAY_INNO_BUFFER
 #define _D_HEADER_RELAY_INNO_BUFFER

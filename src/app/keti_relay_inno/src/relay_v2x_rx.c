@@ -14,6 +14,9 @@
  */
 extern void RELAY_INNO_V2X_RxMSDUCallback(const uint8_t *msdu, LTEV2XHALMSDUSize msdu_size, struct LTEV2XHALMSDURxParams rx_params)
 {
+	msdu = msdu;
+	msdu_size = msdu_size;
+	rx_params = rx_params;
   if(msdu_size > 0)
   {
     // 수신된 MSDU를 WSM 헤더와 WSM body로 나눈다.

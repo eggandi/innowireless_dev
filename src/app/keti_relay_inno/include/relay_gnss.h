@@ -1,25 +1,20 @@
-#include <stdio.h>     // 사용된 함수: printf, fprintf, perror, snprintf
-#include <stdlib.h>    // 사용된 함수: malloc, free, exit, strdup
-#include <stdint.h>    // 사용된 타입: uint8_t, uint16_t 등
-#include <string.h>    // 사용된 함수: memset, memcpy, strlen, strdup
-#include <unistd.h>    // 사용된 함수: close, write (및 기타 POSIX API)
-#include <stdbool.h>
+#include "relay-internal-system.h"
+#include "relay-extern-defines.h"
 
 #ifndef _D_HEADER_RELAY_INNO_GNSS
 #define _D_HEADER_RELAY_INNO_GNSS
 #include "gpsd/gps.h"       // GPSD 라이브러리 헤더
-#include "relay_config.h"
 
 struct relay_inno_gnss_state_t
 {
   bool unavailable; ///< 미장착 또는 Unavailable
   bool is_healthy; ///< 2D_FIX 이상이면 set
   bool is_monitored; ///< GNSS 위성이 관측되면 set
-  bool base_station_type; ///< 0으로 설정(=OBU) (API에 의해 설정될 수 있다)
+  bool base_station_type; ///< 0으로 설정(=OBU) (EXTERN_API에 의해 설정될 수 있다)
   bool pdop_under_5; ///< PDOP 값이 5 미만인지 여부
   bool num_sv_under_5; ///< 관측되는 위성의 개수가 5개 미만인지 여부
-  bool use_dgps; ///< DGPS 사용 여부 (API에 의해 설정될 수 있다)
-  bool use_rtk; ///< RTK 사용 여부 (API에 의해 설정될 수 있다)
+  bool use_dgps; ///< DGPS 사용 여부 (EXTERN_API에 의해 설정될 수 있다)
+  bool use_rtk; ///< RTK 사용 여부 (EXTERN_API에 의해 설정될 수 있다)
 };
 
 struct relay_inno_gnss_data_t

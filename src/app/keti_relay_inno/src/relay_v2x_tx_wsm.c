@@ -1,22 +1,16 @@
-/**
- * @file
- * @brief
- * @date 2025-04-09
- * @author dong
- */
-
-// 어플리케이션 헤더 파일
-#include "relay_main.h"
-#include "relay_v2x.h"
-#include "relay_v2x_tx.h"
-#include "relay_v2x_dot2.h"
-
+#include "relay_v2x_tx_wsm.h"
+#include "relay_config.h"
 static int RELAY_INNO_WSM_Fill_VarLengthNumber(int psid, dot3VarLengthNumber *to);
 static int RELAY_INNO_WSM_Header_Fill_Ext(dot3ShortMsgNpdu *wsm, enum relay_inno_wsm_ext_type_e ext_type, const struct realy_inno_wsm_header_ext_data_t *ext_data);
-API void _D_F_RELAY_INNO_Fill_TxPrams(struct LTEV2XHALMSDUTxParams *tx_params, ...);
+EXTERN_API void _D_F_RELAY_INNO_Fill_TxPrams(struct LTEV2XHALMSDUTxParams *tx_params, ...);
 
 static struct relay_inno_msdu_t g_last_msdu_buf = {0, 0, NULL, 0, {0}};
 static struct relay_inno_msdu_t *g_last_msdu = &g_last_msdu_buf;
+
+#define WSM_EXT_CNT 3
+#define WSM_EXT_ID_TX_POWER 4
+#define WSM_EXT_ID_CHANNEL 15
+#define WSM_EXT_ID_DATERATE 16
 
 /**
  * @brief WSM을 생성하여 전송한다.
@@ -26,7 +20,7 @@ static struct relay_inno_msdu_t *g_last_msdu = &g_last_msdu_buf;
  * @retval 0: 성공
  * @retval -1: 실패
  */
-API int RELAY_INNO_MSDU_Transmit(const dot3ShortMsgData *wsm_body, dot3ShortMsgNpdu *wsm, struct LTEV2XHALMSDUTxParams *tx_params)
+EXTERN_API int RELAY_INNO_V2X_MSDU_Transmit(const dot3ShortMsgData *wsm_body, dot3ShortMsgNpdu *wsm, struct LTEV2XHALMSDUTxParams *tx_params)
 {
 	uint8_t *msdu = NULL;
 	if(wsm_body == NULL)
@@ -42,19 +36,24 @@ API int RELAY_INNO_MSDU_Transmit(const dot3ShortMsgData *wsm_body, dot3ShortMsgN
 
 	if(tx_params == NULL)
 	{
-		RELAY_INNO_Fill_TxPrams(&g_last_msdu->tx_params, g_mib.tx_type,
+		RELAY_INNO_Fill_TxPrams(&g_last_msdu->tx_params, G_relay_inno_config.v2x.tx_type,
 																				kLTEV2XHALTxFLowIndex_SPS1, 
-																				g_mib.tx_priority, 
+																				G_relay_inno_config.v2x.tx_priority, 
 																				kLTEV2XHALL2ID_Broadcast, 
-																				g_mib.tx_power);
+																				G_relay_inno_config.v2x.tx_power);
 		tx_params = &g_last_msdu->tx_params;
 	}else{
 		memcpy(tx_params, &g_last_msdu->tx_params, sizeof(struct LTEV2XHALMSDUTxParams));
+		if(wsm == NULL)
+		{	
+			struct realy_inno_wsm_header_ext_data_t ext_data = {tx_params->tx_power, G_relay_inno_config.v2x.chan_num, G_relay_inno_config.v2x.tx_datarate};
+			RELAY_INNO_WSM_Fill_Header(&wsm, tx_params->dst_l2_id, &ext_data);
+		}
 	}
-
+	
 	asn1_ssize_t msdu_size = RELAY_INNO_WSM_Fill_MSDU(wsm, wsm_body, &msdu);
 	if(msdu_size < 0 || msdu == NULL) {
-		_DEBUG_PRINT("Fail to fill MSDU - RELAY_INNO_WSM_Fill_MSDU() failed: %d\n", msdu_size);
+		_DEBUG_PRINT("Fail to fill MSDU - RELAY_INNO_WSM_Fill_MSDU() failed: %ld\n", msdu_size);
 		return -1;
 	}
 
@@ -82,7 +81,7 @@ API int RELAY_INNO_MSDU_Transmit(const dot3ShortMsgData *wsm_body, dot3ShortMsgN
  * $param[in] tx_psid WSM에 수납할 PSID
  * @param[in] ext_data WSM 확장 헤더에 수납할 데이터
  */
-API void RELAY_INNO_WSM_Fill_Header(dot3ShortMsgNpdu **wsm_in, unsigned int tx_psid, struct realy_inno_wsm_header_ext_data_t *ext_data)
+EXTERN_API void RELAY_INNO_WSM_Fill_Header(dot3ShortMsgNpdu **wsm_in, unsigned int tx_psid, struct realy_inno_wsm_header_ext_data_t *ext_data)
 {
   int ret;
   _DEBUG_PRINT("Transmit WSM\n");
@@ -92,15 +91,13 @@ API void RELAY_INNO_WSM_Fill_Header(dot3ShortMsgNpdu **wsm_in, unsigned int tx_p
 	dot3ShortMsgNpdu *wsm = *wsm_in;
   if(wsm == NULL)
 	{
-		dot3ShortMsgNpdu *wsm = asn1_mallocz_value(asn1_type_dot3ShortMsgNpdu);
+		wsm = asn1_mallocz_value(asn1_type_dot3ShortMsgNpdu);
 		if (wsm == NULL) {
 			_DEBUG_PRINT("Fail to allocate dot3ShortMsgNpdu memory - asn1_mallocz_value() failed\n");
 			goto clear;
 		}
 		*wsm_in = wsm;
 	}
-  uint8_t *msdu = NULL;
-  asn1_ssize_t msdu_size = 0;
 
   /* N-Header */
   wsm->subtype.choice = dot3ShortMsgSubtype_nullNetworking;
@@ -119,9 +116,9 @@ API void RELAY_INNO_WSM_Fill_Header(dot3ShortMsgNpdu **wsm_in, unsigned int tx_p
 	{
 		if(ext_data != NULL) 
 		{
-			ret = RELAY_INNO_WSM_Header_Fill_Ext(wsm, (enum wsm_ext_type_e)ext_type, ext_data);
+			ret = RELAY_INNO_WSM_Header_Fill_Ext(wsm, (enum relay_inno_wsm_ext_type_e)ext_type, ext_data);
 		}else{
-			ret = RELAY_INNO_WSM_Header_Fill_Ext(wsm, (enum wsm_ext_type_e)ext_type, NULL);
+			ret = RELAY_INNO_WSM_Header_Fill_Ext(wsm, (enum relay_inno_wsm_ext_type_e)ext_type, NULL);
 		}
 		if(ret < 0) {
 			_DEBUG_PRINT("Fail to add WSM extension - RELAY_INNO_WSM_Add_Ext() failed: %d\n", ret);
@@ -149,7 +146,7 @@ clear:
  * @brief WSM 헤더를 해제한다.
  * @param[in] wsm WSM 헤더 포인터
  */
-API void RELAY_INNO_WSM_Free_Header(dot3ShortMsgNpdu *wsm)
+EXTERN_API void RELAY_INNO_WSM_Free_Header(dot3ShortMsgNpdu *wsm)
 {
 	if(wsm != NULL) {
 		asn1_free_value(asn1_type_dot3ShortMsgNpdu, wsm);
@@ -173,7 +170,7 @@ API void RELAY_INNO_WSM_Free_Header(dot3ShortMsgNpdu *wsm)
  * @param[in] ... 송신 파라미터 값들 (0xFFFFFFFF로 종료)
  * @retval void
  */
-API void _D_F_RELAY_INNO_Fill_TxPrams(struct LTEV2XHALMSDUTxParams *tx_params, ...)
+EXTERN_API void _D_F_RELAY_INNO_Fill_TxPrams(struct LTEV2XHALMSDUTxParams *tx_params, ...)
 {
 	va_list args;
 	va_start(args, tx_params);
@@ -183,11 +180,11 @@ API void _D_F_RELAY_INNO_Fill_TxPrams(struct LTEV2XHALMSDUTxParams *tx_params, .
 	while(1)
 	{
 		int arg = va_arg(args, int);
-		if(arg ==  0xFFFFFFFF) break;
+		if((uint32_t)arg ==  0xFFFFFFFF) break;
 		switch(index)
 		{
 			case 0:
-				tx_params->tx_type = (unsigned int)arg;
+				tx_params->tx_flow_type = (unsigned int)arg;
 				break;
 			case 1:
 				tx_params->tx_flow_index = (unsigned int)arg;
@@ -220,7 +217,7 @@ API void _D_F_RELAY_INNO_Fill_TxPrams(struct LTEV2XHALMSDUTxParams *tx_params, .
  * @retval 0: 성공
  * @retval -1: 실패
  */
-API asn1_ssize_t RELAY_INNO_WSM_Fill_MSDU(const dot3ShortMsgNpdu *wsm, const dot3ShortMsgData *wsm_body, uint8_t **msdu_in)
+EXTERN_API asn1_ssize_t RELAY_INNO_WSM_Fill_MSDU(dot3ShortMsgNpdu *wsm, const dot3ShortMsgData *wsm_body, uint8_t **msdu_in)
 {
 	uint8_t *msdu = *msdu_in;
   asn1_ssize_t msdu_size = 0;
@@ -238,20 +235,24 @@ API asn1_ssize_t RELAY_INNO_WSM_Fill_MSDU(const dot3ShortMsgNpdu *wsm, const dot
 	if(wsm == NULL)
 	{
 		_DEBUG_PRINT("Empty wsm ptr: %p\n", wsm);
-		RELAY_INNO_WSM_Fill_Header(&wsm, NULL);
+		RELAY_INNO_WSM_Fill_Header(&wsm, 0, NULL);
 	}else{
 		if(wsm->body.len > 0 || wsm->body.buf != NULL)
 		{
 			_DEBUG_PRINT("Free wsm body buffer: %p\n", wsm->body.buf);
-			asn1_free_value(asn1_type_dot3ShortMsgData, wsm->body);
+			if( wsm->body.buf != NULL)
+			{
+				free(wsm->body.buf);
+				wsm->body.buf = NULL;
+			}
+			wsm->body.len = 0;
 		}
 	}
-
 	wsm->body.len = wsm_body->len;
 	wsm->body.buf = wsm_body->buf;
 	msdu_size = asn1_uper_encode(&msdu, asn1_type_dot3ShortMsgNpdu, wsm);
 	if (msdu_size < 0 || msdu == NULL) {
-    _DEBUG_PRINT("Fail to encode dot3ShortMsgNpdu - asn1_uper_encode() failed: %d\n", msdu_size);
+    _DEBUG_PRINT("Fail to encode dot3ShortMsgNpdu - asn1_uper_encode() failed: %ld\n", msdu_size);
     goto clear;
   }
 	*msdu_in = msdu;
@@ -267,7 +268,7 @@ clear:
 
 /**
  * @brief ASN.1 정보구조체 내 VarLengthNumber(Psid) 필드를 채운다.
- * * @param[in] from 메시지 생성을 위한 정보 파라미터 구조체 포인터 (API context)
+ * * @param[in] from 메시지 생성을 위한 정보 파라미터 구조체 포인터 (EXTERN_API context)
  * * @param[out] to 정보가 채워질 필드의 구조체 포인터 (ASN.1 context)
  * * @retval 0: 성공
  * * @retval 음수(-Cvcoctci3ResultCode): 실패
@@ -283,8 +284,7 @@ static int RELAY_INNO_WSM_Fill_VarLengthNumber(int psid, dot3VarLengthNumber *to
 			to->choice = dot3VarLengthNumber_extension;
 			to->u.extension.choice = dot3Ext1_extension;
 			to->u.extension.u.extension.choice = dot3Ext2_extension;
-			to->u.extension.u.extension.u.extension.choice = dot3Ext3_extension;
-			to->u.extension.u.extension.u.extension.u.content = (int) psid;
+			to->u.extension.u.extension.u.extension = (int) psid;
 			break;
     case 2:
 			to->choice = dot3VarLengthNumber_extension;
@@ -316,7 +316,7 @@ static int RELAY_INNO_WSM_Fill_VarLengthNumber(int psid, dot3VarLengthNumber *to
  * @retval 0: 성공
  * @retval 음수(-Cvcoctci3ResultCode): 실패
  */
-static int RELAY_INNO_WSM_Header_Fill_Ext(dot3ShortMsgNpdu *wsm, enum wsm_ext_type_e ext_type, const struct realy_inno_wsm_header_ext_data_t *ext_data)
+static int RELAY_INNO_WSM_Header_Fill_Ext(dot3ShortMsgNpdu *wsm, enum relay_inno_wsm_ext_type_e ext_type, const struct realy_inno_wsm_header_ext_data_t *ext_data)
 {
 	dot3ShortMsgNextension *ext = &wsm->subtype.u.nullNetworking.nExtensions.tab[ext_type];
 	switch(ext_type)
@@ -332,7 +332,7 @@ static int RELAY_INNO_WSM_Header_Fill_Ext(dot3ShortMsgNpdu *wsm, enum wsm_ext_ty
 				{
 					memcpy(ext->value.u.data, &ext_data->tx_power, sizeof(dot3TXpower80211));
 				}else{
-					memcpy(ext->value.u.data, &g_mib.tx_power, sizeof(dot3TXpower80211));
+					memcpy(ext->value.u.data, &G_relay_inno_config.v2x.tx_power, sizeof(dot3TXpower80211));
 				}
 			}else{
 				return -1;
@@ -350,7 +350,7 @@ static int RELAY_INNO_WSM_Header_Fill_Ext(dot3ShortMsgNpdu *wsm, enum wsm_ext_ty
 				{
 					memcpy(ext->value.u.data, &ext_data->tx_channel_num, sizeof(dot3ChannelNumber80211));
 				}else{
-					memcpy(ext->value.u.data, &g_mib.tx_chan_num, sizeof(dot3ChannelNumber80211));
+					memcpy(ext->value.u.data, &G_relay_inno_config.v2x.chan_num, sizeof(dot3ChannelNumber80211));
 				}
 			}else{
 				return -2;
@@ -368,7 +368,7 @@ static int RELAY_INNO_WSM_Header_Fill_Ext(dot3ShortMsgNpdu *wsm, enum wsm_ext_ty
 				{
 					memcpy(ext->value.u.data, &ext_data->tx_datarate, sizeof(dot3DataRate80211));
 				}else{
-					memcpy(ext->value.u.data, &g_mib.tx_datarate, sizeof(dot3DataRate80211));
+					memcpy(ext->value.u.data, &G_relay_inno_config.v2x.tx_datarate, sizeof(dot3DataRate80211));
 				}				
 			}else{
 				return -3;

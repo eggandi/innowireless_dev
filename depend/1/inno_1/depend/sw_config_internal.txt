@@ -1,0 +1,6 @@
+ll_spi_clock=8666666
+ll_spi_element_data_bits=8
+ll_spi_page_size=704
+ll_spi_transfer_size=704
+ll_spi_recovery_delay=0
+ll_spi_transaction_delay=50

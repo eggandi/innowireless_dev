@@ -1,15 +1,15 @@
 #include "relay_gnss.h" 
+#include "relay_config.h"
 
+struct relay_inno_gnss_data_t *G_gnss_data; 
+struct relay_inno_gnss_data_bsm_t *G_gnss_bsm_data; 
 
-struct relay_inno_gnss_data_t *G_gnss_data;
-struct relay_inno_gnss_data_bsm_t *G_gnss_bsm_data;
-
-static int RELAY_INNO_Gnss_Put_Data(struct gps_data_t *gps_data);
-static void *RELAY_INNO_Gnss_Task_Reading(void *pData);
+static int RELAY_INNO_Gnss_Put_Data(struct gps_data_t *gps_data); 
+static void *RELAY_INNO_Gnss_Task_Reading(void *pData); 
 
 static int RELAY_INNO_Gnss_Put_Data(struct gps_data_t *gps_data)
 {
-	while(G_gnss_data->isused == false)
+	while(G_gnss_data->isused == true)
 	{
 		usleep(1000);
 	}
@@ -23,24 +23,31 @@ static int RELAY_INNO_Gnss_Put_Data(struct gps_data_t *gps_data)
 	G_gnss_data->lat_raw = gps_data->fix.latitude;
 	G_gnss_data->lon_raw = gps_data->fix.longitude;
 	memcpy(&G_gnss_data->fix, &gps_data->fix, sizeof(struct gps_fix_t));
-	if (gps_data->fix.mode >= MODE_NO_FIX) 
+	G_gnss_data->elev = 0;
+	switch(gps_data->fix.mode)
 	{
-		G_gnss_data->status.unavailable = false;
-		G_gnss_data->status.is_monitored = true;
-		if (gps_data->fix.mode >= MODE_2D) 
-		{
-				G_gnss_data->status.is_healthy = true;
-				G_gnss_data->lat = (int)(gps_data->fix.latitude * (1e7));
-				G_gnss_data->lon = (int)(gps_data->fix.longitude * (1e7));
-				G_gnss_data->speed = (uint32_t)(gps_data->fix.speed * (50));
-				G_gnss_data->heading = (uint32_t)(gps_data->fix.track * (80));
-			if (gps_data->fix.mode >= MODE_3D) 
-			{
-				G_gnss_data->elev = (int)(gps_data->fix.altHAE * (10));
-			}else{
-				G_gnss_data->elev = 0;
-			}
-		}
+		default:
+		case MODE_NOT_SEEN:
+			G_gnss_data->status.is_monitored = false;
+			G_gnss_data->status.unavailable = true;
+			G_gnss_data->status.is_healthy = false;
+			break;
+		case MODE_NO_FIX:
+			G_gnss_data->status.is_monitored = true;
+			G_gnss_data->status.unavailable = false;
+			G_gnss_data->status.is_healthy = false;
+			break;
+		case MODE_3D:
+			G_gnss_data->elev = (int)(gps_data->fix.altHAE * (10));
+		case MODE_2D:
+			G_gnss_data->status.is_monitored = true;
+			G_gnss_data->status.unavailable = false;
+			G_gnss_data->status.is_healthy = true;
+			G_gnss_data->lat = (int)(gps_data->fix.latitude * (1e7));
+			G_gnss_data->lon = (int)(gps_data->fix.longitude * (1e7));
+			G_gnss_data->speed = (uint32_t)(gps_data->fix.speed * (50));
+			G_gnss_data->heading = (uint32_t)(gps_data->fix.track * (80));
+			break;
 	}
 	G_gnss_data->num_sv = gps_data->satellites_visible;
 	if (G_gnss_data->num_sv < 5) {
@@ -62,8 +69,11 @@ static int RELAY_INNO_Gnss_Put_Data(struct gps_data_t *gps_data)
 	G_gnss_data->acceleration_set.lon = (int)(gps_data->attitude.acc_x);
 	G_gnss_data->acceleration_set.vert = (int)(gps_data->attitude.acc_z * (0.050968));
 	G_gnss_data->acceleration_set.yaw = (int)(gps_data->attitude.yaw *  (0.1));
-	G_gnss_data->isused = false; 
-
+	G_gnss_data->isused = false;
+	if(G_gnss_bsm_data == NULL)
+	{
+		return 0;
+	}
 	if(G_gnss_bsm_data->isused == true)
 	{
 		G_gnss_bsm_data->isused = true;
@@ -106,6 +116,7 @@ static void *RELAY_INNO_Gnss_Task_Reading(void *pData)
 	ret = gps_open(GPSD_SHARED_MEMORY, 0, &gps_data);
 	if(ret < 0)
 	{
+		_DEBUG_PRINT("Fail to open GPSD - gps_open() failed: %d\n", ret);
 		return NULL;
 	}
 	printf("Start read Gnss_data\n");
@@ -113,36 +124,34 @@ static void *RELAY_INNO_Gnss_Task_Reading(void *pData)
 	while(1)
 	{
 		ret = gps_read(&(gps_data), NULL, 0);
+		G_gnss_data->isused = false;
 		if(ret >= 0)
 		{
 			ret = RELAY_INNO_Gnss_Put_Data(&(gps_data));
 		}else{
 			
 		}
-		usleep(100 * 1000);
+		usleep(G_relay_inno_config.relay.gnss_interval * 1000);
 	}
 
 	gps_close(&(gps_data));
+	if(G_gnss_data !=	NULL)
+	{
+		free(G_gnss_data);
+	}
 }
 
 extern int RELAY_INNO_Gnss_Init_Gnssata(pthread_t *gnss_thread_t)
 {
-	struct sched_param gnss_thread_param;
-	pthread_attr_t gnss_thread_attrs;
   //Allocation_Postion - Free_Position line:None
-	G_gnss_data =(struct relay_inno_gnss_data_t*)malloc(sizeof(struct relay_inno_gnss_data_t));
+	G_gnss_data = (struct relay_inno_gnss_data_t*)malloc(sizeof(struct relay_inno_gnss_data_t));
 
-	pthread_attr_init(&gnss_thread_attrs);
-	pthread_attr_setschedpolicy(&gnss_thread_attrs, SCHED_RR);
-	gnss_thread_param.sched_priority = 30;
-
-	pthread_attr_setschedparam(&gnss_thread_attrs, &gnss_thread_param);
-	if (pthread_create(gnss_thread_t, &gnss_thread_attrs, *RELAY_INNO_Gnss_Task_Reading, (void *) NULL) < 0)
+	if (pthread_create(gnss_thread_t, NULL, *RELAY_INNO_Gnss_Task_Reading, (void *) NULL) < 0)
 	{
-        fprintf(stderr, "Failed to create GNSS thread\n");
-    }
+		_DEBUG_PRINT("Failed to create GNSS thread\n");
+		return -1;
+	}
 	pthread_detach(*gnss_thread_t);
-	pthread_attr_destroy(&gnss_thread_attrs);
 
   return 0;
 }

@@ -1,30 +1,30 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <stdbool.h>
-#include <fcntl.h>
-#include <termios.h>
-#include <arpa/inet.h>
-#include <sys/socket.h>
-#include <sys/stat.h>
-#include <netinet/in.h>
-#include <errno.h>
-#include <pthread.h>
-#include <sys/timerfd.h>
-#include <getopt.h>
+#include "relay-internal-system.h"
+#include "relay-extern-defines.h"
 
 #ifndef _D_HEADER_RELAY_INNO_CONFIG
 #define _D_HEADER_RELAY_INNO_CONFIG
-#include "relay_main.h"
 #include "relay_v2x.h"
 
 #define RELAY_INNO_INITAIL_SETUP_CONFIGURAION_FILE_PATH "./"
 #define RELAY_INNO_INITAIL_SETUP_CONFIGURAION_FILE_NAME "keti_relay_inno.conf"
 
+struct relay_inno_config_realy_t
+{
+		bool enable;
+		char dev_name[32];
+		char gatewayip[INET_ADDRSTRLEN];
+		uint16_t port_v2x_rx;
+		uint16_t port_v2x_tx;
+
+		bool gnss_enable; ///< GNSS 사용 여부
+		uint32_t gnss_interval; ///< GNSS 수신 주기 (usec 단위)
+};
+
 struct relay_inno_config_t {
     bool config_enable;
     char config_path[512];
+		
+		struct relay_inno_config_realy_t relay;
     struct relay_inno_config_v2x_t v2x;
 };
 

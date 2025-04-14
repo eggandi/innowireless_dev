@@ -1,5 +1,8 @@
 #include "relay_main.h"
-
+#include "relay_config.h"
+#include "relay_v2x.h"
+#include "relay_v2x_j2735_bsm.h"
+#include "relay_v2x_dot2.h"
 /**
  * @brief 시그널 셋업
  * @details 시스템 시그널 제어 및 종료 시그널 핸들러를 등록한다.
@@ -70,7 +73,7 @@ int main()//(int argc, char *argv[])
 
   uint64_t res;
 	uint32_t time_tick_10ms = 0;
-
+	G_relay_inno_config.v2x.tx_running = true;
   while(1)
   {
     ret = read(time_fd, &res, sizeof(res));
@@ -80,7 +83,7 @@ int main()//(int argc, char *argv[])
       _DEBUG_PRINT("read");
       break;
     }
-		switch(time_tick_10ms)
+		switch(time_tick_10ms % 100)
 		{
 			default:
 			{
@@ -93,7 +96,14 @@ int main()//(int argc, char *argv[])
 			{
 				if(G_relay_inno_config.v2x.tx_running == true)
 				{
-					RELAY_INNO_V2X_Tx_J2735_BSM();
+					ret = RELAY_INNO_V2X_Tx_J2735_BSM(NULL);
+					if(ret < 0)
+					{
+						_DEBUG_PRINT("V2X Tx BSM failed.\n");
+					}else{
+						_DEBUG_PRINT("V2X Tx BSM success.\n");
+					}
+
 				}
 				break;
 			}

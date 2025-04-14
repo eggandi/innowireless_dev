@@ -277,6 +277,30 @@ src/relay_v2x.c.s:
 	cd /root/ws_relay && $(MAKE) $(MAKESILENT) -f src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/build.make src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/src/relay_v2x.c.s
 .PHONY : src/relay_v2x.c.s
 
+src/relay_v2x_dot2.o: src/relay_v2x_dot2.c.o
+.PHONY : src/relay_v2x_dot2.o
+
+# target to build an object file
+src/relay_v2x_dot2.c.o:
+	cd /root/ws_relay && $(MAKE) $(MAKESILENT) -f src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/build.make src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/src/relay_v2x_dot2.c.o
+.PHONY : src/relay_v2x_dot2.c.o
+
+src/relay_v2x_dot2.i: src/relay_v2x_dot2.c.i
+.PHONY : src/relay_v2x_dot2.i
+
+# target to preprocess a source file
+src/relay_v2x_dot2.c.i:
+	cd /root/ws_relay && $(MAKE) $(MAKESILENT) -f src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/build.make src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/src/relay_v2x_dot2.c.i
+.PHONY : src/relay_v2x_dot2.c.i
+
+src/relay_v2x_dot2.s: src/relay_v2x_dot2.c.s
+.PHONY : src/relay_v2x_dot2.s
+
+# target to generate assembly for a file
+src/relay_v2x_dot2.c.s:
+	cd /root/ws_relay && $(MAKE) $(MAKESILENT) -f src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/build.make src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/src/relay_v2x_dot2.c.s
+.PHONY : src/relay_v2x_dot2.c.s
+
 src/relay_v2x_j2735_bsm.o: src/relay_v2x_j2735_bsm.c.o
 .PHONY : src/relay_v2x_j2735_bsm.o
 
@@ -300,6 +324,30 @@ src/relay_v2x_j2735_bsm.s: src/relay_v2x_j2735_bsm.c.s
 src/relay_v2x_j2735_bsm.c.s:
 	cd /root/ws_relay && $(MAKE) $(MAKESILENT) -f src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/build.make src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/src/relay_v2x_j2735_bsm.c.s
 .PHONY : src/relay_v2x_j2735_bsm.c.s
+
+src/relay_v2x_rx.o: src/relay_v2x_rx.c.o
+.PHONY : src/relay_v2x_rx.o
+
+# target to build an object file
+src/relay_v2x_rx.c.o:
+	cd /root/ws_relay && $(MAKE) $(MAKESILENT) -f src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/build.make src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/src/relay_v2x_rx.c.o
+.PHONY : src/relay_v2x_rx.c.o
+
+src/relay_v2x_rx.i: src/relay_v2x_rx.c.i
+.PHONY : src/relay_v2x_rx.i
+
+# target to preprocess a source file
+src/relay_v2x_rx.c.i:
+	cd /root/ws_relay && $(MAKE) $(MAKESILENT) -f src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/build.make src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/src/relay_v2x_rx.c.i
+.PHONY : src/relay_v2x_rx.c.i
+
+src/relay_v2x_rx.s: src/relay_v2x_rx.c.s
+.PHONY : src/relay_v2x_rx.s
+
+# target to generate assembly for a file
+src/relay_v2x_rx.c.s:
+	cd /root/ws_relay && $(MAKE) $(MAKESILENT) -f src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/build.make src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/src/relay_v2x_rx.c.s
+.PHONY : src/relay_v2x_rx.c.s
 
 src/relay_v2x_tx_j2735.o: src/relay_v2x_tx_j2735.c.o
 .PHONY : src/relay_v2x_tx_j2735.o
@@ -376,9 +424,15 @@ help:
 	@echo "... src/relay_v2x.o"
 	@echo "... src/relay_v2x.i"
 	@echo "... src/relay_v2x.s"
+	@echo "... src/relay_v2x_dot2.o"
+	@echo "... src/relay_v2x_dot2.i"
+	@echo "... src/relay_v2x_dot2.s"
 	@echo "... src/relay_v2x_j2735_bsm.o"
 	@echo "... src/relay_v2x_j2735_bsm.i"
 	@echo "... src/relay_v2x_j2735_bsm.s"
+	@echo "... src/relay_v2x_rx.o"
+	@echo "... src/relay_v2x_rx.i"
+	@echo "... src/relay_v2x_rx.s"
 	@echo "... src/relay_v2x_tx_j2735.o"
 	@echo "... src/relay_v2x_tx_j2735.i"
 	@echo "... src/relay_v2x_tx_j2735.s"

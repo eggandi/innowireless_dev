@@ -2,6 +2,7 @@ src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/src/relay_main.c.o: \
  /root/ws_relay/src/app/keti_relay_inno/src/relay_main.c \
  /usr/include/stdc-predef.h \
  /root/ws_relay/src/app/keti_relay_inno/include/relay_main.h \
+ /root/ws_relay/src/app/keti_relay_inno/include/relay-internal-system.h \
  /usr/include/stdio.h \
  /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
  /usr/include/features.h /usr/include/features-time64.h \
@@ -63,22 +64,19 @@ src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/src/relay_main.c.o: \
  /usr/include/x86_64-linux-gnu/bits/confname.h \
  /usr/include/x86_64-linux-gnu/bits/getopt_posix.h \
  /usr/include/x86_64-linux-gnu/bits/getopt_core.h \
- /usr/include/x86_64-linux-gnu/bits/unistd_ext.h \
+ /usr/include/x86_64-linux-gnu/bits/unistd_ext.h /usr/include/dirent.h \
+ /usr/include/x86_64-linux-gnu/bits/dirent.h \
+ /usr/include/x86_64-linux-gnu/bits/posix1_lim.h \
+ /usr/include/x86_64-linux-gnu/bits/local_lim.h \
+ /usr/include/linux/limits.h \
+ /usr/include/x86_64-linux-gnu/bits/pthread_stack_min-dynamic.h \
+ /usr/include/x86_64-linux-gnu/bits/pthread_stack_min.h \
+ /usr/include/x86_64-linux-gnu/bits/dirent_ext.h /usr/include/assert.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stdbool.h /usr/include/fcntl.h \
  /usr/include/x86_64-linux-gnu/bits/fcntl.h \
- /usr/include/x86_64-linux-gnu/bits/fcntl-linux.h /usr/include/termios.h \
- /usr/include/x86_64-linux-gnu/bits/termios.h \
- /usr/include/x86_64-linux-gnu/bits/termios-struct.h \
- /usr/include/x86_64-linux-gnu/bits/termios-c_cc.h \
- /usr/include/x86_64-linux-gnu/bits/termios-c_iflag.h \
- /usr/include/x86_64-linux-gnu/bits/termios-c_oflag.h \
- /usr/include/x86_64-linux-gnu/bits/termios-baud.h \
- /usr/include/x86_64-linux-gnu/bits/termios-c_cflag.h \
- /usr/include/x86_64-linux-gnu/bits/termios-c_lflag.h \
- /usr/include/x86_64-linux-gnu/bits/termios-tcflow.h \
- /usr/include/x86_64-linux-gnu/bits/termios-misc.h \
- /usr/include/x86_64-linux-gnu/sys/ttydefaults.h /usr/include/arpa/inet.h \
- /usr/include/netinet/in.h /usr/include/x86_64-linux-gnu/sys/socket.h \
+ /usr/include/x86_64-linux-gnu/bits/fcntl-linux.h \
+ /usr/include/arpa/inet.h /usr/include/netinet/in.h \
+ /usr/include/x86_64-linux-gnu/sys/socket.h \
  /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
  /usr/include/x86_64-linux-gnu/bits/socket.h \
  /usr/include/x86_64-linux-gnu/bits/socket_type.h \
@@ -94,12 +92,8 @@ src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/src/relay_main.c.o: \
  /usr/include/x86_64-linux-gnu/asm/sockios.h \
  /usr/include/asm-generic/sockios.h \
  /usr/include/x86_64-linux-gnu/bits/types/struct_osockaddr.h \
- /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/errno.h \
- /usr/include/x86_64-linux-gnu/bits/errno.h /usr/include/linux/errno.h \
- /usr/include/x86_64-linux-gnu/asm/errno.h \
- /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
- /usr/include/pthread.h /usr/include/sched.h \
- /usr/include/x86_64-linux-gnu/bits/sched.h \
+ /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/pthread.h \
+ /usr/include/sched.h /usr/include/x86_64-linux-gnu/bits/sched.h \
  /usr/include/x86_64-linux-gnu/bits/types/struct_sched_param.h \
  /usr/include/x86_64-linux-gnu/bits/cpu-set.h /usr/include/time.h \
  /usr/include/x86_64-linux-gnu/bits/time.h \
@@ -107,8 +101,6 @@ src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/src/relay_main.c.o: \
  /usr/include/x86_64-linux-gnu/bits/types/struct_itimerspec.h \
  /usr/include/x86_64-linux-gnu/bits/setjmp.h \
  /usr/include/x86_64-linux-gnu/bits/types/struct___jmp_buf_tag.h \
- /usr/include/x86_64-linux-gnu/bits/pthread_stack_min-dynamic.h \
- /usr/include/x86_64-linux-gnu/bits/pthread_stack_min.h \
  /usr/include/x86_64-linux-gnu/sys/timerfd.h \
  /usr/include/x86_64-linux-gnu/bits/timerfd.h /usr/include/signal.h \
  /usr/include/x86_64-linux-gnu/bits/signum-generic.h \
@@ -130,12 +122,13 @@ src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/src/relay_main.c.o: \
  /usr/include/x86_64-linux-gnu/bits/ss_flags.h \
  /usr/include/x86_64-linux-gnu/bits/types/struct_sigstack.h \
  /usr/include/x86_64-linux-gnu/bits/sigthread.h \
- /usr/include/x86_64-linux-gnu/bits/signal_ext.h \
- /root/ws_relay/src/app/keti_relay_inno/include/relay_config.h \
+ /usr/include/x86_64-linux-gnu/bits/signal_ext.h /usr/include/ifaddrs.h \
  /usr/include/getopt.h /usr/include/x86_64-linux-gnu/bits/getopt_ext.h \
- /root/ws_relay/src/app/keti_relay_inno/include/relay_main.h \
+ /root/ws_relay/src/app/keti_relay_inno/include/relay-extern-defines.h \
+ /root/ws_relay/src/app/keti_relay_inno/include/relay_config.h \
  /root/ws_relay/src/app/keti_relay_inno/include/relay_v2x.h \
- /usr/include/inttypes.h \
+ /root/ws_relay/src/app/keti_relay_inno/include/relay_v2x_tx.h \
+ /root/ws_relay/src/app/keti_relay_inno/include/relay_v2x_tx_wsm.h \
  /root/ws_relay/depend/v2x-sw/include/kvh1a/dot2-2016/dot2.h \
  /root/ws_relay/depend/v2x-sw/include/kvh1a/dot2-2016/dot2-api.h \
  /root/ws_relay/depend/v2x-sw/include/kvh1a/dot2-2016/dot2-api-params.h \
@@ -159,7 +152,8 @@ src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/src/relay_main.c.o: \
  /root/ws_relay/depend/v2x-sw/include/kvh1a/ltev2x-hal/ltev2x-hal-api.h \
  /root/ws_relay/depend/v2x-sw/include/kvh1a/ffasn1c/ffasn1-dot2-2021.h \
  /root/ws_relay/depend/v2x-sw/include/kvh1a/ffasn1c/asn1defs.h \
- /usr/include/math.h /usr/include/x86_64-linux-gnu/bits/math-vector.h \
+ /usr/include/inttypes.h /usr/include/math.h \
+ /usr/include/x86_64-linux-gnu/bits/math-vector.h \
  /usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h \
  /usr/include/x86_64-linux-gnu/bits/flt-eval-method.h \
  /usr/include/x86_64-linux-gnu/bits/fp-logb.h \
@@ -168,23 +162,17 @@ src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/src/relay_main.c.o: \
  /usr/include/x86_64-linux-gnu/bits/mathcalls.h \
  /root/ws_relay/depend/v2x-sw/include/kvh1a/ffasn1c/ffasn1-dot3-2016.h \
  /root/ws_relay/depend/v2x-sw/include/kvh1a/ffasn1c/ffasn1-j2735-2016.h \
- /root/ws_relay/src/app/keti_relay_inno/include/relay_utils.h \
- /usr/include/ifaddrs.h \
+ /root/ws_relay/src/app/keti_relay_inno/include/relay_v2x_tx_j2735.h \
+ /root/ws_relay/src/app/keti_relay_inno/include/relay_v2x_rx.h \
+ /root/ws_relay/src/app/keti_relay_inno/include/relay_v2x_dot2.h \
+ /root/ws_relay/src/app/keti_relay_inno/include/relay_v2x_j2735.h \
+ /root/ws_relay/src/app/keti_relay_inno/include/relay_v2x_j2735_bsm.h \
  /root/ws_relay/src/app/keti_relay_inno/include/relay_gnss.h \
  /root/ws_relay/depend/v2x-sw/include/kvh1a/gpsd/gps.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/limits.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/syslimits.h \
- /usr/include/limits.h /usr/include/x86_64-linux-gnu/bits/posix1_lim.h \
- /usr/include/x86_64-linux-gnu/bits/local_lim.h \
- /usr/include/linux/limits.h \
- /usr/include/x86_64-linux-gnu/bits/posix2_lim.h \
+ /usr/include/limits.h /usr/include/x86_64-linux-gnu/bits/posix2_lim.h \
  /usr/include/x86_64-linux-gnu/sys/time.h \
- /root/ws_relay/src/app/keti_relay_inno/include/relay_v2x_tx.h \
- /root/ws_relay/src/app/keti_relay_inno/include/relay_v2x_tx_j2735.h \
- /root/ws_relay/src/app/keti_relay_inno/include/relay_v2x_tx_wsm.h \
- /root/ws_relay/src/app/keti_relay_inno/include/relay_v2x_dot2.h \
- /usr/include/assert.h /usr/include/dirent.h \
- /usr/include/x86_64-linux-gnu/bits/dirent.h \
- /usr/include/x86_64-linux-gnu/bits/dirent_ext.h \
- /root/ws_relay/src/app/keti_relay_inno/include/relay_v2x_j2735.h \
- /root/ws_relay/src/app/keti_relay_inno/include/relay_v2x_j2735_bsm.h
+ /root/ws_relay/src/app/keti_relay_inno/include/relay_v2x.h \
+ /root/ws_relay/src/app/keti_relay_inno/include/relay_v2x_j2735_bsm.h \
+ /root/ws_relay/src/app/keti_relay_inno/include/relay_v2x_dot2.h

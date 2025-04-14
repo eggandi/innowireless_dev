@@ -198,6 +198,34 @@ src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/src/relay_v2x_j2735_bsm.c
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/keti_relay_inno.dir/src/relay_v2x_j2735_bsm.c.s"
 	cd /root/ws_relay/src/app/keti_relay_inno && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /root/ws_relay/src/app/keti_relay_inno/src/relay_v2x_j2735_bsm.c -o CMakeFiles/keti_relay_inno.dir/src/relay_v2x_j2735_bsm.c.s
 
+src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/src/relay_v2x_dot2.c.o: src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/flags.make
+src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/src/relay_v2x_dot2.c.o: src/app/keti_relay_inno/src/relay_v2x_dot2.c
+src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/src/relay_v2x_dot2.c.o: src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/root/ws_relay/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building C object src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/src/relay_v2x_dot2.c.o"
+	cd /root/ws_relay/src/app/keti_relay_inno && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/src/relay_v2x_dot2.c.o -MF CMakeFiles/keti_relay_inno.dir/src/relay_v2x_dot2.c.o.d -o CMakeFiles/keti_relay_inno.dir/src/relay_v2x_dot2.c.o -c /root/ws_relay/src/app/keti_relay_inno/src/relay_v2x_dot2.c
+
+src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/src/relay_v2x_dot2.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/keti_relay_inno.dir/src/relay_v2x_dot2.c.i"
+	cd /root/ws_relay/src/app/keti_relay_inno && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /root/ws_relay/src/app/keti_relay_inno/src/relay_v2x_dot2.c > CMakeFiles/keti_relay_inno.dir/src/relay_v2x_dot2.c.i
+
+src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/src/relay_v2x_dot2.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/keti_relay_inno.dir/src/relay_v2x_dot2.c.s"
+	cd /root/ws_relay/src/app/keti_relay_inno && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /root/ws_relay/src/app/keti_relay_inno/src/relay_v2x_dot2.c -o CMakeFiles/keti_relay_inno.dir/src/relay_v2x_dot2.c.s
+
+src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/src/relay_v2x_rx.c.o: src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/flags.make
+src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/src/relay_v2x_rx.c.o: src/app/keti_relay_inno/src/relay_v2x_rx.c
+src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/src/relay_v2x_rx.c.o: src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/root/ws_relay/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building C object src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/src/relay_v2x_rx.c.o"
+	cd /root/ws_relay/src/app/keti_relay_inno && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/src/relay_v2x_rx.c.o -MF CMakeFiles/keti_relay_inno.dir/src/relay_v2x_rx.c.o.d -o CMakeFiles/keti_relay_inno.dir/src/relay_v2x_rx.c.o -c /root/ws_relay/src/app/keti_relay_inno/src/relay_v2x_rx.c
+
+src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/src/relay_v2x_rx.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/keti_relay_inno.dir/src/relay_v2x_rx.c.i"
+	cd /root/ws_relay/src/app/keti_relay_inno && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /root/ws_relay/src/app/keti_relay_inno/src/relay_v2x_rx.c > CMakeFiles/keti_relay_inno.dir/src/relay_v2x_rx.c.i
+
+src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/src/relay_v2x_rx.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/keti_relay_inno.dir/src/relay_v2x_rx.c.s"
+	cd /root/ws_relay/src/app/keti_relay_inno && /usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /root/ws_relay/src/app/keti_relay_inno/src/relay_v2x_rx.c -o CMakeFiles/keti_relay_inno.dir/src/relay_v2x_rx.c.s
+
 # Object files for target keti_relay_inno
 keti_relay_inno_OBJECTS = \
 "CMakeFiles/keti_relay_inno.dir/src/relay_main.c.o" \
@@ -208,7 +236,9 @@ keti_relay_inno_OBJECTS = \
 "CMakeFiles/keti_relay_inno.dir/src/relay_v2x.c.o" \
 "CMakeFiles/keti_relay_inno.dir/src/relay_v2x_tx_wsm.c.o" \
 "CMakeFiles/keti_relay_inno.dir/src/relay_v2x_tx_j2735.c.o" \
-"CMakeFiles/keti_relay_inno.dir/src/relay_v2x_j2735_bsm.c.o"
+"CMakeFiles/keti_relay_inno.dir/src/relay_v2x_j2735_bsm.c.o" \
+"CMakeFiles/keti_relay_inno.dir/src/relay_v2x_dot2.c.o" \
+"CMakeFiles/keti_relay_inno.dir/src/relay_v2x_rx.c.o"
 
 # External object files for target keti_relay_inno
 keti_relay_inno_EXTERNAL_OBJECTS =
@@ -222,9 +252,11 @@ src/app/keti_relay_inno/keti_relay_inno: src/app/keti_relay_inno/CMakeFiles/keti
 src/app/keti_relay_inno/keti_relay_inno: src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/src/relay_v2x_tx_wsm.c.o
 src/app/keti_relay_inno/keti_relay_inno: src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/src/relay_v2x_tx_j2735.c.o
 src/app/keti_relay_inno/keti_relay_inno: src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/src/relay_v2x_j2735_bsm.c.o
+src/app/keti_relay_inno/keti_relay_inno: src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/src/relay_v2x_dot2.c.o
+src/app/keti_relay_inno/keti_relay_inno: src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/src/relay_v2x_rx.c.o
 src/app/keti_relay_inno/keti_relay_inno: src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/build.make
 src/app/keti_relay_inno/keti_relay_inno: src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/root/ws_relay/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Linking C executable keti_relay_inno"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/root/ws_relay/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Linking C executable keti_relay_inno"
 	cd /root/ws_relay/src/app/keti_relay_inno && /usr/bin/cmake -E remove /root/ws_relay/output/bin/keti_relay_inno
 	cd /root/ws_relay/src/app/keti_relay_inno && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/keti_relay_inno.dir/link.txt --verbose=$(VERBOSE)
 	cd /root/ws_relay/src/app/keti_relay_inno && /usr/bin/cmake -E copy keti_relay_inno /root/ws_relay/output/bin/

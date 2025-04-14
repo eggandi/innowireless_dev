@@ -67,15 +67,19 @@ extern int RELAY_INNO_Config_Setup_Configuration_Read(struct relay_inno_config_t
         fputs("\n", config_fp);
 
 				fputs("----------------------------------------Relay-----------------------------------------;\n", config_fp);
+				fputs("----------------------------------------Ethernet\n", config_fp);
 				fputs("Relay_Eth_Interface_Name=\"eth0\";\n", config_fp);
-				fputs("Relay_Gateway_IP_Address=\"192.168.123.204", config_fp);
+				fputs("Relay_Gateway_IP_Address=\"192.168.123.204\"\n", config_fp);
 				fputs("Relay_Port_V2X_Rx_Data=0;\n", config_fp);
 				fputs("Relay_Port_V2X_Tx_Data=0;\n", config_fp);
+				fputs("----------------------------------------GNSS\n", config_fp);
+				fputs("GNSS_Enable=1\n", config_fp);
+				fputs("GNSS_Interval=100;\n", config_fp);
 				fputs("\n", config_fp);
 
         fputs("----------------------------------------V2X-----------------------------------------;\n", config_fp);
         fputs("V2X_Operation_Type=1;\t\t\t(0:rx only, 1:trx)\n", config_fp);
-        fputs("V2X_Device_Name=\"/dev/spidev1.1\";\n", config_fp);
+        fputs("V2X_Device_Name=\"/dev/spidev0.0\";\n", config_fp);
         fputs("V2X_Dbg_Msg_Level=0;\t\t\t(0:nothing, 1:err, 2:init, 3:event, 4:message hexdump)\n", config_fp);
         fputs("V2X_Lib_Dbg_Msg_Level=0;\t\t\t(0:nothing, 1:err, 2:init, 3:event, 4:message hexdump)\n", config_fp);
 				fputs("----------------------------------------V2X-Vechicle(TBA)", config_fp);
@@ -88,17 +92,21 @@ extern int RELAY_INNO_Config_Setup_Configuration_Read(struct relay_inno_config_t
 				fputs("----------------------------------------V2X-Tx-WSA(TBA)\n", config_fp);
 				fputs("----------------------------------------V2X-Tx-J2735-BSM\n", config_fp);
 				fputs("V2X_Tx_J2735_BSM_Enable=1;\n", config_fp);
+				fputs("V2X_Tx_J2735_BSM_PSID=32;\n", config_fp);
+				fputs("V2X_Tx_J2735_BSM_Temporary_ID=0x01020304;\n", config_fp);
+				fputs("V2X_Tx_J2735_BSM_Tx_Type=2;\t\t\t(2:Default, 0:SPS, 1:Event)\n", config_fp);
 				fputs("V2X_Tx_J2735_BSM_Interval=100;\n", config_fp);
-				//fputs("V2X_Tx_J2735_BSM_Priority=;\n", config_fp);
-				//fputs("V2X_Tx_J2735_BSM_Power=;\n", config_fp);
-
+				fputs("V2X_Tx_J2735_BSM_Priority=7;\n", config_fp);
+				//fputs("V2X_Tx_J2735_BSM_Tx_Power=;\n", config_fp);
 				//fputs("----------------------------------------V2X-Tx-J2735-WSA(TBA)\n", config_fp);
 				//fputs("----------------------------------------V2X-Tx-J2735-PVD(TBA)\n", config_fp);
 
 				fputs("----------------------------------------V2X-Rx\n", config_fp);
+				fputs("V2X_Rx_Enable=0;\n", config_fp);
+				fputs("V2X_Rx_Dot2_Forced_Enable=0;\n", config_fp);
+				//fputs("V2X_Rx_WSM=0;\n\t\t\t(0:Standard WSM, 1:Non-Standard Print Hexdump)", config_fp);
 				fputs("----------------------------------------V2X-Rx-J2735-MSGs\n", config_fp);
         fputs("V2X_Rx_J2735_BSM=1;\n", config_fp);
-				fputs("V2X_Rx_J2735_WSA=1;\n", config_fp);
 				fputs("V2X_Rx_J2735_SPAT=1;\n", config_fp);
 				fputs("V2X_Rx_J2735_MAP=1;\n", config_fp);
 				fputs("V2X_Rx_J2735_RTCM=1;\n", config_fp);
@@ -113,11 +121,6 @@ extern int RELAY_INNO_Config_Setup_Configuration_Read(struct relay_inno_config_t
 				fputs("V2X_Dot2_CMHF_OBU_File_Path=\"obu\";\n", config_fp);
 				//fputs("V2X_Dot2_CMHF_RSU_Enable=1;\n", config_fp);
 				//fputs("V2X_Dot2_CMHF_RSU_File_Path=\"rsu\";\n", config_fp);
-        fputs("\n", config_fp);
-
-				fputs("----------------------------------------GNSS-----------------------------------------;\n", config_fp);
-				fputs("GNSS_Enable=1\n", config_fp);
-				fputs("\"\n", config_fp);
         fputs("\n", config_fp);
 
         fclose(config_fp);
@@ -177,29 +180,116 @@ extern int RELAY_INNO_Config_Setup_Configuration_Read(struct relay_inno_config_t
                         }
                     }else if(strcmp(ptr_name, "Relay_Eth_Interface_Name") == 0)
                     {
-                        RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->utils.mount.enable);
+                        RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)relay_inno_config->relay.dev_name);
                     }else if(strcmp(ptr_name, "Relay_Gateway_IP_Address") == 0)
-                    {
-                        RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->utils.mount.type);
-                    }else if(strcmp(ptr_name, "Relay_Port_V2X_Rx_Data") == 0)
-                    {
-                        RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->utils.mount.active_mode);
-                    }else if(strcmp(ptr_name, "Relay_Port_V2X_Tx_Data") == 0)
-                    {
-                        RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)relay_inno_config->utils.mount.device);
-                    }else if(strcmp(ptr_name, "GNSS_Enable") == 0)
-                    {
-                        RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)relay_inno_config->utils.mount.path);
-                    }else if(strcmp(ptr_name, "V2X_Device_Name") == 0)
-                    {
-                        RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)relay_inno_config->v2x.dev_name);
-                    }else if(strcmp(ptr_name, "V2X_Dbg_Msg_Level") == 0)
-                    {
-                        RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->v2x.dbg);
-                    }else if(strcmp(ptr_name, "V2X_Lib_Dbg_Msg_Level") == 0)
-                    {
-                        RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->v2x.lib_dbg);
-                    }
+										{
+												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)relay_inno_config->relay.gatewayip);
+										}else if(strcmp(ptr_name, "Relay_Port_V2X_Rx_Data") == 0)
+										{
+												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->relay.port_v2x_rx);
+										}else if(strcmp(ptr_name, "Relay_Port_V2X_Tx_Data") == 0)
+										{
+												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->relay.port_v2x_tx);
+										}else if(strcmp(ptr_name, "GNSS_Enable") == 0)
+										{
+												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->relay.gnss_enable);
+										}else if(strcmp(ptr_name, "GNSS_Interval") == 0)
+										{
+												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->relay.gnss_interval);
+										}else if(strcmp(ptr_name, "V2X_Operation_Type") == 0)
+										{
+												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->v2x.op);
+										}else if(strcmp(ptr_name, "V2X_Device_Name") == 0)
+										{
+												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)relay_inno_config->v2x.dev_name);
+										}else if(strcmp(ptr_name, "V2X_Dbg_Msg_Level") == 0)
+										{
+												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->v2x.dbg);
+										}else if(strcmp(ptr_name, "V2X_Lib_Dbg_Msg_Level") == 0)
+										{
+												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->v2x.lib_dbg);
+										}else if(strcmp(ptr_name, "V2X_Tx_Type") == 0)
+										{
+												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->v2x.tx_type);
+										}else if(strcmp(ptr_name, "V2X_Tx_Channel_Num") == 0)
+										{
+												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->v2x.chan_num);
+										}else if(strcmp(ptr_name, "V2X_Tx_DataRate") == 0)
+										{
+												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->v2x.tx_datarate);
+										}else if(strcmp(ptr_name, "V2X_Tx_Power") == 0)
+										{
+												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->v2x.tx_power);
+										}else if(strcmp(ptr_name, "V2X_Tx_Priority") == 0)
+										{
+												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->v2x.tx_priority);
+										}else if(strcmp(ptr_name, "V2X_Tx_Interval") == 0)
+										{
+												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->v2x.tx_interval);
+										}else if(strcmp(ptr_name, "V2X_Tx_J2735_BSM_Enable") == 0)
+										{
+												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->v2x.j2735.bsm.enable);
+										}else if(strcmp(ptr_name, "V2X_Tx_J2735_BSM_PSID") == 0)
+										{
+												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->v2x.j2735.bsm.psid);
+										}else if(strcmp(ptr_name, "V2X_Tx_J2735_BSM_Temporary_ID") == 0)
+										{
+												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)relay_inno_config->v2x.j2735.bsm.temporary_id);
+										}else if(strcmp(ptr_name, "V2X_Tx_J2735_BSM_Tx_Type") == 0)
+										{
+												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->v2x.j2735.bsm.tx_type);	
+										}else if(strcmp(ptr_name, "V2X_Tx_J2735_BSM_Interval") == 0)
+										{
+												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->v2x.j2735.bsm.interval);
+										}else if(strcmp(ptr_name, "V2X_Tx_J2735_BSM_Priority") == 0)
+										{
+												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->v2x.j2735.bsm.priority);
+										}else if(strcmp(ptr_name, "V2X_Dot2_Enable") == 0)
+										{
+												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->v2x.dot2.enable);
+										}else if(strcmp(ptr_name, "V2X_Dot2_Certificates_Path") == 0)
+										{
+												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)relay_inno_config->v2x.dot2.cert_path);
+										}else if(strcmp(ptr_name, "V2X_Dot2_Trustedcerts_File_Path") == 0)
+										{
+												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)relay_inno_config->v2x.dot2.trustedcerts_path);
+										}else if(strcmp(ptr_name, "V2X_Dot2_CMHF_OBU_Enable") == 0)
+										{
+												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->v2x.dot2.cmhf_obu_enable);
+										}else if(strcmp(ptr_name, "V2X_Dot2_CMHF_OBU_File_Path") == 0)
+										{
+												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)relay_inno_config->v2x.dot2.cmhf_obu_path);
+										}else if(strcmp(ptr_name, "V2X_Dot2_CMHF_RSU_Enable") == 0)	
+										{
+												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->v2x.dot2.cmhf_rsu_enable);
+										}else if(strcmp(ptr_name, "V2X_Dot2_CMHF_RSU_File_Path") == 0)
+										{
+												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)relay_inno_config->v2x.dot2.cmhf_rsu_path);
+										}else if(strcmp(ptr_name, "V2X_Rx_Enable") == 0)
+										{
+												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->v2x.rx.enable);
+										}	else if(strcmp(ptr_name, "V2X_Rx_Dot2_Forced_Enable") == 0)
+										{
+												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->v2x.rx.dot2_forced_enable);
+										}else if(strcmp(ptr_name, "V2X_Rx_J2735_BSM") == 0)
+										{
+												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->v2x.rx.j2735.BSM_enable);
+										}else if(strcmp(ptr_name, "V2X_Rx_J2735_SPAT") == 0)
+										{
+												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->v2x.rx.j2735.SPAT_enable);
+										}else if(strcmp(ptr_name, "V2X_Rx_J2735_MAP") == 0)
+										{
+												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->v2x.rx.j2735.MAP_enable);
+										}else if(strcmp(ptr_name, "V2X_Rx_J2735_RTCM") == 0)
+										{
+												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->v2x.rx.j2735.RTCM_enable);
+										}else if(strcmp(ptr_name, "V2X_Rx_J2735_TIM") == 0)
+										{
+												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->v2x.rx.j2735.TIM_enable);
+										}else if(strcmp(ptr_name, "V2X_Rx_J2735_PVD") == 0)	
+										{
+												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->v2x.rx.j2735.PVD_enable);
+										}
                 }
             }
         }
@@ -207,8 +297,6 @@ extern int RELAY_INNO_Config_Setup_Configuration_Read(struct relay_inno_config_t
     }
     if(g_config_path != NULL)
         free(g_config_path);
-    if(g_argu_uIP_str != NULL)
-        free(g_argu_uIP_str);
 
     free(config_file);
     return 0;
@@ -284,5 +372,68 @@ static void RELAY_INNO_Config_Setup_Configuration_Value_Input(char type, char *v
             break;
         }
     }
+}
+
+
+/**
+ * @brief 어플리케이션 실행 시 함께 입력된 파라미터들을 파싱하여 관리정보에 저장한다.
+ * @param[in] argc 유틸리티 실행 시 입력되는 명령줄 내 파라미터들의 개수 (유틸리티 실행파일명 포함)
+ * @param[in] argv 유틸리티 실행 시 입력되는 명령줄 내 파라미터들의 문자열 집합 (유틸리티 실행파일명 포함)
+ * @retval 0: 성공
+ * @retval -1: 실패
+ */
+extern int RELAY_INNO_Config_Pasrsing_Argument(int argc, char *argv[])
+{
+  int c, option_idx = 0;
+  struct option options[] = {
+    {"config_path", required_argument, 0, 1 /*=getopt_long() 호출 시 option_idx 에 반환되는 값*/},
+    {0, 0, 0, 0} // 옵션 배열은 {0,0,0,0} 센티넬에 의해 만료된다.
+  };
+
+  while(1) {
+
+    /*
+     * 옵션 파싱
+     */
+    c = getopt_long(argc, argv, "", options, &option_idx);
+    if (c == -1) {  // 모든 파라미터 파싱 완료
+      break;
+    }
+
+    /*
+     * 파싱된 옵션 처리
+     */
+    int ret = RELAY_INNO_Config_ParsedOption(c);
+    if (ret < 0) {
+      return ret;
+    }
+  }
+
+  return 0;
+}
+
+
+/**
+ * @brief 옵션값에 따라 각 옵션을 처리한다.
+ * @param[in] option 옵션값 (struct option 의 4번째 멤버변수)
+ * @retval 0: 성공
+ * @retval -1: 실패
+ */
+static int RELAY_INNO_Config_ParsedOption(int option)
+{
+  switch (option) {
+    case 1:
+    {
+        g_config_path = malloc(sizeof(char) * strlen(optarg));
+        strncpy(g_config_path , optarg, strlen(optarg));
+        break;
+    }
+    default: 
+    {
+      printf("Invalid option\n");
+      return -1;
+    }
+  }
+  return 0;
 }
 
