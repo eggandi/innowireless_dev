@@ -55,7 +55,12 @@ re_ContstructSPDU:
 	tx_params.tx_flow_type = G_relay_inno_config.v2x.j2735.bsm.tx_type;	
 	tx_params.tx_flow_index = 0;
 	tx_params.priority = G_relay_inno_config.v2x.j2735.bsm.priority;
-	tx_params.tx_power = G_relay_inno_config.v2x.j2735.bsm.tx_power;
+	if(G_relay_inno_config.v2x.j2735.bsm.tx_power == 0)
+	{
+		tx_params.tx_power = G_relay_inno_config.v2x.tx_power;
+	}else{
+		tx_params.tx_power = G_relay_inno_config.v2x.j2735.bsm.tx_power;
+	}
 	tx_params.dst_l2_id = G_relay_inno_config.v2x.j2735.bsm.psid;
 	const dot3ShortMsgData wsm_body = {
 		.buf = res.spdu,
@@ -66,7 +71,23 @@ re_ContstructSPDU:
 		_DEBUG_PRINT("Fail to transmit BSM - RELAY_INNO_V2X_MSDU_Transmit() failed: %d\n", ret);
 		return -3;
 	}
-	free(res.spdu);
+	switch(G_relay_inno_config.relay.relay_data_type)
+		{
+			case RELAY_DATA_TYPE_V2X_SSDU:
+			{
+				ret = sendto(G_relay_v2x_tx_socket, spdu_payload_bsm, spdu_payload_bsm_size, 0, (struct sockaddr *)&G_relay_v2x_tx_addr, sizeof(G_relay_v2x_tx_addr));
+				if(ret < 0)
+				{
+					_DEBUG_PRINT("Fail to sendto - %d sendto() failed: %d\n",G_relay_inno_config.relay.relay_data_type, ret);
+				}else{
+					_DEBUG_PRINT("Success to sendto - %d sendto() success: %d\n",G_relay_inno_config.relay.relay_data_type, ret);
+				}
+				break;
+			}	
+			default:
+				break;
+		}
+
 	free(spdu_payload_bsm);
 #endif
 	return 0;

@@ -16,8 +16,7 @@ EXTERN_API int RELAY_INNO_V2X_Init(void)
     _DEBUG_PRINT("Fail to initialize ltev2x-hal library - LTEV2XHAL_Init() failed: %d\n", ret);
     return -1;
   }
-  LTEV2XHAL_RegisterCallbackProcessMSDU(RELAY_INNO_V2X_RxMSDUCallback);
-	
+
   ret = Dot2_Init(hal_log_level, 100, NULL, 5);
   if (ret < 0) {
     _DEBUG_PRINT("Fail to initialize dot2 library - Dot2_Init() failed: %d\n", ret);
@@ -26,56 +25,77 @@ EXTERN_API int RELAY_INNO_V2X_Init(void)
 		_DEBUG_PRINT("Success to initialize dot2 library\n");
 
 	}
-	
-#if 0
-  if(G_relay_inno_config.udp_enable)
-  {
-    g_sockfd = socket(AF_INET, SOCK_DGRAM, 0);
-    if (g_sockfd < 0) {
-        exit(EXIT_FAILURE);
-    }
-    int flags = fcntl(g_sockfd, F_GETFL, 0);
-    fcntl(g_sockfd, F_SETFL, flags | O_NONBLOCK);
-
-    struct linger solinger = { 1, 0 };
-    setsockopt(g_sockfd, SOL_SOCKET, SO_LINGER, &solinger, sizeof(struct linger));
-
-    memset(&g_v2x_addr, 0, sizeof(g_v2x_addr));
-    g_v2x_addr.sin_family = AF_INET;
-    g_v2x_addr.sin_port = htons(G_relay_inno_config.udp_port_v2x);
-    g_v2x_addr.sin_addr.s_addr = inet_addr(G_relay_inno_config.udp_ip_str);
-  }
-#endif
+	ret = Dot3_Init(hal_log_level);
+  if (ret < 0) {
+    _DEBUG_PRINT("Fail to initialize dot3 library - Dot3_Init() failed: %d\n", ret);
+    return -3;
+  }else{
+		_DEBUG_PRINT("Success to initialize dot3 library\n");
+	}
   _DEBUG_PRINT("Success to initialize V2X library\n");
+
   return 0;
 }
 
-extern int RELAY_INNO_V2X_Psid_Filter(unsigned int psid)
+extern bool RELAY_INNO_V2X_Psid_Filter(unsigned int psid)
 {
-	int ret = -1;
 	switch(psid)
 	{
-    case 32:{	goto add;	break;}//BSM
-		case 135:{	goto out;	break;}//WSA
-		case 82056:{	goto out;	break;}//MAP
-		case 82055:{	goto out;	break;}//SPAT
-		case 82051:{	goto out;	break;}//PVD
-		case 82053:{	goto out;	break;}//RSA
-		case 82057:{	goto out;	break;}//RTCM
-		case 82054:{	goto out;	break;}//TIM
+		case 135:
+			if(G_relay_inno_config.v2x.rx.wsa_enable == false)
+			{
+				goto psid_false;
+			}
+			break;
+    case 32:
+			if(G_relay_inno_config.v2x.rx.j2735.BSM_enable == false)
+			{	
+				goto psid_false;	
+			}
+			break;//BSM
+		case 82056:
+			if(G_relay_inno_config.v2x.rx.j2735.MAP_enable == false)
+			{	
+				goto psid_false;	
+			}
+			break;//MAP
+		case 82055:
+			if(G_relay_inno_config.v2x.rx.j2735.SPAT_enable == false)
+			{	
+				goto psid_false;	
+			}
+			break;//SPAT
+		case 82051:
+			if(G_relay_inno_config.v2x.rx.j2735.PVD_enable == false)
+			{	
+				goto psid_false;	
+			}
+			break;//PVD
+		case 82053:
+			if(G_relay_inno_config.v2x.rx.j2735.RSA_enable == false)
+			{	
+				goto psid_false;	
+			}
+			break;//RSA
+		case 82057:
+			if(G_relay_inno_config.v2x.rx.j2735.RTCM_enable == false)
+			{	
+				goto psid_false;	
+			}
+			break;//RTCM
+		case 82054:
+			if(G_relay_inno_config.v2x.rx.j2735.TIM_enable == false)
+			{	
+				goto psid_false;	
+			}
+			break;//TIM
 		default :
 		{
 			break;
 		}
 	}		
-	add:
-		ret = 0;
-		_DEBUG_PRINT("Success to Add WSR(psid: %u)\n", psid);
-	if (ret < 0) {
-		_DEBUG_PRINT("Fail to add WSR(psid: %u) - %d\n", psid, ret);
-		return -1;
-	}
-out:
-	return ret;
+	return true;
+psid_false:
+	return false;
 
 }

@@ -67,5 +67,5 @@ struct relay_inno_config_v2x_t
 
 #endif //?_D_HEADER_RELAY_INNO_V2X
 
-extern int RELAY_INNO_V2X_Psid_Filter(unsigned int psid);
+extern bool RELAY_INNO_V2X_Psid_Filter(unsigned int psid);
 EXTERN_API int RELAY_INNO_V2X_Init(void);

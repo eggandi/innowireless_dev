@@ -9,9 +9,10 @@ target_include_directories(${TARGET_APP} PRIVATE ${PROJECT_ROOT}/depend/v2x-sw/i
 
 target_link_options(${TARGET_APP} PRIVATE -Wl,--hash-style=gnu -Wl,--as-needed -Wl,--allow-shlib-undefined)
 target_link_directories(${TARGET_APP} PRIVATE ${PROJECT_ROOT}/depend/v2x-sw/lib/kvh1a)
+target_link_directories(${TARGET_APP} PRIVATE ${PROJECT_ROOT}/depend/v2x-sw/lib/kvh1a)
 
 
-target_link_libraries(${TARGET_APP} PRIVATE udev pthread rt gps m)
+target_link_libraries(${TARGET_APP} PRIVATE pthread rt gps m)
 
 target_link_libraries(${TARGET_APP} PRIVATE dot3-2016 dot2-2016)
 target_link_libraries(${TARGET_APP} PRIVATE ffasn1-dot2-2021 ffasn1-dot3-2016 ffasn1-j2735-2016 ffasn1-base)

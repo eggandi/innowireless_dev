@@ -8,9 +8,18 @@
 #define RELAY_INNO_INITAIL_SETUP_CONFIGURAION_FILE_PATH "./"
 #define RELAY_INNO_INITAIL_SETUP_CONFIGURAION_FILE_NAME "keti_relay_inno.conf"
 
+enum relay_data_type_e
+{
+		RELAY_DATA_TYPE_V2X_MPDU = 0, //MPDU 수신된 패킷 (DSRC의 경우 MPDU, C-V2X의 경우 WSM이 저장된다)(?)
+		RELAY_DATA_TYPE_V2X_WSM, ///< mpdu 버퍼 내에서 WSM 패킷의 시작지점을 참조한다.
+		RELAY_DATA_TYPE_V2X_WSDU, ///< WSM Service Data Unit. WSM body에 수납된 데이터(=Ieee1609Dot2Data).
+		RELAY_DATA_TYPE_V2X_SSDU, //< Secured Service Data Unit. Ieee1609Dot2에 수납된 페이로드(예: J2735 메시지, WSA).
+};
+
 struct relay_inno_config_realy_t
 {
 		bool enable;
+		enum relay_data_type_e relay_data_type; ///< 데이터 타입 (V2X, GNSS, V2X+GNSS)
 		char dev_name[32];
 		char gatewayip[INET_ADDRSTRLEN];
 		uint16_t port_v2x_rx;

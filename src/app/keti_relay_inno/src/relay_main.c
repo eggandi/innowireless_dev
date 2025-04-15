@@ -3,13 +3,14 @@
 #include "relay_v2x.h"
 #include "relay_v2x_j2735_bsm.h"
 #include "relay_v2x_dot2.h"
-/**
- * @brief 시그널 셋업
- * @details 시스템 시그널 제어 및 종료 시그널 핸들러를 등록한다.
- * @param void
- * @return void
- */
+
+int G_relay_v2x_tx_socket;
+int G_relay_v2x_rx_socket;
+struct sockaddr_in G_relay_v2x_tx_addr;
+struct sockaddr_in G_relay_v2x_rx_addr;
+
 static void RELAY_INNO_Main_Signal_Set();
+static int RELAY_INNO_Main_Socket_Init();
 
 /**
  * @brief 시그널 핸들러
@@ -61,6 +62,10 @@ int main()//(int argc, char *argv[])
 	}else{
 		_DEBUG_PRINT("Gnss initialization success.\n");
 	}
+
+	LTEV2XHAL_RegisterCallbackProcessMSDU(RELAY_INNO_V2X_RxMSDUCallback);
+	_DEBUG_PRINT("V2X RxMSDU callback registered.\n");
+	
 	struct itimerspec itval;
   int msec = 10;
   
@@ -74,6 +79,15 @@ int main()//(int argc, char *argv[])
   uint64_t res;
 	uint32_t time_tick_10ms = 0;
 	G_relay_inno_config.v2x.tx_running = true;
+	ret = RELAY_INNO_Main_Socket_Init();
+	if(ret < 0)
+	{
+		_DEBUG_PRINT("Socket initialization failed.\n");
+		goto out;
+	}else{
+		_DEBUG_PRINT("Socket initialization success.\n");
+	}
+	
   while(1)
   {
     ret = read(time_fd, &res, sizeof(res));
@@ -83,29 +97,14 @@ int main()//(int argc, char *argv[])
       _DEBUG_PRINT("read");
       break;
     }
-		switch(time_tick_10ms % 100)
+		if(time_tick_10ms % (G_relay_inno_config.v2x.j2735.bsm.interval / 10) == 0)
 		{
-			default:
+			ret = RELAY_INNO_V2X_Tx_J2735_BSM(NULL);
+			if(ret < 0)
 			{
-				break;
-			}
-			case 100: //1초마다 호출
-			{
-			}
-			case 10: //100ms마다 호출
-			{
-				if(G_relay_inno_config.v2x.tx_running == true)
-				{
-					ret = RELAY_INNO_V2X_Tx_J2735_BSM(NULL);
-					if(ret < 0)
-					{
-						_DEBUG_PRINT("V2X Tx BSM failed.\n");
-					}else{
-						_DEBUG_PRINT("V2X Tx BSM success.\n");
-					}
-
-				}
-				break;
+				_DEBUG_PRINT("V2X Tx BSM failed.\n");
+			}else{
+				_DEBUG_PRINT("V2X Tx BSM success.\n");
 			}
 		}
   }
@@ -143,16 +142,58 @@ static void RELAY_INNO_Main_Signal_Handler(int signo)
       _DEBUG_PRINT("Signal %d received. Exit.\n", signo);
       (void)signo;
       G_relay_inno_config.v2x.tx_running = false;
+			close(G_relay_v2x_tx_socket);
+			close(G_relay_v2x_rx_socket);
       exit(0);
       system("killall "PROJECT_NAME);
       break;
     }
     default:
     {
+			close(G_relay_v2x_tx_socket);
+			close(G_relay_v2x_rx_socket);
       exit(0);
       system("killall "PROJECT_NAME);
       break;
     }
   }
   return;
+}
+
+static int RELAY_INNO_Main_Socket_Init()
+{
+	G_relay_v2x_tx_socket = socket(AF_INET, SOCK_DGRAM, 0);
+	G_relay_v2x_rx_socket = socket(AF_INET, SOCK_DGRAM, 0);
+	if (G_relay_v2x_tx_socket < 0) {
+			return -1;
+	}else{
+		int flags = fcntl(G_relay_v2x_tx_socket, F_GETFL, 0);
+		fcntl(G_relay_v2x_tx_socket, F_SETFL, flags | O_NONBLOCK);
+		struct linger solinger = { 1, 0 };
+		setsockopt(G_relay_v2x_tx_socket, SOL_SOCKET, SO_LINGER, &solinger, sizeof(struct linger));
+	}
+	if (G_relay_v2x_rx_socket < 0) {
+		return -2;
+	}else{
+		int flags = fcntl(G_relay_v2x_rx_socket, F_GETFL, 0);
+		fcntl(G_relay_v2x_rx_socket, F_SETFL, flags | O_NONBLOCK);
+		struct linger solinger = { 1, 0 };
+		setsockopt(G_relay_v2x_rx_socket, SOL_SOCKET, SO_LINGER, &solinger, sizeof(struct linger));
+	}
+	memset(&G_relay_v2x_tx_addr, 0, sizeof(struct sockaddr_in));
+	G_relay_v2x_tx_addr.sin_family = AF_INET;
+	G_relay_v2x_tx_addr.sin_port = htons(G_relay_inno_config.relay.port_v2x_tx);
+	G_relay_v2x_tx_addr.sin_addr.s_addr = inet_addr(G_relay_inno_config.relay.gatewayip);
+
+	memset(&G_relay_v2x_rx_addr, 0, sizeof(struct sockaddr_in));
+	G_relay_v2x_rx_addr.sin_family = AF_INET;
+	G_relay_v2x_rx_addr.sin_port = htons(G_relay_inno_config.relay.port_v2x_rx);
+	G_relay_v2x_rx_addr.sin_addr.s_addr = inet_addr(G_relay_inno_config.relay.gatewayip);
+	G_relay_inno_config.relay.enable = true;
+	_DEBUG_PRINT("Success to create UDP T/Rx socket\n");
+	_DEBUG_PRINT("Tx socket: %d, Rx socket: %d\n", G_relay_v2x_tx_socket, G_relay_v2x_rx_socket);
+	_DEBUG_PRINT("Tx port: %d, Rx port: %d\n", G_relay_inno_config.relay.port_v2x_tx, G_relay_inno_config.relay.port_v2x_rx);
+	_DEBUG_PRINT("Tx IP: %s, Rx IP: %s\n", G_relay_inno_config.relay.gatewayip, G_relay_inno_config.relay.gatewayip);
+	_DEBUG_PRINT("Tx socket addr: %s:%d, Rx socket addr: %s:%d\n", inet_ntoa(G_relay_v2x_tx_addr.sin_addr), ntohs(G_relay_v2x_tx_addr.sin_port), inet_ntoa(G_relay_v2x_rx_addr.sin_addr), ntohs(G_relay_v2x_rx_addr.sin_port));
+	return 0;
 }

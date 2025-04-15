@@ -3,6 +3,7 @@
 #include "relay_config.h"
 
 static void RELAY_INNO_LoadCMHFFiles(const char *dir_path);
+void RELAY_INNO_ProcessSPDUCallback(Dot2ResultCode result, void *priv);
 
 
 extern int RELAY_INNO_V2X_Dot2_Security_Init()
@@ -73,10 +74,9 @@ extern int RELAY_INNO_V2X_Dot2_Security_Init()
 		}
 		if(profile.rx.verify_data == true)
 		{
-			ret = RELAY_INNO_V2X_Psid_Filter(profile.psid);
-			if (ret < 0) 
+			if(RELAY_INNO_V2X_Psid_Filter(profile.psid) == false)
 			{
-				_DEBUG_PRINT("Fail to add WSR(psid: %u) - %d\n", profile.psid, ret);
+				_DEBUG_PRINT("PSID(%u) is filtered\n", profile.psid);
 				continue;
 			}
 		}
@@ -89,10 +89,65 @@ extern int RELAY_INNO_V2X_Dot2_Security_Init()
 		}
 	}
 
+	Dot2_RegisterProcessSPDUCallback(RELAY_INNO_ProcessSPDUCallback);
+  printf("Success to initialize dot2 library\n");
+
   _DEBUG_PRINT("Success to initialize security\n");
   return 0;
 }
 
+/**
+ * @brief 특정 디렉토리에 저장되어 있는 모든 CMHF 파일들을 dot2 라이브러리에 로딩한다.
+ * @param[in] dir_path CMHF 파일들이 저장된 디렉토리 경로 (상대경로, 절대경로 모두 가능)
+ */
+static void RELAY_INNO_LoadCMHFFiles(const char *dir_path)
+{
+  _DEBUG_PRINT("Load CMHF files in %s\n", dir_path);
+
+  /*
+   * 디렉토리를 연다.
+   */
+  DIR *dir;
+  struct dirent *ent;
+  dir = opendir(dir_path);
+  assert(dir);
+
+  /*
+   * CMHF 파일의 경로가 저장될 버퍼를 할당한다.
+   */
+  size_t file_path_size = strlen(dir_path) + 128;
+  char *file_path = (char *)calloc(1, file_path_size);
+  assert(file_path);
+
+  /*
+   * 디렉토리 내 모든 CMHF 파일을 import하여 등록한다.
+   */
+  unsigned int add_cnt = 0;
+  int ret;
+  while ((ent = readdir(dir)) != NULL)
+  {
+    // 파일의 경로를 구한다. (입력된 디렉터리명과 탐색된 파일명의 결합)
+    memset(file_path, 0, file_path_size);
+    strcpy(file_path, dir_path);
+    *(file_path + strlen(dir_path)) = '/';
+    strcat(file_path, ent->d_name);
+
+    _DEBUG_PRINT("Load CMHF file(%s)\n", file_path);
+
+    // CMHF를 등록한다.
+    ret = Dot2_LoadCMHFFile(file_path);
+    if (ret < 0) {
+      _DEBUG_PRINT("Fail to load CMHF file(%s) - Dot2_LoadCMHFFile() failed: %d\n", file_path, ret);
+      continue;
+    }
+    _DEBUG_PRINT("Success to load CMHF file\n");
+    add_cnt++;
+  }
+  free(file_path);
+  closedir(dir);
+
+  _DEBUG_PRINT("Sucess to load %u CMHF files\n", add_cnt);
+}
 #if 0
 static int REALY_INNO_LoadCACertFiles(const char *dir_path)
 {
@@ -159,83 +214,3 @@ static int REALY_INNO_LoadCACertFiles(const char *dir_path)
   return 0;
 }
 #endif
-/**
- * @brief 특정 디렉토리에 저장되어 있는 모든 CMHF 파일들을 dot2 라이브러리에 로딩한다.
- * @param[in] dir_path CMHF 파일들이 저장된 디렉토리 경로 (상대경로, 절대경로 모두 가능)
- */
-static void RELAY_INNO_LoadCMHFFiles(const char *dir_path)
-{
-  _DEBUG_PRINT("Load CMHF files in %s\n", dir_path);
-
-  /*
-   * 디렉토리를 연다.
-   */
-  DIR *dir;
-  struct dirent *ent;
-  dir = opendir(dir_path);
-  assert(dir);
-
-  /*
-   * CMHF 파일의 경로가 저장될 버퍼를 할당한다.
-   */
-  size_t file_path_size = strlen(dir_path) + 128;
-  char *file_path = (char *)calloc(1, file_path_size);
-  assert(file_path);
-
-  /*
-   * 디렉토리 내 모든 CMHF 파일을 import하여 등록한다.
-   */
-  unsigned int add_cnt = 0;
-  int ret;
-  while ((ent = readdir(dir)) != NULL)
-  {
-    // 파일의 경로를 구한다. (입력된 디렉터리명과 탐색된 파일명의 결합)
-    memset(file_path, 0, file_path_size);
-    strcpy(file_path, dir_path);
-    *(file_path + strlen(dir_path)) = '/';
-    strcat(file_path, ent->d_name);
-
-    _DEBUG_PRINT("Load CMHF file(%s)\n", file_path);
-
-    // CMHF를 등록한다.
-    ret = Dot2_LoadCMHFFile(file_path);
-    if (ret < 0) {
-      _DEBUG_PRINT("Fail to load CMHF file(%s) - Dot2_LoadCMHFFile() failed: %d\n", file_path, ret);
-      continue;
-    }
-    _DEBUG_PRINT("Success to load CMHF file\n");
-    add_cnt++;
-  }
-  free(file_path);
-  closedir(dir);
-
-  _DEBUG_PRINT("Sucess to load %u CMHF files\n", add_cnt);
-}
-
-/**
- * @brief Dot2_ProccessSPDU() 호출 결과를 전달 받는 콜백함수. dot2 라이브러리에서 호출된다.
- * @param[in] result 처리결과
- * @param[in] priv 패킷파싱데이터
- */
-void RELAY_INNO_ProcessSPDUCallback(Dot2ResultCode result, void *priv)
-{
-  struct V2XPacketParseData *parsed = (struct V2XPacketParseData *)priv;
-
-  /*
-   * 서명 검증 실패
-   */
-  if (result != kDot2Result_Success) {
-    _DEBUG_PRINT("Fail to process SPDU. result is %d\n", result);
-    goto out;
-  }
-
-  /*
-   * BSM을 처리한다.
-   */
-  if (parsed->mac_wsm.wsm.psid == 32) {
-    _DEBUG_PRINT("BSM is received\n");
-  }
-
-out:
-  V2X_FreePacketParseData(parsed);
-}

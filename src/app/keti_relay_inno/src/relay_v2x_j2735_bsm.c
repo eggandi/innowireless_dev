@@ -9,21 +9,20 @@ static bool g_bsm_core_data_installed = false;
 
 static uint8_t g_msg_bsm_tx_cnt = 0; 
 static uint8_t g_temporary_id[RELAY_INNO_TEMPORARY_ID_LEN] = { 0x00, 0x01, 0x02, 0x03 }; 
-static int g_transmission = 0; // neutral
-static int g_angle = 0; 
+static int g_transmission = 7; // neutral
+static int g_angle = 127; 
 static int g_traction = 0; // unavailable
-static int g_abs = 1; // off
-static int g_scs = 2; // on
-static int g_brake_boost = 2; // on
-static int g_aux_brakes = 2; // on
+static int g_abs = 0; // off
+static int g_scs = 0; // on
+static int g_brake_boost = 0; // on
+static int g_aux_brakes = 0; // on
 static int g_wheel_brakes_unavailable = 1; // true
 static int g_wheel_brakes_left_front = 0; // false
-static int g_wheel_brakes_left_rear = 1; // true
-static int g_wheel_brakes_right_front = 2; // false
-static int g_wheel_brakes_right_rear = 3; // true
+static int g_wheel_brakes_left_rear = 0; // true
+static int g_wheel_brakes_right_front = 0; // false
+static int g_wheel_brakes_right_rear = 0; // true
 static int g_vehicle_length = 1000; 
 static int g_vehicle_width = 1001; 
-
 
 static int RELAY_INNO_BSM_SecMark(); 
 static int RELAY_INNO_BSM_Fill_CoreData(struct j2735BSMcoreData *core_ptr); 
@@ -49,7 +48,7 @@ EXTERN_API uint8_t *REPLAY_INNO_J2736_Construct_BSM(size_t *bsm_size)
 	{
 		return NULL;
 	}
-
+#if 0
 	_DEBUG_PRINT("bsm->coreData.msgCnt: %d\n", bsm->coreData.msgCnt);
 	_DEBUG_PRINT("bsm->coreData.secMark: %d\n", bsm->coreData.secMark);	
 	_DEBUG_PRINT("bsm->coreData.id: %02X %02X %02X %02X\n", bsm->coreData.id.buf[0], bsm->coreData.id.buf[1], bsm->coreData.id.buf[2], bsm->coreData.id.buf[3]);
@@ -69,7 +68,7 @@ EXTERN_API uint8_t *REPLAY_INNO_J2736_Construct_BSM(size_t *bsm_size)
 	_DEBUG_PRINT("bsm->coreData.accelSet.yaw: %d\n", bsm->coreData.accelSet.yaw);
 	_DEBUG_PRINT("bsm->coreData.size.length: %d\n", bsm->coreData.size.length);
 	_DEBUG_PRINT("bsm->coreData.size.width: %d\n", bsm->coreData.size.width);
-
+#endif
   frame->messageId = 20; // BasicSafetyMessage (per SAE j2735)
   frame->value.type = (ASN1CType *)asn1_type_j2735BasicSafetyMessage;
   frame->value.u.data = bsm;
@@ -174,7 +173,6 @@ static int RELAY_INNO_BSM_Fill_CoreData(struct j2735BSMcoreData *core_ptr)
 {
   int ret = -1;
 	struct j2735BSMcoreData *core = core_ptr;
-	printf("core_ptr: %p\n", core);
 	if(G_gnss_bsm_data->isused == true)
 	{
 		if(g_core != NULL)
@@ -182,7 +180,6 @@ static int RELAY_INNO_BSM_Fill_CoreData(struct j2735BSMcoreData *core_ptr)
 			asn1_copy_value(asn1_type_j2735BSMcoreData, core, g_core);_DEBUG_LINE
 		}
 	}
-	printf("core_ptr: %p\n", core);
 
   if(G_gnss_data->status.unavailable == FALSE)
   {

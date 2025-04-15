@@ -11,4 +11,9 @@
 		#define _DEBUG_PRINT(fmt, ...) 
 #endif // _D_DEBUG_LOG
 
+extern int G_relay_v2x_tx_socket;
+extern int G_relay_v2x_rx_socket;
+extern struct sockaddr_in G_relay_v2x_tx_addr;
+extern struct sockaddr_in G_relay_v2x_rx_addr;
+
 #endif // _D_HEADER_RELAY_INNO_EXTERN_DEFINES

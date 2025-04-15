@@ -41,9 +41,8 @@ EXTERN_API int RELAY_INNO_V2X_MSDU_Transmit(const dot3ShortMsgData *wsm_body, do
 																				G_relay_inno_config.v2x.tx_priority, 
 																				kLTEV2XHALL2ID_Broadcast, 
 																				G_relay_inno_config.v2x.tx_power);
-		tx_params = &g_last_msdu->tx_params;
 	}else{
-		memcpy(tx_params, &g_last_msdu->tx_params, sizeof(struct LTEV2XHALMSDUTxParams));
+		memcpy(&g_last_msdu->tx_params, tx_params, sizeof(struct LTEV2XHALMSDUTxParams));
 		if(wsm == NULL)
 		{	
 			struct realy_inno_wsm_header_ext_data_t ext_data = {tx_params->tx_power, G_relay_inno_config.v2x.chan_num, G_relay_inno_config.v2x.tx_datarate};
@@ -56,8 +55,47 @@ EXTERN_API int RELAY_INNO_V2X_MSDU_Transmit(const dot3ShortMsgData *wsm_body, do
 		_DEBUG_PRINT("Fail to fill MSDU - RELAY_INNO_WSM_Fill_MSDU() failed: %ld\n", msdu_size);
 		return -1;
 	}
-
 	int ret = LTEV2XHAL_TransmitMSDU(msdu, msdu_size, g_last_msdu->tx_params);
+	if(ret == 0)
+	{
+		switch(G_relay_inno_config.relay.relay_data_type)
+		{
+			case RELAY_DATA_TYPE_V2X_MPDU:
+			{
+				int udp_ret = sendto(G_relay_v2x_tx_socket, msdu, msdu_size, 0, (struct sockaddr *)&G_relay_v2x_tx_addr, sizeof(G_relay_v2x_tx_addr));
+				if(udp_ret < 0)
+				{
+					_DEBUG_PRINT("Fail to sendto - %d sendto() failed: %d\n",G_relay_inno_config.relay.relay_data_type, udp_ret);
+				}else{
+					_DEBUG_PRINT("Success to sendto - %d sendto() success: %d\n",G_relay_inno_config.relay.relay_data_type, udp_ret);
+				}
+				break;
+			}
+			case RELAY_DATA_TYPE_V2X_WSM:
+			{
+				break;
+			}	
+			case RELAY_DATA_TYPE_V2X_WSDU:
+			{
+				int udp_ret = sendto(G_relay_v2x_tx_socket, wsm->body.buf, wsm->body.len, 0, (struct sockaddr *)&G_relay_v2x_tx_addr, sizeof(G_relay_v2x_tx_addr));
+				if(udp_ret < 0)
+				{
+					_DEBUG_PRINT("Fail to sendto - %d sendto() failed: %d\n",G_relay_inno_config.relay.relay_data_type, udp_ret);
+				}else{
+					_DEBUG_PRINT("Success to sendto - %d sendto() success: %d\n",G_relay_inno_config.relay.relay_data_type, udp_ret);
+				}
+				break;
+			}	
+			case RELAY_DATA_TYPE_V2X_SSDU:
+			{
+				break;
+			}	
+			default:
+			{
+				break;
+			}
+		}
+	}
 	if(g_last_msdu->isused)
 	{
 		g_last_msdu->isfilled = true;
@@ -71,7 +109,17 @@ EXTERN_API int RELAY_INNO_V2X_MSDU_Transmit(const dot3ShortMsgData *wsm_body, do
 	}else{
 		free(msdu);
 	}	
-	
+	if(wsm->body.buf != NULL)
+	{
+		free(wsm->body.buf);
+		wsm->body.buf = NULL;
+		wsm->body.len = 0;
+	}	
+	if(wsm != NULL)
+	{
+		asn1_free_value(asn1_type_dot3ShortMsgNpdu, wsm);
+		wsm = NULL;
+	}
 	return ret;
 }
 
@@ -134,7 +182,6 @@ EXTERN_API void RELAY_INNO_WSM_Fill_Header(dot3ShortMsgNpdu **wsm_in, unsigned i
   }
 	
 	return;
-
 clear:
 	if (wsm != NULL) {
     asn1_free_value(asn1_type_dot3ShortMsgNpdu, wsm);

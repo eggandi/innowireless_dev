@@ -69,9 +69,10 @@ extern int RELAY_INNO_Config_Setup_Configuration_Read(struct relay_inno_config_t
 				fputs("----------------------------------------Relay-----------------------------------------;\n", config_fp);
 				fputs("----------------------------------------Ethernet\n", config_fp);
 				fputs("Relay_Eth_Interface_Name=\"eth0\";\n", config_fp);
-				fputs("Relay_Gateway_IP_Address=\"192.168.123.204\"\n", config_fp);
-				fputs("Relay_Port_V2X_Rx_Data=0;\n", config_fp);
-				fputs("Relay_Port_V2X_Tx_Data=0;\n", config_fp);
+				fputs("Relay_Gateway_IP_Address=\"192.168.123.104\"\n", config_fp);
+				fputs("Relay_Port_V2X_Rx_Data=27354;\n", config_fp);
+				fputs("Relay_Port_V2X_Tx_Data=27353;\n", config_fp);
+				fputs("Relay_V2X_Data_Type:3;\t\t\t(0:MPDU, 1:WSM, 2:WSM_Body(Dot2), 3:Dot2_Payload(J2735, WSA))\n", config_fp);
 				fputs("----------------------------------------GNSS\n", config_fp);
 				fputs("GNSS_Enable=1\n", config_fp);
 				fputs("GNSS_Interval=100;\n", config_fp);
@@ -79,7 +80,7 @@ extern int RELAY_INNO_Config_Setup_Configuration_Read(struct relay_inno_config_t
 
         fputs("----------------------------------------V2X-----------------------------------------;\n", config_fp);
         fputs("V2X_Operation_Type=1;\t\t\t(0:rx only, 1:trx)\n", config_fp);
-        fputs("V2X_Device_Name=\"/dev/spidev0.0\";\n", config_fp);
+        fputs("V2X_Device_Name=\"/dev/spidev1.0\";\n", config_fp);
         fputs("V2X_Dbg_Msg_Level=0;\t\t\t(0:nothing, 1:err, 2:init, 3:event, 4:message hexdump)\n", config_fp);
         fputs("V2X_Lib_Dbg_Msg_Level=0;\t\t\t(0:nothing, 1:err, 2:init, 3:event, 4:message hexdump)\n", config_fp);
 				fputs("----------------------------------------V2X-Vechicle(TBA)", config_fp);
@@ -94,7 +95,7 @@ extern int RELAY_INNO_Config_Setup_Configuration_Read(struct relay_inno_config_t
 				fputs("V2X_Tx_J2735_BSM_Enable=1;\n", config_fp);
 				fputs("V2X_Tx_J2735_BSM_PSID=32;\n", config_fp);
 				fputs("V2X_Tx_J2735_BSM_Temporary_ID=0x01020304;\n", config_fp);
-				fputs("V2X_Tx_J2735_BSM_Tx_Type=2;\t\t\t(2:Default, 0:SPS, 1:Event)\n", config_fp);
+				fputs("V2X_Tx_J2735_BSM_Tx_Type=0;\t\t\t(0:Default, 0:Ad-Hoc, 1: SPS)\n", config_fp);
 				fputs("V2X_Tx_J2735_BSM_Interval=100;\n", config_fp);
 				fputs("V2X_Tx_J2735_BSM_Priority=7;\n", config_fp);
 				//fputs("V2X_Tx_J2735_BSM_Tx_Power=;\n", config_fp);
@@ -105,12 +106,14 @@ extern int RELAY_INNO_Config_Setup_Configuration_Read(struct relay_inno_config_t
 				fputs("V2X_Rx_Enable=0;\n", config_fp);
 				fputs("V2X_Rx_Dot2_Forced_Enable=0;\n", config_fp);
 				//fputs("V2X_Rx_WSM=0;\n\t\t\t(0:Standard WSM, 1:Non-Standard Print Hexdump)", config_fp);
+				fputs("V2X_Rx_WSA_Enable=1;\n", config_fp);
 				fputs("----------------------------------------V2X-Rx-J2735-MSGs\n", config_fp);
         fputs("V2X_Rx_J2735_BSM=1;\n", config_fp);
 				fputs("V2X_Rx_J2735_SPAT=1;\n", config_fp);
 				fputs("V2X_Rx_J2735_MAP=1;\n", config_fp);
 				fputs("V2X_Rx_J2735_RTCM=1;\n", config_fp);
 				fputs("V2X_Rx_J2735_TIM=1;\n", config_fp);
+				fputs("V2X_Rx_J2735_RSA=1;\n", config_fp);
 				//fputs("V2X_Rx_J2735_PVD=0;\n", config_fp);
 
 				fputs("----------------------------------------V2X-Dot2\n", config_fp);
@@ -184,6 +187,9 @@ extern int RELAY_INNO_Config_Setup_Configuration_Read(struct relay_inno_config_t
                     }else if(strcmp(ptr_name, "Relay_Gateway_IP_Address") == 0)
 										{
 												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)relay_inno_config->relay.gatewayip);
+										}else if(strcmp(ptr_name, "Relay_V2X_Data_Type") == 0)
+										{
+												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->relay.relay_data_type);
 										}else if(strcmp(ptr_name, "Relay_Port_V2X_Rx_Data") == 0)
 										{
 												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->relay.port_v2x_rx);
@@ -268,7 +274,10 @@ extern int RELAY_INNO_Config_Setup_Configuration_Read(struct relay_inno_config_t
 										}else if(strcmp(ptr_name, "V2X_Rx_Enable") == 0)
 										{
 												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->v2x.rx.enable);
-										}	else if(strcmp(ptr_name, "V2X_Rx_Dot2_Forced_Enable") == 0)
+										}else if(strcmp(ptr_name, "V2X_Rx_WSA_Enable") == 0)
+										{
+												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->v2x.rx.wsa_enable);
+										}else if(strcmp(ptr_name, "V2X_Rx_Dot2_Forced_Enable") == 0)
 										{
 												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->v2x.rx.dot2_forced_enable);
 										}else if(strcmp(ptr_name, "V2X_Rx_J2735_BSM") == 0)
@@ -286,7 +295,11 @@ extern int RELAY_INNO_Config_Setup_Configuration_Read(struct relay_inno_config_t
 										}else if(strcmp(ptr_name, "V2X_Rx_J2735_TIM") == 0)
 										{
 												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->v2x.rx.j2735.TIM_enable);
-										}else if(strcmp(ptr_name, "V2X_Rx_J2735_PVD") == 0)	
+										}else if(strcmp(ptr_name, "V2X_Rx_J2735_RSA") == 0)
+										{
+												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->v2x.rx.j2735.RSA_enable);
+										}
+										else if(strcmp(ptr_name, "V2X_Rx_J2735_PVD") == 0)	
 										{
 												RELAY_INNO_Config_Setup_Configuration_Value_Input(type, ptr_value, value_len, (void*)&relay_inno_config->v2x.rx.j2735.PVD_enable);
 										}

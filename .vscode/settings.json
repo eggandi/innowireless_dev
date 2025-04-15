@@ -34,6 +34,7 @@
 			"ltev2x-hal-api-params.h": "c",
 			"relay-internal-system.h": "c",
 			"relay-extern-defines.h": "c",
-			"relay_v2x_rx.h": "c"
+			"relay_v2x_rx.h": "c",
+			"v2x-sw.h": "c"
 		}
 }
