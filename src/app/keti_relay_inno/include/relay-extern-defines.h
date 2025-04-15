@@ -3,10 +3,11 @@
 
 #define PROJECT_NAME "RELAY_INNO"
 #define EXTERN_API extern __attribute__((visibility("default")))
-#define _DEBUG_PRINT(fmt, ...) printf("[%s][%d]",__func__, __LINE__); printf(fmt, ##__VA_ARGS__)
+
+#define _DEBUG_PRINT(fmt, ...) if(G_relay_inno_config. printf("[%s][%d]",__func__, __LINE__); printf(fmt, ##__VA_ARGS__)
 #define _DEBUG_LINE _DEBUG_PRINT("\n");
 #define _D_DEBUG_LOG 1
-	#ifdef _D_DEBUG_LOG
+#ifdef _D_DEBUG_LOG
 	#else
 		#define _DEBUG_PRINT(fmt, ...) 
 #endif // _D_DEBUG_LOG

@@ -32,6 +32,8 @@ struct relay_inno_config_realy_t
 struct relay_inno_config_t {
     bool config_enable;
     char config_path[512];
+		char config_file_name[256];
+		int config_debug_level;
 		
 		struct relay_inno_config_realy_t relay;
     struct relay_inno_config_v2x_t v2x;

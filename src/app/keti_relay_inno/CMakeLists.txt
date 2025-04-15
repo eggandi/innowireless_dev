@@ -2,6 +2,7 @@ SET(TARGET_APP keti_relay_inno)
 SET(TARGET_ROOT ${CMAKE_CURRENT_LIST_DIR})
 
 add_executable(${TARGET_APP})
+target_compile_definitions(${TARGET_APP} PRIVATE DEBUG_LOG=1)
 
 target_compile_options(${TARGET_APP} PRIVATE -Wall -Werror)
 target_include_directories(${TARGET_APP} PRIVATE ${TARGET_ROOT}/include)
@@ -31,6 +32,9 @@ target_sources(${TARGET_APP} PRIVATE    src/relay_main.c
 																				src/relay_v2x_rx.c
 )
 
+
+
 set(OUTPUT_DIR ${PROJECT_ROOT}/output/bin)
 add_custom_command(TARGET ${TARGET_APP} PRE_BUILD  COMMAND ${CMAKE_COMMAND} -E remove ${OUTPUT_DIR}/${TARGET_APP})
 add_custom_command(TARGET ${TARGET_APP} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${TARGET_APP} ${OUTPUT_DIR}/ )
+

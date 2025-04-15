@@ -64,6 +64,9 @@ extern int RELAY_INNO_Config_Setup_Configuration_Read(struct relay_inno_config_t
         }
 
         fputs("Configuration_Enable=0x01;\n", config_fp);
+				fputs("Configuration_Path=\"./\";\n", config_fp);
+				fputs("Configuration_File_Name=\"keti_relay_inno.conf\";\n", config_fp);
+				fputs("Configuration_Log_Level=0;\033[20G(0:No, 1:Error, 2:Event, 3:All)(TBA)\n", config_fp);
         fputs("\n", config_fp);
 
 				fputs("----------------------------------------Relay-----------------------------------------;\n", config_fp);
@@ -72,20 +75,20 @@ extern int RELAY_INNO_Config_Setup_Configuration_Read(struct relay_inno_config_t
 				fputs("Relay_Gateway_IP_Address=\"192.168.123.104\"\n", config_fp);
 				fputs("Relay_Port_V2X_Rx_Data=27354;\n", config_fp);
 				fputs("Relay_Port_V2X_Tx_Data=27353;\n", config_fp);
-				fputs("Relay_V2X_Data_Type:3;\t\t\t(0:MPDU, 1:WSM, 2:WSM_Body(Dot2), 3:Dot2_Payload(J2735, WSA))\n", config_fp);
+				fputs("Relay_V2X_Data_Type:3;\033[65G(0:MPDU, 1:WSM, 2:WSM_Body(Dot2), 3:Dot2_Payload(J2735, WSA))\n", config_fp);
 				fputs("----------------------------------------GNSS\n", config_fp);
 				fputs("GNSS_Enable=1\n", config_fp);
 				fputs("GNSS_Interval=100;\n", config_fp);
 				fputs("\n", config_fp);
 
         fputs("----------------------------------------V2X-----------------------------------------;\n", config_fp);
-        fputs("V2X_Operation_Type=1;\t\t\t(0:rx only, 1:trx)\n", config_fp);
+        fputs("V2X_Operation_Type=1;\033[65G(0:rx only, 1:trx)\n", config_fp);
         fputs("V2X_Device_Name=\"/dev/spidev1.0\";\n", config_fp);
-        fputs("V2X_Dbg_Msg_Level=0;\t\t\t(0:nothing, 1:err, 2:init, 3:event, 4:message hexdump)\n", config_fp);
-        fputs("V2X_Lib_Dbg_Msg_Level=0;\t\t\t(0:nothing, 1:err, 2:init, 3:event, 4:message hexdump)\n", config_fp);
+        fputs("V2X_Dbg_Msg_Level=0;\033[65G(0:nothing, 1:err, 2:init, 3:event, 4:message hexdump)\n", config_fp);
+        fputs("V2X_Lib_Dbg_Msg_Level=0;\033[65G(0:nothing, 1:err, 2:init, 3:event, 4:message hexdump)\n", config_fp);
 				fputs("----------------------------------------V2X-Vechicle(TBA)", config_fp);
 				fputs("----------------------------------------V2X-Tx\n", config_fp);
-        fputs("V2X_Tx_Type=0;\t\t\t(0:SPS, 1:Event)\n", config_fp);
+        fputs("V2X_Tx_Type=0;\033[65G(0:SPS, 1:Event)\n", config_fp);
         fputs("V2X_Tx_Channel_Num=183;\n", config_fp);
         fputs("V2X_Tx_DataRate=12;\n", config_fp);
         fputs("V2X_Tx_Power=20; \n", config_fp);
@@ -95,7 +98,7 @@ extern int RELAY_INNO_Config_Setup_Configuration_Read(struct relay_inno_config_t
 				fputs("V2X_Tx_J2735_BSM_Enable=1;\n", config_fp);
 				fputs("V2X_Tx_J2735_BSM_PSID=32;\n", config_fp);
 				fputs("V2X_Tx_J2735_BSM_Temporary_ID=0x01020304;\n", config_fp);
-				fputs("V2X_Tx_J2735_BSM_Tx_Type=0;\t\t\t(0:Default, 0:Ad-Hoc, 1: SPS)\n", config_fp);
+				fputs("V2X_Tx_J2735_BSM_Tx_Type=0;\033[65G(0:Default, 0:Ad-Hoc, 1: SPS)\n", config_fp);
 				fputs("V2X_Tx_J2735_BSM_Interval=100;\n", config_fp);
 				fputs("V2X_Tx_J2735_BSM_Priority=7;\n", config_fp);
 				//fputs("V2X_Tx_J2735_BSM_Tx_Power=;\n", config_fp);
@@ -105,7 +108,7 @@ extern int RELAY_INNO_Config_Setup_Configuration_Read(struct relay_inno_config_t
 				fputs("----------------------------------------V2X-Rx\n", config_fp);
 				fputs("V2X_Rx_Enable=0;\n", config_fp);
 				fputs("V2X_Rx_Dot2_Forced_Enable=0;\n", config_fp);
-				//fputs("V2X_Rx_WSM=0;\n\t\t\t(0:Standard WSM, 1:Non-Standard Print Hexdump)", config_fp);
+				//fputs("V2X_Rx_WSM=0;\n\033[65G(0:Standard WSM, 1:Non-Standard Print Hexdump)", config_fp);
 				fputs("V2X_Rx_WSA_Enable=1;\n", config_fp);
 				fputs("----------------------------------------V2X-Rx-J2735-MSGs\n", config_fp);
         fputs("V2X_Rx_J2735_BSM=1;\n", config_fp);

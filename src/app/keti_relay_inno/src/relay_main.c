@@ -65,7 +65,7 @@ int main()//(int argc, char *argv[])
 
 	LTEV2XHAL_RegisterCallbackProcessMSDU(RELAY_INNO_V2X_RxMSDUCallback);
 	_DEBUG_PRINT("V2X RxMSDU callback registered.\n");
-	
+
 	struct itimerspec itval;
   int msec = 10;
   
@@ -94,7 +94,9 @@ int main()//(int argc, char *argv[])
 		time_tick_10ms = (time_tick_10ms + 1) % 0x10000000;
     if(ret < 0)
     {
-      _DEBUG_PRINT("read");
+      _DEBUG_PRINT("timerfd read failed.\n");
+			close(time_fd);
+			goto out;
       break;
     }
 		if(time_tick_10ms % (G_relay_inno_config.v2x.j2735.bsm.interval / 10) == 0)
