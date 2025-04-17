@@ -2,7 +2,7 @@ SET(TARGET_APP keti_relay_inno)
 SET(TARGET_ROOT ${CMAKE_CURRENT_LIST_DIR})
 
 add_executable(${TARGET_APP})
-target_compile_definitions(${TARGET_APP} PRIVATE DEBUG_LOG=1)
+target_compile_definitions(${TARGET_APP} PRIVATE _D_DEBUG_LOG=1)
 
 target_compile_options(${TARGET_APP} PRIVATE -Wall -Werror)
 target_include_directories(${TARGET_APP} PRIVATE ${TARGET_ROOT}/include)

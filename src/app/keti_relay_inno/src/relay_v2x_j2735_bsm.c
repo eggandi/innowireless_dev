@@ -24,8 +24,20 @@ static int g_wheel_brakes_right_rear = 0; // true
 static int g_vehicle_length = 1000; 
 static int g_vehicle_width = 1001; 
 
+#define RELAY_INNO_MAX_PATHHISTORYPOINT 1
+struct relay_inno_PathHistoryPointList_t
+{
+	j2735PathHistoryPoint tab[RELAY_INNO_MAX_PATHHISTORYPOINT];
+  size_t count;
+};
+static struct relay_inno_PathHistoryPointList_t g_pathhistorypointlistlist = {.count = 0};
+
 static int RELAY_INNO_BSM_SecMark(); 
 static int RELAY_INNO_BSM_Fill_CoreData(struct j2735BSMcoreData *core_ptr); 
+static int RELAY_INNO_BSM_Fill_PartII(struct j2735PartIIcontent_1 *partII_ptr);
+static size_t RELAY_INNO_BSM_Push_Pathhistroty();
+static size_t RELAY_INNO_BSM_Move_Pathhistroty();
+
 
 /** 
  * @brief BSM을 생성한다.([j2736 Frame[BSM Data]])
@@ -79,6 +91,7 @@ EXTERN_API uint8_t *REPLAY_INNO_J2736_Construct_BSM(size_t *bsm_size)
     _DEBUG_PRINT("Fail to encode BSM - asn1_uper_encode() failed\n");
     goto out;
   }else{
+		g_pathhistorypointlistlist.count = RELAY_INNO_BSM_Push_Pathhistroty();
 		g_msg_bsm_tx_cnt = (g_msg_bsm_tx_cnt + 1) % 128;
 	}
 out:
@@ -86,6 +99,7 @@ out:
 	{ 
 		asn1_free_value(asn1_type_j2735MessageFrame, frame); 
 	}
+	
   return buf;
 }
 /**
@@ -115,8 +129,46 @@ EXTERN_API int RELAY_INNO_J2735_Fill_BSM(struct j2735BasicSafetyMessage *bsm)
 		_DEBUG_PRINT("Fail to fill BSM core data\n");
 		return ret;
 	}
-	bsm->partII_option = false;
-	bsm->regional_option = false;
+	bsm->partII_option = true;
+	if(bsm->partII_option == true)
+	{
+		bsm->partII.count = 3;
+		bsm->partII.tab = asn1_mallocz(asn1_get_size(asn1_type_j2735PartIIcontent_1) * bsm->partII.count);
+		for(size_t count_num = 0; count_num < bsm->partII.count; count_num++)
+		{
+			struct j2735PartIIcontent_1 *tab_now = bsm->partII.tab + count_num;
+			if(tab_now != NULL)
+			{
+				tab_now->partII_Id = count_num;
+				ret = RELAY_INNO_BSM_Fill_PartII(tab_now);
+			}
+		}
+	}
+
+	bsm->regional_option = true;
+	if(bsm->regional_option == true)
+	{
+		bsm->regional.count = 1;
+		bsm->regional.tab = asn1_mallocz(asn1_get_size(asn1_type_j2735RegionalExtension_1) * bsm->regional.count);
+		for(size_t count_num = 0; count_num < bsm->regional.count; count_num++)
+		{
+  		j2735RegionalExtension_1 *tab_now = bsm->regional.tab + count_num;
+			if(tab_now != NULL)
+			{
+				tab_now->regionId = 4;
+				tab_now->regExtValue.type = NULL;
+				tab_now->regExtValue.u.octet_string.len = 6;
+				tab_now->regExtValue.u.octet_string.buf = asn1_mallocz(tab_now->regExtValue.u.octet_string.len);
+				if(tab_now->regExtValue.u.octet_string.buf == NULL)
+				{
+					return -1;
+				}
+				memcpy(tab_now->regExtValue.u.octet_string.buf, (uint8_t []){0x1C, 0x00, 0x00, 0x00, 0x00, 0x00}, tab_now->regExtValue.u.octet_string.len);	
+			}
+
+			
+		}
+	}
 	return 0;
 }
 
@@ -177,10 +229,9 @@ static int RELAY_INNO_BSM_Fill_CoreData(struct j2735BSMcoreData *core_ptr)
 	{
 		if(g_core != NULL)
 		{
-			asn1_copy_value(asn1_type_j2735BSMcoreData, core, g_core);_DEBUG_LINE
+			asn1_copy_value(asn1_type_j2735BSMcoreData, core, g_core);
 		}
 	}
-
   if(G_gnss_data->status.unavailable == FALSE)
   {
     core->msgCnt = RELAY_INNO_INCREASE_BSM_MSG_CNT(g_msg_bsm_tx_cnt);
@@ -224,6 +275,127 @@ static int RELAY_INNO_BSM_Fill_CoreData(struct j2735BSMcoreData *core_ptr)
   return ret;
 }
 
+
+
+/**
+ * @brief BSM Part II를 채운다.
+ * @param[out] partII_ptr 값을 채울 BSM Part II 인코딩정보 구조체 포인터
+ * @retval 0: 성공
+ */
+static int RELAY_INNO_BSM_Fill_PartII(struct j2735PartIIcontent_1 *partII_ptr)
+{
+	switch(partII_ptr->partII_Id)
+	{
+		case 0: // VehicleSafetyExtensions
+		{
+			partII_ptr->partII_Value.type = (ASN1CType *)asn1_type_j2735VehicleSafetyExtensions;
+			partII_ptr->partII_Value.u.data = asn1_mallocz_value(asn1_type_j2735VehicleSafetyExtensions);
+			struct j2735VehicleSafetyExtensions *data_ptr = partII_ptr->partII_Value.u.data;
+			if(g_pathhistorypointlistlist.count > 0)
+			{
+				data_ptr->pathHistory_option = true;
+				if(data_ptr->pathHistory_option == true)
+				{
+					memset(&data_ptr->pathHistory, 0x00, sizeof(struct j2735PathHistory));
+					data_ptr->pathHistory.crumbData.count = g_pathhistorypointlistlist.count;
+					data_ptr->pathHistory.crumbData.tab = asn1_mallocz(asn1_get_size(asn1_type_j2735PathHistoryPoint) * data_ptr->pathHistory.crumbData.count);
+					for(size_t count_num = 0; count_num < g_pathhistorypointlistlist.count; count_num++)
+					{
+						j2735PathHistoryPoint *pathhistorypoint = &g_pathhistorypointlistlist.tab[count_num];
+						j2735PathHistoryPoint *pathhistorypoint_ptr = data_ptr->pathHistory.crumbData.tab + count_num;
+						asn1_copy_value(asn1_type_j2735PathHistoryPoint, pathhistorypoint_ptr, pathhistorypoint);
+					}
+					
+				}
+			}
+			if(data_ptr->pathPrediction_option == true)
+			{
+				data_ptr->pathPrediction.radiusOfCurve = 32767; // straight path
+				data_ptr->pathPrediction.confidence = 4095; // unavailable
+			}
+			break;
+		}
+		case 1: // SpecialVehicleExtensions
+		{
+			partII_ptr->partII_Value.type = (ASN1CType *)asn1_type_j2735SpecialVehicleExtensions;
+			partII_ptr->partII_Value.u.data = asn1_mallocz_value(asn1_type_j2735SpecialVehicleExtensions);
+			struct j2735SpecialVehicleExtensions *data_ptr = partII_ptr->partII_Value.u.data;
+			data_ptr->description_option = true; // unavailable
+			memset(&data_ptr->description, 0x00, sizeof(struct j2735EventDescription));
+			data_ptr->description.typeEvent = 0; // ITIScodes
+			data_ptr->trailers_option = false;
+			break;
+		}
+		case 2: // SupplementalVehicleExtensions
+		{
+			partII_ptr->partII_Value.type = (ASN1CType *)asn1_type_j2735SupplementalVehicleExtensions;
+			partII_ptr->partII_Value.u.data = asn1_mallocz_value(asn1_type_j2735SupplementalVehicleExtensions);
+			struct j2735SupplementalVehicleExtensions *data_ptr = partII_ptr->partII_Value.u.data;
+			data_ptr->classDetails_option = true; // unavailable
+			memset(&data_ptr->classDetails, 0x00, sizeof(struct j2735VehicleClassification));
+			data_ptr->classDetails.role_option = true;
+			data_ptr->classDetails.role = j2735BasicVehicleRole_basicVehicle;
+			data_ptr->classDetails.vehicleType_option = true; 
+			data_ptr->classDetails.vehicleType = j2735VehicleGroupAffected_cars;
+			break;
+		}
+	}
+	return 0;
+}
+
+/**
+ * @brief PathHistoryPoint를 이동한다.
+ * @retval PathHistoryPoint 개수(디버깅용)
+ */
+static size_t RELAY_INNO_BSM_Move_Pathhistroty()
+{
+	if(g_pathhistorypointlistlist.count == RELAY_INNO_MAX_PATHHISTORYPOINT)
+	{
+		// PathHistoryPoint의 개수가 최대 개수에 도달했을 경우, 가장 오래된 PathHistoryPoint를 삭제한다.
+		g_pathhistorypointlistlist.count--;
+		memset(&g_pathhistorypointlistlist.tab[g_pathhistorypointlistlist.count], 0x00, sizeof(j2735PathHistoryPoint));
+		// PathHistoryPoint 개수가 0이면 PathHistoryPoint를 이동할 필요가 없으므로 return 한다.
+		if(g_pathhistorypointlistlist.count == 0)
+		{
+			return 0;
+		}
+	}
+	// PathHistoryPoint를 이동한다.
+	for(size_t count_num = g_pathhistorypointlistlist.count; 0 < count_num; count_num--)
+	{
+		memcpy(&g_pathhistorypointlistlist.tab[count_num - 1], &g_pathhistorypointlistlist.tab[count_num] , sizeof(j2735PathHistoryPoint));
+	}
+	memset(&g_pathhistorypointlistlist.tab[0], 0x00, sizeof(j2735PathHistoryPoint));
+	return g_pathhistorypointlistlist.count;
+}
+
+/**
+ * @brief PathHistoryPoint를 추가한다.
+ * @retval PathHistoryPoint 개수
+ */
+static size_t RELAY_INNO_BSM_Push_Pathhistroty()
+{
+	RELAY_INNO_BSM_Move_Pathhistroty();
+	j2735PathHistoryPoint *pathhistorypoint = &g_pathhistorypointlistlist.tab[0];
+	pathhistorypoint->latOffset = -131072; // unavailable
+	pathhistorypoint->lonOffset = -131072; // unavailable
+	pathhistorypoint->elevationOffset = -2047; // unavailable
+	pathhistorypoint->timeOffset = 65534;
+	pathhistorypoint->speed_option = true;
+	pathhistorypoint->speed = (j2735Speed)*G_gnss_bsm_data->speed; // Units of 0.02 m/s
+	pathhistorypoint->posAccuracy_option = false;
+	pathhistorypoint->heading_option = true;
+	pathhistorypoint->heading = (j2735Heading)*G_gnss_bsm_data->heading; // Units of 0.1 degrees
+	g_pathhistorypointlistlist.count++;
+	return g_pathhistorypointlistlist.count;
+}
+
+
+/**
+ * @brief BSM 메시지 카운트를 증가시킨다.
+ * @param[in] msg_cnt BSM 메시지 카운트
+ * @retval BSM 메시지 카운트
+ */
 static int RELAY_INNO_BSM_SecMark()
 {
 	struct timespec tv;
