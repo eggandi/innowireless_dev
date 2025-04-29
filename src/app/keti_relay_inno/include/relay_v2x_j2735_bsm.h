@@ -18,6 +18,7 @@ struct relay_inno_config_v2x_j2735_bsm_t
 {
 		bool enable; ///< BSM 송신 여부
 		bool rx_enable;
+		bool tx_forced; ///< BSM 송신 강제 여부
 		unsigned int psid;
 		uint8_t msg_cnt; ///< BSM 메시지 카운트
 		uint8_t temporary_id[RELAY_INNO_TEMPORARY_ID_LEN]; ///< BSM 임시 ID

@@ -132,7 +132,7 @@ EXTERN_API int RELAY_INNO_V2X_MSDU_Transmit(const dot3ShortMsgData *wsm_body, do
 EXTERN_API void RELAY_INNO_WSM_Fill_Header(dot3ShortMsgNpdu **wsm_in, unsigned int tx_psid, struct realy_inno_wsm_header_ext_data_t *ext_data)
 {
   int ret;
-  _DEBUG_PRINT("Transmit WSM\n");
+  _DEBUG_PRINT("Transmit WSM Start\n");
   /*
    * 입력된 WSM 구조체가 비어있으면 WSM을 구조체를 생성해서 반환
    */
@@ -189,6 +189,7 @@ clear:
   }
 	return;
 }
+
 /**
  * @brief WSM 헤더를 해제한다.
  * @param[in] wsm WSM 헤더 포인터
@@ -201,6 +202,7 @@ EXTERN_API void RELAY_INNO_WSM_Free_Header(dot3ShortMsgNpdu *wsm)
 	}
 	return;
 }
+
 /**
  * @brief WSM 송신 파라미터를 설정한다.
  * @details 송신 파라미터는 다음과 같다.

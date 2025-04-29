@@ -67,11 +67,7 @@ void RELAY_INNO_ProcessSPDUCallback(Dot2ResultCode result, void *priv)
 		}
 		printf("\n");
 	}
-	_DEBUG_PRINT("parsed->pkt_size: %ld\n", parsed->pkt_size);
-	_DEBUG_PRINT("parsed->wsm_size: %ld\n", parsed->wsm_size);
-	_DEBUG_PRINT("parsed->ssdu_size: %ld\n", parsed->ssdu_size);
-	_DEBUG_PRINT("parsed->wsdu_size: %ld\n", parsed->wsdu_size);
-
+	
 	int ret = 0;
 	switch(G_relay_inno_config.relay.relay_data_type)
 	{

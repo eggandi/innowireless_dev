@@ -24,7 +24,7 @@ static int g_wheel_brakes_right_rear = 0; // true
 static int g_vehicle_length = 1000; 
 static int g_vehicle_width = 1001; 
 
-#define RELAY_INNO_MAX_PATHHISTORYPOINT 1
+#define RELAY_INNO_MAX_PATHHISTORYPOINT 23
 struct relay_inno_PathHistoryPointList_t
 {
 	j2735PathHistoryPoint tab[RELAY_INNO_MAX_PATHHISTORYPOINT];
@@ -120,6 +120,9 @@ EXTERN_API int RELAY_INNO_J2735_Fill_BSM(struct j2735BasicSafetyMessage *bsm)
 		{
 			_DEBUG_PRINT("Fail to install BSM core data\n");
 			return ret;
+		}else{
+			printf("BSM core data installed\n");
+			return -1;
 		}
 	}
 
@@ -232,7 +235,7 @@ static int RELAY_INNO_BSM_Fill_CoreData(struct j2735BSMcoreData *core_ptr)
 			asn1_copy_value(asn1_type_j2735BSMcoreData, core, g_core);
 		}
 	}
-  if(G_gnss_data->status.unavailable == FALSE)
+  if(G_gnss_data->status.unavailable == FALSE || G_relay_inno_config.v2x.j2735.bsm.tx_forced == true) 	
   {
     core->msgCnt = RELAY_INNO_INCREASE_BSM_MSG_CNT(g_msg_bsm_tx_cnt);
     core->id.len = RELAY_INNO_TEMPORARY_ID_LEN;
@@ -245,6 +248,7 @@ static int RELAY_INNO_BSM_Fill_CoreData(struct j2735BSMcoreData *core_ptr)
       memcpy(core->id.buf, g_temporary_id, RELAY_INNO_TEMPORARY_ID_LEN);
 		}
 		core->secMark = RELAY_INNO_BSM_SecMark();
+		g_core->secMark = core->secMark;
 		core->transmission = g_transmission;
 		core->angle = g_angle;
 		core->brakes.traction = g_traction;
@@ -304,6 +308,14 @@ static int RELAY_INNO_BSM_Fill_PartII(struct j2735PartIIcontent_1 *partII_ptr)
 						j2735PathHistoryPoint *pathhistorypoint = &g_pathhistorypointlistlist.tab[count_num];
 						j2735PathHistoryPoint *pathhistorypoint_ptr = data_ptr->pathHistory.crumbData.tab + count_num;
 						asn1_copy_value(asn1_type_j2735PathHistoryPoint, pathhistorypoint_ptr, pathhistorypoint);
+						pathhistorypoint_ptr->latOffset = g_core->lat - pathhistorypoint->latOffset;
+						pathhistorypoint_ptr->lonOffset = g_core->Long - pathhistorypoint->lonOffset;
+						pathhistorypoint_ptr->elevationOffset = g_core->elev - pathhistorypoint->elevationOffset;
+						pathhistorypoint_ptr->timeOffset = g_core->secMark - pathhistorypoint->timeOffset;
+						if(pathhistorypoint_ptr->timeOffset < 0)
+						{
+							pathhistorypoint_ptr->timeOffset += 65535;
+						}
 					}
 					
 				}
@@ -363,7 +375,7 @@ static size_t RELAY_INNO_BSM_Move_Pathhistroty()
 	// PathHistoryPoint를 이동한다.
 	for(size_t count_num = g_pathhistorypointlistlist.count; 0 < count_num; count_num--)
 	{
-		memcpy(&g_pathhistorypointlistlist.tab[count_num - 1], &g_pathhistorypointlistlist.tab[count_num] , sizeof(j2735PathHistoryPoint));
+		memcpy(&g_pathhistorypointlistlist.tab[count_num], &g_pathhistorypointlistlist.tab[count_num - 1] , sizeof(j2735PathHistoryPoint));
 	}
 	memset(&g_pathhistorypointlistlist.tab[0], 0x00, sizeof(j2735PathHistoryPoint));
 	return g_pathhistorypointlistlist.count;
@@ -377,10 +389,10 @@ static size_t RELAY_INNO_BSM_Push_Pathhistroty()
 {
 	RELAY_INNO_BSM_Move_Pathhistroty();
 	j2735PathHistoryPoint *pathhistorypoint = &g_pathhistorypointlistlist.tab[0];
-	pathhistorypoint->latOffset = -131072; // unavailable
-	pathhistorypoint->lonOffset = -131072; // unavailable
-	pathhistorypoint->elevationOffset = -2047; // unavailable
-	pathhistorypoint->timeOffset = 65534;
+	pathhistorypoint->latOffset = g_core->lat; // unavailable
+	pathhistorypoint->lonOffset = g_core->Long; // unavailable
+	pathhistorypoint->elevationOffset = g_core->elev; // unavailable
+	pathhistorypoint->timeOffset = g_core->secMark;
 	pathhistorypoint->speed_option = true;
 	pathhistorypoint->speed = (j2735Speed)*G_gnss_bsm_data->speed; // Units of 0.02 m/s
 	pathhistorypoint->posAccuracy_option = false;
@@ -406,5 +418,5 @@ static int RELAY_INNO_BSM_SecMark()
 	ret += tm->tm_sec * 1000;
 	ret += (int)((tv.tv_nsec)/1000000);
 	
-	return ret % 65536;
+	return ret % 65535;
 }

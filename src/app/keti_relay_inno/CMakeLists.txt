@@ -10,7 +10,6 @@ target_include_directories(${TARGET_APP} PRIVATE ${PROJECT_ROOT}/depend/v2x-sw/i
 
 target_link_options(${TARGET_APP} PRIVATE -Wl,--hash-style=gnu -Wl,--as-needed -Wl,--allow-shlib-undefined)
 target_link_directories(${TARGET_APP} PRIVATE ${PROJECT_ROOT}/depend/v2x-sw/lib/kvh1a)
-target_link_directories(${TARGET_APP} PRIVATE ${PROJECT_ROOT}/depend/v2x-sw/lib/kvh1a)
 
 
 target_link_libraries(${TARGET_APP} PRIVATE pthread rt gps m)
@@ -31,8 +30,6 @@ target_sources(${TARGET_APP} PRIVATE    src/relay_main.c
 																				src/relay_v2x_dot2.c
 																				src/relay_v2x_rx.c
 )
-
-
 
 set(OUTPUT_DIR ${PROJECT_ROOT}/output/bin)
 add_custom_command(TARGET ${TARGET_APP} PRE_BUILD  COMMAND ${CMAKE_COMMAND} -E remove ${OUTPUT_DIR}/${TARGET_APP})
