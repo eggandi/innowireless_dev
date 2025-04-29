@@ -61,6 +61,8 @@ EXTERN_API uint8_t *REPLAY_INNO_J2736_Construct_BSM(size_t *bsm_size)
 		return NULL;
 	}
 #if 0
+	_DEBUG_PRINT("G_gnss_data->status.is_healthy:%d\n", G_gnss_data->status.is_healthy);
+	_DEBUG_PRINT("G_gnss_data->status.unavailable:%d\n", G_gnss_data->status.unavailable);
 	_DEBUG_PRINT("bsm->coreData.msgCnt: %d\n", bsm->coreData.msgCnt);
 	_DEBUG_PRINT("bsm->coreData.secMark: %d\n", bsm->coreData.secMark);	
 	_DEBUG_PRINT("bsm->coreData.id: %02X %02X %02X %02X\n", bsm->coreData.id.buf[0], bsm->coreData.id.buf[1], bsm->coreData.id.buf[2], bsm->coreData.id.buf[3]);
@@ -91,7 +93,11 @@ EXTERN_API uint8_t *REPLAY_INNO_J2736_Construct_BSM(size_t *bsm_size)
     _DEBUG_PRINT("Fail to encode BSM - asn1_uper_encode() failed\n");
     goto out;
   }else{
-		g_pathhistorypointlistlist.count = RELAY_INNO_BSM_Push_Pathhistroty();
+		if(1)
+		{
+			g_pathhistorypointlistlist.count = RELAY_INNO_BSM_Push_Pathhistroty();	
+		}
+		
 		g_msg_bsm_tx_cnt = (g_msg_bsm_tx_cnt + 1) % 128;
 	}
 out:
@@ -316,6 +322,13 @@ static int RELAY_INNO_BSM_Fill_PartII(struct j2735PartIIcontent_1 *partII_ptr)
 						{
 							pathhistorypoint_ptr->timeOffset += 65535;
 						}
+						#if 0
+						printf("count_num: %ld\n", count_num);
+						printf("latOffset: %d - %d = %d\n", g_core->lat, pathhistorypoint->latOffset, pathhistorypoint_ptr->latOffset);
+						printf("lonOffset: %d - %d = %d\n", g_core->Long, pathhistorypoint->lonOffset, pathhistorypoint_ptr->lonOffset);
+						printf("elevationOffset: %d - %d = %d\n", g_core->elev, pathhistorypoint->elevationOffset, pathhistorypoint_ptr->elevationOffset);
+						printf("timeOffset: %d - %d = %d\n", g_core->secMark, pathhistorypoint->timeOffset, pathhistorypoint_ptr->timeOffset);
+						#endif
 					}
 					
 				}
@@ -393,11 +406,38 @@ static size_t RELAY_INNO_BSM_Push_Pathhistroty()
 	pathhistorypoint->lonOffset = g_core->Long; // unavailable
 	pathhistorypoint->elevationOffset = g_core->elev; // unavailable
 	pathhistorypoint->timeOffset = g_core->secMark;
-	pathhistorypoint->speed_option = true;
-	pathhistorypoint->speed = (j2735Speed)*G_gnss_bsm_data->speed; // Units of 0.02 m/s
+	#if 0
+	if(0 < *G_gnss_bsm_data->speed && *G_gnss_bsm_data->speed < 8191)
+	{
+		pathhistorypoint->speed_option = true;
+		pathhistorypoint->speed = (j2735Speed)*G_gnss_bsm_data->speed; // Units of 0.02 m/s
+	}else{
+		pathhistorypoint->speed_option = false;
+		pathhistorypoint->speed = 8191;//(j2735Speed)*G_gnss_bsm_data->speed; // Units of 0.02 m/s
+	}
 	pathhistorypoint->posAccuracy_option = false;
-	pathhistorypoint->heading_option = true;
-	pathhistorypoint->heading = (j2735Heading)*G_gnss_bsm_data->heading; // Units of 0.1 degrees
+	if(0 < *G_gnss_bsm_data->heading && *G_gnss_bsm_data->heading < 240)
+	{
+		pathhistorypoint->heading_option = true;
+		pathhistorypoint->heading = (j2735Heading)*G_gnss_bsm_data->heading; // Units of 0.1 degrees
+	}else{
+		pathhistorypoint->heading_option = false;
+		pathhistorypoint->heading = 0;//(j2735Heading)*G_gnss_bsm_data->heading; // Units of 0.1 degrees
+	}
+	#else
+	pathhistorypoint->speed_option = false;
+	pathhistorypoint->heading_option = false;
+
+	#endif
+
+	_DEBUG_PRINT("pathhistorypoint->speed_option:%d\n", pathhistorypoint->speed_option);
+	_DEBUG_PRINT("pathhistorypoint->speed:%d\n", pathhistorypoint->speed);
+	_DEBUG_PRINT("G_gnss_bsm_data->speed:%d\n", *G_gnss_bsm_data->speed);
+
+	_DEBUG_PRINT("pathhistorypoint->heading_option:%d\n", pathhistorypoint->heading_option);
+	_DEBUG_PRINT("pathhistorypoint->heading:%d\n", pathhistorypoint->heading);
+	_DEBUG_PRINT("G_gnss_bsm_data->heading:%d\n", *G_gnss_bsm_data->heading);
+
 	g_pathhistorypointlistlist.count++;
 	return g_pathhistorypointlistlist.count;
 }

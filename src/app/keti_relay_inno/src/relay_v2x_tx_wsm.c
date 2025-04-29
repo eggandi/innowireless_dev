@@ -56,7 +56,7 @@ EXTERN_API int RELAY_INNO_V2X_MSDU_Transmit(const dot3ShortMsgData *wsm_body, do
 		return -1;
 	}
 	int ret = LTEV2XHAL_TransmitMSDU(msdu, msdu_size, g_last_msdu->tx_params);
-	if(ret == 0)
+	if(ret == 0 || ret == -7)
 	{
 		switch(G_relay_inno_config.relay.relay_data_type)
 		{

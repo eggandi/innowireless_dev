@@ -1032,3 +1032,490 @@ events:
       
       
 ...
+
+---
+events:
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CMakeDetermineSystem.cmake:233 (message)"
+      - "CMakeLists.txt:1 (project)"
+    message: |
+      The system is: Linux - 6.6.36-lts-next - aarch64
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/usr/share/cmake-3.28/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/usr/share/cmake-3.28/Modules/CMakeDetermineCCompiler.cmake:123 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:1 (project)"
+    message: |
+      Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+      Compiler: /usr/bin/cc 
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      
+      
+      Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "a.out"
+      
+      The C compiler identification is GNU, found in:
+        /root/ws_relay/CMakeFiles/3.28.3/CompilerIdC/a.out
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/usr/share/cmake-3.28/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/usr/share/cmake-3.28/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:1 (project)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+      Compiler: /usr/bin/c++ 
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      
+      
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.out"
+      
+      The CXX compiler identification is GNU, found in:
+        /root/ws_relay/CMakeFiles/3.28.3/CompilerIdCXX/a.out
+      
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CMakeDetermineCompilerABI.cmake:57 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:1 (project)"
+    checks:
+      - "Detecting C compiler ABI info"
+    directories:
+      source: "/root/ws_relay/CMakeFiles/CMakeScratch/TryCompile-2gST3Y"
+      binary: "/root/ws_relay/CMakeFiles/CMakeScratch/TryCompile-2gST3Y"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+    buildResult:
+      variable: "CMAKE_C_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: '/root/ws_relay/CMakeFiles/CMakeScratch/TryCompile-2gST3Y'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/make -f Makefile cmTC_81fd9/fast
+        /usr/bin/make  -f CMakeFiles/cmTC_81fd9.dir/build.make CMakeFiles/cmTC_81fd9.dir/build
+        make[1]: Entering directory '/root/ws_relay/CMakeFiles/CMakeScratch/TryCompile-2gST3Y'
+        Building C object CMakeFiles/cmTC_81fd9.dir/CMakeCCompilerABI.c.o
+        /usr/bin/cc   -v -o CMakeFiles/cmTC_81fd9.dir/CMakeCCompilerABI.c.o -c /usr/share/cmake-3.28/Modules/CMakeCCompilerABI.c
+        Using built-in specs.
+        COLLECT_GCC=/usr/bin/cc
+        Target: aarch64-poky-linux
+        Configured with: ../../../../../../work-shared/gcc-13.3.0-r0/gcc-13.3.0/configure --build=x86_64-linux --host=aarch64-poky-linux --target=aarch64-poky-linux --prefix=/usr --exec_prefix=/usr --bindir=/usr/bin --sbindir=/usr/sbin --libexecdir=/usr/libexec --datadir=/usr/share --sysconfdir=/etc --sharedstatedir=/com --localstatedir=/var --libdir=/usr/lib --includedir=/usr/include --oldincludedir=/usr/include --infodir=/usr/share/info --mandir=/usr/share/man --disable-silent-rules --disable-dependency-tracking --with-libtool-sysroot=/ --with-gnu-ld --enable-shared --enable-languages=c,c++ --enable-threads=posix --enable-multilib --enable-default-pie --enable-c99 --enable-long-long --enable-symvers=gnu --enable-libstdcxx-pch --program-prefix=aarch64-poky-linux- --without-local-prefix --disable-install-libiberty --disable-libssp --enable-libitm --enable-lto --disable-bootstrap --with-system-zlib --with-linker-hash-style=gnu --enable-linker-build-id --with-ppl=no --with-cloog=no --enable-checking=release --enable-cheaders=c_global --without-isl --with-build-sysroot=/ --disable-static --enable-nls --with-glibc-version=2.28 --enable-initfini-array --enable-__cxa_atexit
+        Thread model: posix
+        Supported LTO compression algorithms: zlib zstd
+        gcc version 13.3.0 (GCC) 
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_81fd9.dir/CMakeCCompilerABI.c.o' '-c' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'CMakeFiles/cmTC_81fd9.dir/'
+         /usr/libexec/gcc/aarch64-poky-linux/13.3.0/cc1 -quiet -v /usr/share/cmake-3.28/Modules/CMakeCCompilerABI.c -quiet -dumpdir CMakeFiles/cmTC_81fd9.dir/ -dumpbase CMakeCCompilerABI.c.c -dumpbase-ext .c -mlittle-endian -mabi=lp64 -version -o /tmp/ccSdPKR6.s
+        GNU C17 (GCC) version 13.3.0 (aarch64-poky-linux)
+        	compiled by GNU C version 13.3.0, GMP version 6.3.0, MPFR version 4.2.1, MPC version 1.3.1, isl version none
+        GGC heuristics: --param ggc-min-expand=89 --param ggc-min-heapsize=111992
+        ignoring nonexistent directory "/usr/local/include"
+        ignoring nonexistent directory "/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../../aarch64-poky-linux/include"
+        #include "..." search starts here:
+        #include <...> search starts here:
+         /usr/lib/gcc/aarch64-poky-linux/13.3.0/include
+         /usr/lib/aarch64-poky-linux/13.3.0/include
+         /usr/lib/gcc/aarch64-poky-linux/13.3.0/include-fixed
+         /usr/include
+        End of search list.
+        Compiler executable checksum: 140e2018be6eeb89e6f6ddcb493f03db
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_81fd9.dir/CMakeCCompilerABI.c.o' '-c' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'CMakeFiles/cmTC_81fd9.dir/'
+         /usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../../aarch64-poky-linux/bin/as -v -EL -mabi=lp64 -o CMakeFiles/cmTC_81fd9.dir/CMakeCCompilerABI.c.o /tmp/ccSdPKR6.s
+        GNU assembler version 2.42.0 (aarch64-poky-linux) using BFD version (GNU Binutils) 2.42.0.20240716
+        COMPILER_PATH=/usr/libexec/gcc/aarch64-poky-linux/13.3.0/:/usr/libexec/gcc/aarch64-poky-linux/13.3.0/:/usr/libexec/gcc/aarch64-poky-linux/:/usr/lib/gcc/aarch64-poky-linux/13.3.0/:/usr/lib/gcc/aarch64-poky-linux/:/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../../aarch64-poky-linux/bin/
+        LIBRARY_PATH=/usr/lib/gcc/aarch64-poky-linux/13.3.0/:/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../aarch64-poky-linux/13.3.0/:/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../:/usr/lib/aarch64-poky-linux/13.3.0/:/usr/lib/:/usr/lib/aarch64-poky-linux/13.3.0/:/usr/lib/
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_81fd9.dir/CMakeCCompilerABI.c.o' '-c' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'CMakeFiles/cmTC_81fd9.dir/CMakeCCompilerABI.c.'
+        Linking C executable cmTC_81fd9
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_81fd9.dir/link.txt --verbose=1
+        /usr/bin/cc  -v -rdynamic CMakeFiles/cmTC_81fd9.dir/CMakeCCompilerABI.c.o -o cmTC_81fd9 
+        Using built-in specs.
+        COLLECT_GCC=/usr/bin/cc
+        COLLECT_LTO_WRAPPER=/usr/libexec/gcc/aarch64-poky-linux/13.3.0/lto-wrapper
+        Target: aarch64-poky-linux
+        Configured with: ../../../../../../work-shared/gcc-13.3.0-r0/gcc-13.3.0/configure --build=x86_64-linux --host=aarch64-poky-linux --target=aarch64-poky-linux --prefix=/usr --exec_prefix=/usr --bindir=/usr/bin --sbindir=/usr/sbin --libexecdir=/usr/libexec --datadir=/usr/share --sysconfdir=/etc --sharedstatedir=/com --localstatedir=/var --libdir=/usr/lib --includedir=/usr/include --oldincludedir=/usr/include --infodir=/usr/share/info --mandir=/usr/share/man --disable-silent-rules --disable-dependency-tracking --with-libtool-sysroot=/ --with-gnu-ld --enable-shared --enable-languages=c,c++ --enable-threads=posix --enable-multilib --enable-default-pie --enable-c99 --enable-long-long --enable-symvers=gnu --enable-libstdcxx-pch --program-prefix=aarch64-poky-linux- --without-local-prefix --disable-install-libiberty --disable-libssp --enable-libitm --enable-lto --disable-bootstrap --with-system-zlib --with-linker-hash-style=gnu --enable-linker-build-id --with-ppl=no --with-cloog=no --enable-checking=release --enable-cheaders=c_global --without-isl --with-build-sysroot=/ --disable-static --enable-nls --with-glibc-version=2.28 --enable-initfini-array --enable-__cxa_atexit
+        Thread model: posix
+        Supported LTO compression algorithms: zlib zstd
+        gcc version 13.3.0 (GCC) 
+        COMPILER_PATH=/usr/libexec/gcc/aarch64-poky-linux/13.3.0/:/usr/libexec/gcc/aarch64-poky-linux/13.3.0/:/usr/libexec/gcc/aarch64-poky-linux/:/usr/lib/gcc/aarch64-poky-linux/13.3.0/:/usr/lib/gcc/aarch64-poky-linux/:/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../../aarch64-poky-linux/bin/
+        LIBRARY_PATH=/usr/lib/gcc/aarch64-poky-linux/13.3.0/:/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../aarch64-poky-linux/13.3.0/:/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../:/usr/lib/aarch64-poky-linux/13.3.0/:/usr/lib/:/usr/lib/aarch64-poky-linux/13.3.0/:/usr/lib/
+        COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_81fd9' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'cmTC_81fd9.'
+         /usr/libexec/gcc/aarch64-poky-linux/13.3.0/collect2 -plugin /usr/libexec/gcc/aarch64-poky-linux/13.3.0/liblto_plugin.so -plugin-opt=/usr/libexec/gcc/aarch64-poky-linux/13.3.0/lto-wrapper -plugin-opt=-fresolution=/tmp/cc6YUSNJ.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr --hash-style=gnu -export-dynamic -dynamic-linker /usr/lib/ld-linux-aarch64.so.1 -X -EL -maarch64linux -pie -o cmTC_81fd9 /usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../Scrt1.o /usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../crti.o /usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../aarch64-poky-linux/13.3.0/crtbeginS.o -L/usr/lib/gcc/aarch64-poky-linux/13.3.0 -L/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../aarch64-poky-linux/13.3.0 -L/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../.. -L/usr/lib/aarch64-poky-linux/13.3.0 -L/usr/lib/aarch64-poky-linux/13.3.0 CMakeFiles/cmTC_81fd9.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../aarch64-poky-linux/13.3.0/crtendS.o /usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../crtn.o
+        COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_81fd9' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'cmTC_81fd9.'
+        make[1]: Leaving directory '/root/ws_relay/CMakeFiles/CMakeScratch/TryCompile-2gST3Y'
+        
+      exitCode: 0
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CMakeDetermineCompilerABI.cmake:127 (message)"
+      - "/usr/share/cmake-3.28/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:1 (project)"
+    message: |
+      Parsed C implicit include dir info: rv=done
+        found start of include info
+        found start of implicit include info
+          add: [/usr/lib/gcc/aarch64-poky-linux/13.3.0/include]
+          add: [/usr/lib/aarch64-poky-linux/13.3.0/include]
+          add: [/usr/lib/gcc/aarch64-poky-linux/13.3.0/include-fixed]
+          add: [/usr/include]
+        end of search list found
+        collapse include dir [/usr/lib/gcc/aarch64-poky-linux/13.3.0/include] ==> [/usr/lib/gcc/aarch64-poky-linux/13.3.0/include]
+        collapse include dir [/usr/lib/aarch64-poky-linux/13.3.0/include] ==> [/usr/lib/aarch64-poky-linux/13.3.0/include]
+        collapse include dir [/usr/lib/gcc/aarch64-poky-linux/13.3.0/include-fixed] ==> [/usr/lib/gcc/aarch64-poky-linux/13.3.0/include-fixed]
+        collapse include dir [/usr/include] ==> [/usr/include]
+        implicit include dirs: [/usr/lib/gcc/aarch64-poky-linux/13.3.0/include;/usr/lib/aarch64-poky-linux/13.3.0/include;/usr/lib/gcc/aarch64-poky-linux/13.3.0/include-fixed;/usr/include]
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CMakeDetermineCompilerABI.cmake:159 (message)"
+      - "/usr/share/cmake-3.28/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:1 (project)"
+    message: |
+      Parsed C implicit link information:
+        link line regex: [^( *|.*[/\\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
+        ignore line: [Change Dir: '/root/ws_relay/CMakeFiles/CMakeScratch/TryCompile-2gST3Y']
+        ignore line: []
+        ignore line: [Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/make -f Makefile cmTC_81fd9/fast]
+        ignore line: [/usr/bin/make  -f CMakeFiles/cmTC_81fd9.dir/build.make CMakeFiles/cmTC_81fd9.dir/build]
+        ignore line: [make[1]: Entering directory '/root/ws_relay/CMakeFiles/CMakeScratch/TryCompile-2gST3Y']
+        ignore line: [Building C object CMakeFiles/cmTC_81fd9.dir/CMakeCCompilerABI.c.o]
+        ignore line: [/usr/bin/cc   -v -o CMakeFiles/cmTC_81fd9.dir/CMakeCCompilerABI.c.o -c /usr/share/cmake-3.28/Modules/CMakeCCompilerABI.c]
+        ignore line: [Using built-in specs.]
+        ignore line: [COLLECT_GCC=/usr/bin/cc]
+        ignore line: [Target: aarch64-poky-linux]
+        ignore line: [Configured with: ../../../../../../work-shared/gcc-13.3.0-r0/gcc-13.3.0/configure --build=x86_64-linux --host=aarch64-poky-linux --target=aarch64-poky-linux --prefix=/usr --exec_prefix=/usr --bindir=/usr/bin --sbindir=/usr/sbin --libexecdir=/usr/libexec --datadir=/usr/share --sysconfdir=/etc --sharedstatedir=/com --localstatedir=/var --libdir=/usr/lib --includedir=/usr/include --oldincludedir=/usr/include --infodir=/usr/share/info --mandir=/usr/share/man --disable-silent-rules --disable-dependency-tracking --with-libtool-sysroot=/ --with-gnu-ld --enable-shared --enable-languages=c,c++ --enable-threads=posix --enable-multilib --enable-default-pie --enable-c99 --enable-long-long --enable-symvers=gnu --enable-libstdcxx-pch --program-prefix=aarch64-poky-linux- --without-local-prefix --disable-install-libiberty --disable-libssp --enable-libitm --enable-lto --disable-bootstrap --with-system-zlib --with-linker-hash-style=gnu --enable-linker-build-id --with-ppl=no --with-cloog=no --enable-checking=release --enable-cheaders=c_global --without-isl --with-build-sysroot=/ --disable-static --enable-nls --with-glibc-version=2.28 --enable-initfini-array --enable-__cxa_atexit]
+        ignore line: [Thread model: posix]
+        ignore line: [Supported LTO compression algorithms: zlib zstd]
+        ignore line: [gcc version 13.3.0 (GCC) ]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_81fd9.dir/CMakeCCompilerABI.c.o' '-c' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'CMakeFiles/cmTC_81fd9.dir/']
+        ignore line: [ /usr/libexec/gcc/aarch64-poky-linux/13.3.0/cc1 -quiet -v /usr/share/cmake-3.28/Modules/CMakeCCompilerABI.c -quiet -dumpdir CMakeFiles/cmTC_81fd9.dir/ -dumpbase CMakeCCompilerABI.c.c -dumpbase-ext .c -mlittle-endian -mabi=lp64 -version -o /tmp/ccSdPKR6.s]
+        ignore line: [GNU C17 (GCC) version 13.3.0 (aarch64-poky-linux)]
+        ignore line: [	compiled by GNU C version 13.3.0  GMP version 6.3.0  MPFR version 4.2.1  MPC version 1.3.1  isl version none]
+        ignore line: [GGC heuristics: --param ggc-min-expand=89 --param ggc-min-heapsize=111992]
+        ignore line: [ignoring nonexistent directory "/usr/local/include"]
+        ignore line: [ignoring nonexistent directory "/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../../aarch64-poky-linux/include"]
+        ignore line: [#include "..." search starts here:]
+        ignore line: [#include <...> search starts here:]
+        ignore line: [ /usr/lib/gcc/aarch64-poky-linux/13.3.0/include]
+        ignore line: [ /usr/lib/aarch64-poky-linux/13.3.0/include]
+        ignore line: [ /usr/lib/gcc/aarch64-poky-linux/13.3.0/include-fixed]
+        ignore line: [ /usr/include]
+        ignore line: [End of search list.]
+        ignore line: [Compiler executable checksum: 140e2018be6eeb89e6f6ddcb493f03db]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_81fd9.dir/CMakeCCompilerABI.c.o' '-c' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'CMakeFiles/cmTC_81fd9.dir/']
+        ignore line: [ /usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../../aarch64-poky-linux/bin/as -v -EL -mabi=lp64 -o CMakeFiles/cmTC_81fd9.dir/CMakeCCompilerABI.c.o /tmp/ccSdPKR6.s]
+        ignore line: [GNU assembler version 2.42.0 (aarch64-poky-linux) using BFD version (GNU Binutils) 2.42.0.20240716]
+        ignore line: [COMPILER_PATH=/usr/libexec/gcc/aarch64-poky-linux/13.3.0/:/usr/libexec/gcc/aarch64-poky-linux/13.3.0/:/usr/libexec/gcc/aarch64-poky-linux/:/usr/lib/gcc/aarch64-poky-linux/13.3.0/:/usr/lib/gcc/aarch64-poky-linux/:/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../../aarch64-poky-linux/bin/]
+        ignore line: [LIBRARY_PATH=/usr/lib/gcc/aarch64-poky-linux/13.3.0/:/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../aarch64-poky-linux/13.3.0/:/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../:/usr/lib/aarch64-poky-linux/13.3.0/:/usr/lib/:/usr/lib/aarch64-poky-linux/13.3.0/:/usr/lib/]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_81fd9.dir/CMakeCCompilerABI.c.o' '-c' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'CMakeFiles/cmTC_81fd9.dir/CMakeCCompilerABI.c.']
+        ignore line: [Linking C executable cmTC_81fd9]
+        ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_81fd9.dir/link.txt --verbose=1]
+        ignore line: [/usr/bin/cc  -v -rdynamic CMakeFiles/cmTC_81fd9.dir/CMakeCCompilerABI.c.o -o cmTC_81fd9 ]
+        ignore line: [Using built-in specs.]
+        ignore line: [COLLECT_GCC=/usr/bin/cc]
+        ignore line: [COLLECT_LTO_WRAPPER=/usr/libexec/gcc/aarch64-poky-linux/13.3.0/lto-wrapper]
+        ignore line: [Target: aarch64-poky-linux]
+        ignore line: [Configured with: ../../../../../../work-shared/gcc-13.3.0-r0/gcc-13.3.0/configure --build=x86_64-linux --host=aarch64-poky-linux --target=aarch64-poky-linux --prefix=/usr --exec_prefix=/usr --bindir=/usr/bin --sbindir=/usr/sbin --libexecdir=/usr/libexec --datadir=/usr/share --sysconfdir=/etc --sharedstatedir=/com --localstatedir=/var --libdir=/usr/lib --includedir=/usr/include --oldincludedir=/usr/include --infodir=/usr/share/info --mandir=/usr/share/man --disable-silent-rules --disable-dependency-tracking --with-libtool-sysroot=/ --with-gnu-ld --enable-shared --enable-languages=c,c++ --enable-threads=posix --enable-multilib --enable-default-pie --enable-c99 --enable-long-long --enable-symvers=gnu --enable-libstdcxx-pch --program-prefix=aarch64-poky-linux- --without-local-prefix --disable-install-libiberty --disable-libssp --enable-libitm --enable-lto --disable-bootstrap --with-system-zlib --with-linker-hash-style=gnu --enable-linker-build-id --with-ppl=no --with-cloog=no --enable-checking=release --enable-cheaders=c_global --without-isl --with-build-sysroot=/ --disable-static --enable-nls --with-glibc-version=2.28 --enable-initfini-array --enable-__cxa_atexit]
+        ignore line: [Thread model: posix]
+        ignore line: [Supported LTO compression algorithms: zlib zstd]
+        ignore line: [gcc version 13.3.0 (GCC) ]
+        ignore line: [COMPILER_PATH=/usr/libexec/gcc/aarch64-poky-linux/13.3.0/:/usr/libexec/gcc/aarch64-poky-linux/13.3.0/:/usr/libexec/gcc/aarch64-poky-linux/:/usr/lib/gcc/aarch64-poky-linux/13.3.0/:/usr/lib/gcc/aarch64-poky-linux/:/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../../aarch64-poky-linux/bin/]
+        ignore line: [LIBRARY_PATH=/usr/lib/gcc/aarch64-poky-linux/13.3.0/:/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../aarch64-poky-linux/13.3.0/:/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../:/usr/lib/aarch64-poky-linux/13.3.0/:/usr/lib/:/usr/lib/aarch64-poky-linux/13.3.0/:/usr/lib/]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_81fd9' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'cmTC_81fd9.']
+        link line: [ /usr/libexec/gcc/aarch64-poky-linux/13.3.0/collect2 -plugin /usr/libexec/gcc/aarch64-poky-linux/13.3.0/liblto_plugin.so -plugin-opt=/usr/libexec/gcc/aarch64-poky-linux/13.3.0/lto-wrapper -plugin-opt=-fresolution=/tmp/cc6YUSNJ.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr --hash-style=gnu -export-dynamic -dynamic-linker /usr/lib/ld-linux-aarch64.so.1 -X -EL -maarch64linux -pie -o cmTC_81fd9 /usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../Scrt1.o /usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../crti.o /usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../aarch64-poky-linux/13.3.0/crtbeginS.o -L/usr/lib/gcc/aarch64-poky-linux/13.3.0 -L/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../aarch64-poky-linux/13.3.0 -L/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../.. -L/usr/lib/aarch64-poky-linux/13.3.0 -L/usr/lib/aarch64-poky-linux/13.3.0 CMakeFiles/cmTC_81fd9.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../aarch64-poky-linux/13.3.0/crtendS.o /usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../crtn.o]
+          arg [/usr/libexec/gcc/aarch64-poky-linux/13.3.0/collect2] ==> ignore
+          arg [-plugin] ==> ignore
+          arg [/usr/libexec/gcc/aarch64-poky-linux/13.3.0/liblto_plugin.so] ==> ignore
+          arg [-plugin-opt=/usr/libexec/gcc/aarch64-poky-linux/13.3.0/lto-wrapper] ==> ignore
+          arg [-plugin-opt=-fresolution=/tmp/cc6YUSNJ.res] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+          arg [-plugin-opt=-pass-through=-lc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+          arg [--build-id] ==> ignore
+          arg [--eh-frame-hdr] ==> ignore
+          arg [--hash-style=gnu] ==> ignore
+          arg [-export-dynamic] ==> ignore
+          arg [-dynamic-linker] ==> ignore
+          arg [/usr/lib/ld-linux-aarch64.so.1] ==> ignore
+          arg [-X] ==> ignore
+          arg [-EL] ==> ignore
+          arg [-maarch64linux] ==> ignore
+          arg [-pie] ==> ignore
+          arg [-o] ==> ignore
+          arg [cmTC_81fd9] ==> ignore
+          arg [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../Scrt1.o] ==> obj [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../Scrt1.o]
+          arg [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../crti.o] ==> obj [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../crti.o]
+          arg [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../aarch64-poky-linux/13.3.0/crtbeginS.o] ==> obj [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../aarch64-poky-linux/13.3.0/crtbeginS.o]
+          arg [-L/usr/lib/gcc/aarch64-poky-linux/13.3.0] ==> dir [/usr/lib/gcc/aarch64-poky-linux/13.3.0]
+          arg [-L/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../aarch64-poky-linux/13.3.0] ==> dir [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../aarch64-poky-linux/13.3.0]
+          arg [-L/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../..] ==> dir [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../..]
+          arg [-L/usr/lib/aarch64-poky-linux/13.3.0] ==> dir [/usr/lib/aarch64-poky-linux/13.3.0]
+          arg [-L/usr/lib/aarch64-poky-linux/13.3.0] ==> dir [/usr/lib/aarch64-poky-linux/13.3.0]
+          arg [CMakeFiles/cmTC_81fd9.dir/CMakeCCompilerABI.c.o] ==> ignore
+          arg [-lgcc] ==> lib [gcc]
+          arg [--push-state] ==> ignore
+          arg [--as-needed] ==> ignore
+          arg [-lgcc_s] ==> lib [gcc_s]
+          arg [--pop-state] ==> ignore
+          arg [-lc] ==> lib [c]
+          arg [-lgcc] ==> lib [gcc]
+          arg [--push-state] ==> ignore
+          arg [--as-needed] ==> ignore
+          arg [-lgcc_s] ==> lib [gcc_s]
+          arg [--pop-state] ==> ignore
+          arg [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../aarch64-poky-linux/13.3.0/crtendS.o] ==> obj [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../aarch64-poky-linux/13.3.0/crtendS.o]
+          arg [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../crtn.o] ==> obj [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../crtn.o]
+        collapse obj [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../Scrt1.o] ==> [/usr/lib/Scrt1.o]
+        collapse obj [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../crti.o] ==> [/usr/lib/crti.o]
+        collapse obj [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../aarch64-poky-linux/13.3.0/crtbeginS.o] ==> [/usr/lib/aarch64-poky-linux/13.3.0/crtbeginS.o]
+        collapse obj [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../aarch64-poky-linux/13.3.0/crtendS.o] ==> [/usr/lib/aarch64-poky-linux/13.3.0/crtendS.o]
+        collapse obj [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../crtn.o] ==> [/usr/lib/crtn.o]
+        collapse library dir [/usr/lib/gcc/aarch64-poky-linux/13.3.0] ==> [/usr/lib/gcc/aarch64-poky-linux/13.3.0]
+        collapse library dir [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../aarch64-poky-linux/13.3.0] ==> [/usr/lib/aarch64-poky-linux/13.3.0]
+        collapse library dir [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../..] ==> [/usr/lib]
+        collapse library dir [/usr/lib/aarch64-poky-linux/13.3.0] ==> [/usr/lib/aarch64-poky-linux/13.3.0]
+        collapse library dir [/usr/lib/aarch64-poky-linux/13.3.0] ==> [/usr/lib/aarch64-poky-linux/13.3.0]
+        implicit libs: [gcc;gcc_s;c;gcc;gcc_s]
+        implicit objs: [/usr/lib/Scrt1.o;/usr/lib/crti.o;/usr/lib/aarch64-poky-linux/13.3.0/crtbeginS.o;/usr/lib/aarch64-poky-linux/13.3.0/crtendS.o;/usr/lib/crtn.o]
+        implicit dirs: [/usr/lib/gcc/aarch64-poky-linux/13.3.0;/usr/lib/aarch64-poky-linux/13.3.0;/usr/lib]
+        implicit fwks: []
+      
+      
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CMakeDetermineCompilerABI.cmake:57 (try_compile)"
+      - "/usr/share/cmake-3.28/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:1 (project)"
+    checks:
+      - "Detecting CXX compiler ABI info"
+    directories:
+      source: "/root/ws_relay/CMakeFiles/CMakeScratch/TryCompile-lUige7"
+      binary: "/root/ws_relay/CMakeFiles/CMakeScratch/TryCompile-lUige7"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+    buildResult:
+      variable: "CMAKE_CXX_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: '/root/ws_relay/CMakeFiles/CMakeScratch/TryCompile-lUige7'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/make -f Makefile cmTC_f854c/fast
+        /usr/bin/make  -f CMakeFiles/cmTC_f854c.dir/build.make CMakeFiles/cmTC_f854c.dir/build
+        make[1]: Entering directory '/root/ws_relay/CMakeFiles/CMakeScratch/TryCompile-lUige7'
+        Building CXX object CMakeFiles/cmTC_f854c.dir/CMakeCXXCompilerABI.cpp.o
+        /usr/bin/c++   -v -o CMakeFiles/cmTC_f854c.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-3.28/Modules/CMakeCXXCompilerABI.cpp
+        Using built-in specs.
+        COLLECT_GCC=/usr/bin/c++
+        Target: aarch64-poky-linux
+        Configured with: ../../../../../../work-shared/gcc-13.3.0-r0/gcc-13.3.0/configure --build=x86_64-linux --host=aarch64-poky-linux --target=aarch64-poky-linux --prefix=/usr --exec_prefix=/usr --bindir=/usr/bin --sbindir=/usr/sbin --libexecdir=/usr/libexec --datadir=/usr/share --sysconfdir=/etc --sharedstatedir=/com --localstatedir=/var --libdir=/usr/lib --includedir=/usr/include --oldincludedir=/usr/include --infodir=/usr/share/info --mandir=/usr/share/man --disable-silent-rules --disable-dependency-tracking --with-libtool-sysroot=/ --with-gnu-ld --enable-shared --enable-languages=c,c++ --enable-threads=posix --enable-multilib --enable-default-pie --enable-c99 --enable-long-long --enable-symvers=gnu --enable-libstdcxx-pch --program-prefix=aarch64-poky-linux- --without-local-prefix --disable-install-libiberty --disable-libssp --enable-libitm --enable-lto --disable-bootstrap --with-system-zlib --with-linker-hash-style=gnu --enable-linker-build-id --with-ppl=no --with-cloog=no --enable-checking=release --enable-cheaders=c_global --without-isl --with-build-sysroot=/ --disable-static --enable-nls --with-glibc-version=2.28 --enable-initfini-array --enable-__cxa_atexit
+        Thread model: posix
+        Supported LTO compression algorithms: zlib zstd
+        gcc version 13.3.0 (GCC) 
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_f854c.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'CMakeFiles/cmTC_f854c.dir/'
+         /usr/libexec/gcc/aarch64-poky-linux/13.3.0/cc1plus -quiet -v -D_GNU_SOURCE /usr/share/cmake-3.28/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_f854c.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mlittle-endian -mabi=lp64 -version -o /tmp/cciDaAHl.s
+        GNU C++17 (GCC) version 13.3.0 (aarch64-poky-linux)
+        	compiled by GNU C version 13.3.0, GMP version 6.3.0, MPFR version 4.2.1, MPC version 1.3.1, isl version none
+        GGC heuristics: --param ggc-min-expand=89 --param ggc-min-heapsize=111992
+        ignoring nonexistent directory "/usr/local/include"
+        ignoring nonexistent directory "/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../../aarch64-poky-linux/include"
+        #include "..." search starts here:
+        #include <...> search starts here:
+         /usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../../include/c++/13.3.0
+         /usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../../include/c++/13.3.0/aarch64-poky-linux
+         /usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../../include/c++/13.3.0/backward
+         /usr/lib/gcc/aarch64-poky-linux/13.3.0/include
+         /usr/lib/aarch64-poky-linux/13.3.0/include
+         /usr/lib/gcc/aarch64-poky-linux/13.3.0/include-fixed
+         /usr/include
+        End of search list.
+        Compiler executable checksum: 9c912141c4a2452c45b4f148dafbcf03
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_f854c.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'CMakeFiles/cmTC_f854c.dir/'
+         /usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../../aarch64-poky-linux/bin/as -v -EL -mabi=lp64 -o CMakeFiles/cmTC_f854c.dir/CMakeCXXCompilerABI.cpp.o /tmp/cciDaAHl.s
+        GNU assembler version 2.42.0 (aarch64-poky-linux) using BFD version (GNU Binutils) 2.42.0.20240716
+        COMPILER_PATH=/usr/libexec/gcc/aarch64-poky-linux/13.3.0/:/usr/libexec/gcc/aarch64-poky-linux/13.3.0/:/usr/libexec/gcc/aarch64-poky-linux/:/usr/lib/gcc/aarch64-poky-linux/13.3.0/:/usr/lib/gcc/aarch64-poky-linux/:/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../../aarch64-poky-linux/bin/
+        LIBRARY_PATH=/usr/lib/gcc/aarch64-poky-linux/13.3.0/:/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../aarch64-poky-linux/13.3.0/:/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../:/usr/lib/aarch64-poky-linux/13.3.0/:/usr/lib/:/usr/lib/aarch64-poky-linux/13.3.0/:/usr/lib/
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_f854c.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'CMakeFiles/cmTC_f854c.dir/CMakeCXXCompilerABI.cpp.'
+        Linking CXX executable cmTC_f854c
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_f854c.dir/link.txt --verbose=1
+        /usr/bin/c++  -v -rdynamic CMakeFiles/cmTC_f854c.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_f854c 
+        Using built-in specs.
+        COLLECT_GCC=/usr/bin/c++
+        COLLECT_LTO_WRAPPER=/usr/libexec/gcc/aarch64-poky-linux/13.3.0/lto-wrapper
+        Target: aarch64-poky-linux
+        Configured with: ../../../../../../work-shared/gcc-13.3.0-r0/gcc-13.3.0/configure --build=x86_64-linux --host=aarch64-poky-linux --target=aarch64-poky-linux --prefix=/usr --exec_prefix=/usr --bindir=/usr/bin --sbindir=/usr/sbin --libexecdir=/usr/libexec --datadir=/usr/share --sysconfdir=/etc --sharedstatedir=/com --localstatedir=/var --libdir=/usr/lib --includedir=/usr/include --oldincludedir=/usr/include --infodir=/usr/share/info --mandir=/usr/share/man --disable-silent-rules --disable-dependency-tracking --with-libtool-sysroot=/ --with-gnu-ld --enable-shared --enable-languages=c,c++ --enable-threads=posix --enable-multilib --enable-default-pie --enable-c99 --enable-long-long --enable-symvers=gnu --enable-libstdcxx-pch --program-prefix=aarch64-poky-linux- --without-local-prefix --disable-install-libiberty --disable-libssp --enable-libitm --enable-lto --disable-bootstrap --with-system-zlib --with-linker-hash-style=gnu --enable-linker-build-id --with-ppl=no --with-cloog=no --enable-checking=release --enable-cheaders=c_global --without-isl --with-build-sysroot=/ --disable-static --enable-nls --with-glibc-version=2.28 --enable-initfini-array --enable-__cxa_atexit
+        Thread model: posix
+        Supported LTO compression algorithms: zlib zstd
+        gcc version 13.3.0 (GCC) 
+        COMPILER_PATH=/usr/libexec/gcc/aarch64-poky-linux/13.3.0/:/usr/libexec/gcc/aarch64-poky-linux/13.3.0/:/usr/libexec/gcc/aarch64-poky-linux/:/usr/lib/gcc/aarch64-poky-linux/13.3.0/:/usr/lib/gcc/aarch64-poky-linux/:/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../../aarch64-poky-linux/bin/
+        LIBRARY_PATH=/usr/lib/gcc/aarch64-poky-linux/13.3.0/:/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../aarch64-poky-linux/13.3.0/:/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../:/usr/lib/aarch64-poky-linux/13.3.0/:/usr/lib/:/usr/lib/aarch64-poky-linux/13.3.0/:/usr/lib/
+        COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_f854c' '-shared-libgcc' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'cmTC_f854c.'
+         /usr/libexec/gcc/aarch64-poky-linux/13.3.0/collect2 -plugin /usr/libexec/gcc/aarch64-poky-linux/13.3.0/liblto_plugin.so -plugin-opt=/usr/libexec/gcc/aarch64-poky-linux/13.3.0/lto-wrapper -plugin-opt=-fresolution=/tmp/ccd2fMCR.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr --hash-style=gnu -export-dynamic -dynamic-linker /usr/lib/ld-linux-aarch64.so.1 -X -EL -maarch64linux -pie -o cmTC_f854c /usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../Scrt1.o /usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../crti.o /usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../aarch64-poky-linux/13.3.0/crtbeginS.o -L/usr/lib/gcc/aarch64-poky-linux/13.3.0 -L/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../aarch64-poky-linux/13.3.0 -L/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../.. -L/usr/lib/aarch64-poky-linux/13.3.0 -L/usr/lib/aarch64-poky-linux/13.3.0 CMakeFiles/cmTC_f854c.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../aarch64-poky-linux/13.3.0/crtendS.o /usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../crtn.o
+        COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_f854c' '-shared-libgcc' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'cmTC_f854c.'
+        make[1]: Leaving directory '/root/ws_relay/CMakeFiles/CMakeScratch/TryCompile-lUige7'
+        
+      exitCode: 0
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CMakeDetermineCompilerABI.cmake:127 (message)"
+      - "/usr/share/cmake-3.28/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:1 (project)"
+    message: |
+      Parsed CXX implicit include dir info: rv=done
+        found start of include info
+        found start of implicit include info
+          add: [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../../include/c++/13.3.0]
+          add: [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../../include/c++/13.3.0/aarch64-poky-linux]
+          add: [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../../include/c++/13.3.0/backward]
+          add: [/usr/lib/gcc/aarch64-poky-linux/13.3.0/include]
+          add: [/usr/lib/aarch64-poky-linux/13.3.0/include]
+          add: [/usr/lib/gcc/aarch64-poky-linux/13.3.0/include-fixed]
+          add: [/usr/include]
+        end of search list found
+        collapse include dir [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../../include/c++/13.3.0] ==> [/usr/include/c++/13.3.0]
+        collapse include dir [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../../include/c++/13.3.0/aarch64-poky-linux] ==> [/usr/include/c++/13.3.0/aarch64-poky-linux]
+        collapse include dir [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../../include/c++/13.3.0/backward] ==> [/usr/include/c++/13.3.0/backward]
+        collapse include dir [/usr/lib/gcc/aarch64-poky-linux/13.3.0/include] ==> [/usr/lib/gcc/aarch64-poky-linux/13.3.0/include]
+        collapse include dir [/usr/lib/aarch64-poky-linux/13.3.0/include] ==> [/usr/lib/aarch64-poky-linux/13.3.0/include]
+        collapse include dir [/usr/lib/gcc/aarch64-poky-linux/13.3.0/include-fixed] ==> [/usr/lib/gcc/aarch64-poky-linux/13.3.0/include-fixed]
+        collapse include dir [/usr/include] ==> [/usr/include]
+        implicit include dirs: [/usr/include/c++/13.3.0;/usr/include/c++/13.3.0/aarch64-poky-linux;/usr/include/c++/13.3.0/backward;/usr/lib/gcc/aarch64-poky-linux/13.3.0/include;/usr/lib/aarch64-poky-linux/13.3.0/include;/usr/lib/gcc/aarch64-poky-linux/13.3.0/include-fixed;/usr/include]
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake-3.28/Modules/CMakeDetermineCompilerABI.cmake:159 (message)"
+      - "/usr/share/cmake-3.28/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:1 (project)"
+    message: |
+      Parsed CXX implicit link information:
+        link line regex: [^( *|.*[/\\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
+        ignore line: [Change Dir: '/root/ws_relay/CMakeFiles/CMakeScratch/TryCompile-lUige7']
+        ignore line: []
+        ignore line: [Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/make -f Makefile cmTC_f854c/fast]
+        ignore line: [/usr/bin/make  -f CMakeFiles/cmTC_f854c.dir/build.make CMakeFiles/cmTC_f854c.dir/build]
+        ignore line: [make[1]: Entering directory '/root/ws_relay/CMakeFiles/CMakeScratch/TryCompile-lUige7']
+        ignore line: [Building CXX object CMakeFiles/cmTC_f854c.dir/CMakeCXXCompilerABI.cpp.o]
+        ignore line: [/usr/bin/c++   -v -o CMakeFiles/cmTC_f854c.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-3.28/Modules/CMakeCXXCompilerABI.cpp]
+        ignore line: [Using built-in specs.]
+        ignore line: [COLLECT_GCC=/usr/bin/c++]
+        ignore line: [Target: aarch64-poky-linux]
+        ignore line: [Configured with: ../../../../../../work-shared/gcc-13.3.0-r0/gcc-13.3.0/configure --build=x86_64-linux --host=aarch64-poky-linux --target=aarch64-poky-linux --prefix=/usr --exec_prefix=/usr --bindir=/usr/bin --sbindir=/usr/sbin --libexecdir=/usr/libexec --datadir=/usr/share --sysconfdir=/etc --sharedstatedir=/com --localstatedir=/var --libdir=/usr/lib --includedir=/usr/include --oldincludedir=/usr/include --infodir=/usr/share/info --mandir=/usr/share/man --disable-silent-rules --disable-dependency-tracking --with-libtool-sysroot=/ --with-gnu-ld --enable-shared --enable-languages=c,c++ --enable-threads=posix --enable-multilib --enable-default-pie --enable-c99 --enable-long-long --enable-symvers=gnu --enable-libstdcxx-pch --program-prefix=aarch64-poky-linux- --without-local-prefix --disable-install-libiberty --disable-libssp --enable-libitm --enable-lto --disable-bootstrap --with-system-zlib --with-linker-hash-style=gnu --enable-linker-build-id --with-ppl=no --with-cloog=no --enable-checking=release --enable-cheaders=c_global --without-isl --with-build-sysroot=/ --disable-static --enable-nls --with-glibc-version=2.28 --enable-initfini-array --enable-__cxa_atexit]
+        ignore line: [Thread model: posix]
+        ignore line: [Supported LTO compression algorithms: zlib zstd]
+        ignore line: [gcc version 13.3.0 (GCC) ]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_f854c.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'CMakeFiles/cmTC_f854c.dir/']
+        ignore line: [ /usr/libexec/gcc/aarch64-poky-linux/13.3.0/cc1plus -quiet -v -D_GNU_SOURCE /usr/share/cmake-3.28/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_f854c.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mlittle-endian -mabi=lp64 -version -o /tmp/cciDaAHl.s]
+        ignore line: [GNU C++17 (GCC) version 13.3.0 (aarch64-poky-linux)]
+        ignore line: [	compiled by GNU C version 13.3.0  GMP version 6.3.0  MPFR version 4.2.1  MPC version 1.3.1  isl version none]
+        ignore line: [GGC heuristics: --param ggc-min-expand=89 --param ggc-min-heapsize=111992]
+        ignore line: [ignoring nonexistent directory "/usr/local/include"]
+        ignore line: [ignoring nonexistent directory "/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../../aarch64-poky-linux/include"]
+        ignore line: [#include "..." search starts here:]
+        ignore line: [#include <...> search starts here:]
+        ignore line: [ /usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../../include/c++/13.3.0]
+        ignore line: [ /usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../../include/c++/13.3.0/aarch64-poky-linux]
+        ignore line: [ /usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../../include/c++/13.3.0/backward]
+        ignore line: [ /usr/lib/gcc/aarch64-poky-linux/13.3.0/include]
+        ignore line: [ /usr/lib/aarch64-poky-linux/13.3.0/include]
+        ignore line: [ /usr/lib/gcc/aarch64-poky-linux/13.3.0/include-fixed]
+        ignore line: [ /usr/include]
+        ignore line: [End of search list.]
+        ignore line: [Compiler executable checksum: 9c912141c4a2452c45b4f148dafbcf03]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_f854c.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'CMakeFiles/cmTC_f854c.dir/']
+        ignore line: [ /usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../../aarch64-poky-linux/bin/as -v -EL -mabi=lp64 -o CMakeFiles/cmTC_f854c.dir/CMakeCXXCompilerABI.cpp.o /tmp/cciDaAHl.s]
+        ignore line: [GNU assembler version 2.42.0 (aarch64-poky-linux) using BFD version (GNU Binutils) 2.42.0.20240716]
+        ignore line: [COMPILER_PATH=/usr/libexec/gcc/aarch64-poky-linux/13.3.0/:/usr/libexec/gcc/aarch64-poky-linux/13.3.0/:/usr/libexec/gcc/aarch64-poky-linux/:/usr/lib/gcc/aarch64-poky-linux/13.3.0/:/usr/lib/gcc/aarch64-poky-linux/:/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../../aarch64-poky-linux/bin/]
+        ignore line: [LIBRARY_PATH=/usr/lib/gcc/aarch64-poky-linux/13.3.0/:/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../aarch64-poky-linux/13.3.0/:/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../:/usr/lib/aarch64-poky-linux/13.3.0/:/usr/lib/:/usr/lib/aarch64-poky-linux/13.3.0/:/usr/lib/]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_f854c.dir/CMakeCXXCompilerABI.cpp.o' '-c' '-shared-libgcc' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'CMakeFiles/cmTC_f854c.dir/CMakeCXXCompilerABI.cpp.']
+        ignore line: [Linking CXX executable cmTC_f854c]
+        ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_f854c.dir/link.txt --verbose=1]
+        ignore line: [/usr/bin/c++  -v -rdynamic CMakeFiles/cmTC_f854c.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_f854c ]
+        ignore line: [Using built-in specs.]
+        ignore line: [COLLECT_GCC=/usr/bin/c++]
+        ignore line: [COLLECT_LTO_WRAPPER=/usr/libexec/gcc/aarch64-poky-linux/13.3.0/lto-wrapper]
+        ignore line: [Target: aarch64-poky-linux]
+        ignore line: [Configured with: ../../../../../../work-shared/gcc-13.3.0-r0/gcc-13.3.0/configure --build=x86_64-linux --host=aarch64-poky-linux --target=aarch64-poky-linux --prefix=/usr --exec_prefix=/usr --bindir=/usr/bin --sbindir=/usr/sbin --libexecdir=/usr/libexec --datadir=/usr/share --sysconfdir=/etc --sharedstatedir=/com --localstatedir=/var --libdir=/usr/lib --includedir=/usr/include --oldincludedir=/usr/include --infodir=/usr/share/info --mandir=/usr/share/man --disable-silent-rules --disable-dependency-tracking --with-libtool-sysroot=/ --with-gnu-ld --enable-shared --enable-languages=c,c++ --enable-threads=posix --enable-multilib --enable-default-pie --enable-c99 --enable-long-long --enable-symvers=gnu --enable-libstdcxx-pch --program-prefix=aarch64-poky-linux- --without-local-prefix --disable-install-libiberty --disable-libssp --enable-libitm --enable-lto --disable-bootstrap --with-system-zlib --with-linker-hash-style=gnu --enable-linker-build-id --with-ppl=no --with-cloog=no --enable-checking=release --enable-cheaders=c_global --without-isl --with-build-sysroot=/ --disable-static --enable-nls --with-glibc-version=2.28 --enable-initfini-array --enable-__cxa_atexit]
+        ignore line: [Thread model: posix]
+        ignore line: [Supported LTO compression algorithms: zlib zstd]
+        ignore line: [gcc version 13.3.0 (GCC) ]
+        ignore line: [COMPILER_PATH=/usr/libexec/gcc/aarch64-poky-linux/13.3.0/:/usr/libexec/gcc/aarch64-poky-linux/13.3.0/:/usr/libexec/gcc/aarch64-poky-linux/:/usr/lib/gcc/aarch64-poky-linux/13.3.0/:/usr/lib/gcc/aarch64-poky-linux/:/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../../aarch64-poky-linux/bin/]
+        ignore line: [LIBRARY_PATH=/usr/lib/gcc/aarch64-poky-linux/13.3.0/:/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../aarch64-poky-linux/13.3.0/:/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../:/usr/lib/aarch64-poky-linux/13.3.0/:/usr/lib/:/usr/lib/aarch64-poky-linux/13.3.0/:/usr/lib/]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-rdynamic' '-o' 'cmTC_f854c' '-shared-libgcc' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'cmTC_f854c.']
+        link line: [ /usr/libexec/gcc/aarch64-poky-linux/13.3.0/collect2 -plugin /usr/libexec/gcc/aarch64-poky-linux/13.3.0/liblto_plugin.so -plugin-opt=/usr/libexec/gcc/aarch64-poky-linux/13.3.0/lto-wrapper -plugin-opt=-fresolution=/tmp/ccd2fMCR.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --build-id --eh-frame-hdr --hash-style=gnu -export-dynamic -dynamic-linker /usr/lib/ld-linux-aarch64.so.1 -X -EL -maarch64linux -pie -o cmTC_f854c /usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../Scrt1.o /usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../crti.o /usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../aarch64-poky-linux/13.3.0/crtbeginS.o -L/usr/lib/gcc/aarch64-poky-linux/13.3.0 -L/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../aarch64-poky-linux/13.3.0 -L/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../.. -L/usr/lib/aarch64-poky-linux/13.3.0 -L/usr/lib/aarch64-poky-linux/13.3.0 CMakeFiles/cmTC_f854c.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../aarch64-poky-linux/13.3.0/crtendS.o /usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../crtn.o]
+          arg [/usr/libexec/gcc/aarch64-poky-linux/13.3.0/collect2] ==> ignore
+          arg [-plugin] ==> ignore
+          arg [/usr/libexec/gcc/aarch64-poky-linux/13.3.0/liblto_plugin.so] ==> ignore
+          arg [-plugin-opt=/usr/libexec/gcc/aarch64-poky-linux/13.3.0/lto-wrapper] ==> ignore
+          arg [-plugin-opt=-fresolution=/tmp/ccd2fMCR.res] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+          arg [--build-id] ==> ignore
+          arg [--eh-frame-hdr] ==> ignore
+          arg [--hash-style=gnu] ==> ignore
+          arg [-export-dynamic] ==> ignore
+          arg [-dynamic-linker] ==> ignore
+          arg [/usr/lib/ld-linux-aarch64.so.1] ==> ignore
+          arg [-X] ==> ignore
+          arg [-EL] ==> ignore
+          arg [-maarch64linux] ==> ignore
+          arg [-pie] ==> ignore
+          arg [-o] ==> ignore
+          arg [cmTC_f854c] ==> ignore
+          arg [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../Scrt1.o] ==> obj [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../Scrt1.o]
+          arg [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../crti.o] ==> obj [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../crti.o]
+          arg [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../aarch64-poky-linux/13.3.0/crtbeginS.o] ==> obj [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../aarch64-poky-linux/13.3.0/crtbeginS.o]
+          arg [-L/usr/lib/gcc/aarch64-poky-linux/13.3.0] ==> dir [/usr/lib/gcc/aarch64-poky-linux/13.3.0]
+          arg [-L/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../aarch64-poky-linux/13.3.0] ==> dir [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../aarch64-poky-linux/13.3.0]
+          arg [-L/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../..] ==> dir [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../..]
+          arg [-L/usr/lib/aarch64-poky-linux/13.3.0] ==> dir [/usr/lib/aarch64-poky-linux/13.3.0]
+          arg [-L/usr/lib/aarch64-poky-linux/13.3.0] ==> dir [/usr/lib/aarch64-poky-linux/13.3.0]
+          arg [CMakeFiles/cmTC_f854c.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+          arg [-lstdc++] ==> lib [stdc++]
+          arg [-lm] ==> lib [m]
+          arg [-lgcc_s] ==> lib [gcc_s]
+          arg [-lgcc] ==> lib [gcc]
+          arg [-lc] ==> lib [c]
+          arg [-lgcc_s] ==> lib [gcc_s]
+          arg [-lgcc] ==> lib [gcc]
+          arg [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../aarch64-poky-linux/13.3.0/crtendS.o] ==> obj [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../aarch64-poky-linux/13.3.0/crtendS.o]
+          arg [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../crtn.o] ==> obj [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../crtn.o]
+        collapse obj [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../Scrt1.o] ==> [/usr/lib/Scrt1.o]
+        collapse obj [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../crti.o] ==> [/usr/lib/crti.o]
+        collapse obj [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../aarch64-poky-linux/13.3.0/crtbeginS.o] ==> [/usr/lib/aarch64-poky-linux/13.3.0/crtbeginS.o]
+        collapse obj [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../aarch64-poky-linux/13.3.0/crtendS.o] ==> [/usr/lib/aarch64-poky-linux/13.3.0/crtendS.o]
+        collapse obj [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../crtn.o] ==> [/usr/lib/crtn.o]
+        collapse library dir [/usr/lib/gcc/aarch64-poky-linux/13.3.0] ==> [/usr/lib/gcc/aarch64-poky-linux/13.3.0]
+        collapse library dir [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../../aarch64-poky-linux/13.3.0] ==> [/usr/lib/aarch64-poky-linux/13.3.0]
+        collapse library dir [/usr/lib/gcc/aarch64-poky-linux/13.3.0/../../..] ==> [/usr/lib]
+        collapse library dir [/usr/lib/aarch64-poky-linux/13.3.0] ==> [/usr/lib/aarch64-poky-linux/13.3.0]
+        collapse library dir [/usr/lib/aarch64-poky-linux/13.3.0] ==> [/usr/lib/aarch64-poky-linux/13.3.0]
+        implicit libs: [stdc++;m;gcc_s;gcc;c;gcc_s;gcc]
+        implicit objs: [/usr/lib/Scrt1.o;/usr/lib/crti.o;/usr/lib/aarch64-poky-linux/13.3.0/crtbeginS.o;/usr/lib/aarch64-poky-linux/13.3.0/crtendS.o;/usr/lib/crtn.o]
+        implicit dirs: [/usr/lib/gcc/aarch64-poky-linux/13.3.0;/usr/lib/aarch64-poky-linux/13.3.0;/usr/lib]
+        implicit fwks: []
+      
+      
+...

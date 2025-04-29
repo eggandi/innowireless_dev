@@ -31,7 +31,9 @@ EXTERN_API int RELAY_INNO_V2X_Tx_J2735_BSM(dot3ShortMsgNpdu *wsm_in)
 	struct Dot2SPDUConstructParams params;
 	struct Dot2SPDUConstructResult res;
 	memset(&params, 0, sizeof(params));
-	params.type = kDot2SPDUConstructType_Signed;
+if(G_relay_inno_config.v2x.dot2.enable == true)
+{
+	params.type = kDot2SPDUConstructType_Unsecured;
 	params.signed_data.psid = G_relay_inno_config.v2x.j2735.bsm.psid;
 	params.signed_data.signer_id_type = kDot2SignerId_Profile;
 	params.signed_data.cmh_change = false;
@@ -47,6 +49,17 @@ re_ContstructSPDU:
 		params.signed_data.signer_id_type = kDot2SignerId_Certificate;
 		params.signed_data.cmh_change = true;
 	}
+}else{
+	
+	params.type = kDot2SPDUConstructType_Signed;
+	params.signed_data.psid = G_relay_inno_config.v2x.j2735.bsm.psid;
+	params.signed_data.signer_id_type = kDot2SignerId_Self;
+	params.signed_data.cmh_change = false;
+	
+	res.ret = spdu_payload_bsm_size;
+	res.spdu = malloc(res.ret * sizeof(char));
+	memcpy(res.spdu, spdu_payload_bsm, res.ret);
+}
 
 #ifdef _USED_DOT3_LIB
 #else

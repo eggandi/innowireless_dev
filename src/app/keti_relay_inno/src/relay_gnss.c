@@ -76,6 +76,7 @@ static int RELAY_INNO_Gnss_Put_Data(struct gps_data_t *gps_data)
 	}
 	if(G_gnss_bsm_data->isused == true)
 	{
+		G_gnss_bsm_data->isused = true;
 		if (G_gnss_data->status.is_healthy == true) 
 		{
 			*G_gnss_bsm_data->lat = (G_gnss_data->lat);
@@ -93,8 +94,8 @@ static int RELAY_INNO_Gnss_Put_Data(struct gps_data_t *gps_data)
 			*G_gnss_bsm_data->lat = G_gnss_data->lat_raw;
 			*G_gnss_bsm_data->lon = G_gnss_data->lon_raw;
 			*G_gnss_bsm_data->elev = -2047;
-			*G_gnss_bsm_data->speed = 0;//G_gnss_data->speed;
-			*G_gnss_bsm_data->heading = 0;//G_gnss_data->heading;
+			*G_gnss_bsm_data->speed = G_gnss_data->speed;
+			*G_gnss_bsm_data->heading = G_gnss_data->heading;
 		}
 		*G_gnss_bsm_data->pos_accuracy.semi_major = (G_gnss_data->pos_accuracy.semi_major);
 		*G_gnss_bsm_data->pos_accuracy.semi_minor = (G_gnss_data->pos_accuracy.semi_minor);
