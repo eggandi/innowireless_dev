@@ -40,7 +40,6 @@ extern void *Pro_Buffer_Array_Init(struct buffer_array_setup_t *setup) {
 
     return g_buffer;
 }
-
 /**
  * @brief 버퍼에 데이터 추가
  * @param data 데이터
