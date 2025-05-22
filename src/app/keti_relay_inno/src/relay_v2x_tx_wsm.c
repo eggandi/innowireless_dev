@@ -1,5 +1,6 @@
 #include "relay_v2x_tx_wsm.h"
 #include "relay_config.h"
+
 static int RELAY_INNO_WSM_Fill_VarLengthNumber(int psid, dot3VarLengthNumber *to);
 static int RELAY_INNO_WSM_Header_Fill_Ext(dot3ShortMsgNpdu *wsm, enum relay_inno_wsm_ext_type_e ext_type, const struct realy_inno_wsm_header_ext_data_t *ext_data);
 EXTERN_API void _D_F_RELAY_INNO_Fill_TxPrams(struct LTEV2XHALMSDUTxParams *tx_params, ...);
@@ -96,6 +97,7 @@ EXTERN_API int RELAY_INNO_V2X_MSDU_Transmit(const dot3ShortMsgData *wsm_body, do
 			}
 		}
 	}
+	// 마지막 MSDU를 저장해 놓는 기능
 	if(g_last_msdu->isused)
 	{
 		g_last_msdu->isfilled = true;
@@ -109,12 +111,14 @@ EXTERN_API int RELAY_INNO_V2X_MSDU_Transmit(const dot3ShortMsgData *wsm_body, do
 	}else{
 		free(msdu);
 	}	
+
 	if(wsm->body.buf != NULL)
 	{
 		free(wsm->body.buf);
 		wsm->body.buf = NULL;
 		wsm->body.len = 0;
-	}	
+	}
+		
 	if(wsm != NULL)
 	{
 		asn1_free_value(asn1_type_dot3ShortMsgNpdu, wsm);

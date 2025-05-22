@@ -8,6 +8,7 @@ int G_relay_v2x_tx_socket;
 int G_relay_v2x_rx_socket;
 struct sockaddr_in G_relay_v2x_tx_addr;
 struct sockaddr_in G_relay_v2x_rx_addr;
+bool G_power_off = false;
 
 static void RELAY_INNO_Main_Signal_Set();
 static int RELAY_INNO_Main_Socket_Init();
@@ -88,6 +89,24 @@ int main()//(int argc, char *argv[])
 		_DEBUG_PRINT("Socket initialization success.\n");
 	}
 	
+	if(G_relay_inno_config.v2x.j2735.bsm.j29451_enable == true)
+	{
+		ret = RELAY_INNO_J2736_J29451_Initial();
+		if(ret < 0)
+		{
+			_DEBUG_PRINT("BSM initialization failed.\n");
+			goto out;
+		}else{
+			_DEBUG_PRINT("BSM initialization success.\n");
+		}
+		//ret = J29451_StartBSMTransmit(G_relay_inno_config.v2x.j2735.bsm.interval);
+		if (ret < 0) {
+			_DEBUG_PRINT("Fail to start BSM transmit - J29451_StartBSMTransmit() failed: %d\n", ret);
+			return -1;
+		}
+	}
+
+
   while(1)
   {
     ret = read(time_fd, &res, sizeof(res));
@@ -99,14 +118,17 @@ int main()//(int argc, char *argv[])
 			goto out;
       break;
     }
-		if(time_tick_10ms % (G_relay_inno_config.v2x.j2735.bsm.interval / 10) == 0)
+		if(G_relay_inno_config.v2x.j2735.bsm.j29451_enable == false)
 		{
-			ret = RELAY_INNO_V2X_Tx_J2735_BSM(NULL);
-			if(ret < 0)
+			if(time_tick_10ms % (G_relay_inno_config.v2x.j2735.bsm.interval / 10) == 0)
 			{
-				_DEBUG_PRINT("V2X Tx BSM failed.\n");
-			}else{
-				_DEBUG_PRINT("V2X Tx BSM success.\n");
+				ret = RELAY_INNO_V2X_Tx_J2735_BSM(NULL);
+				if(ret < 0)
+				{
+					_DEBUG_PRINT("V2X Tx BSM failed.\n");
+				}else{
+					_DEBUG_PRINT("V2X Tx BSM success.\n");
+				}
 			}
 		}
   }
@@ -134,6 +156,8 @@ static void RELAY_INNO_Main_Signal_Set()
 
 static void RELAY_INNO_Main_Signal_Handler(int signo)
 {
+	G_power_off = true;
+	sleep(1);
   switch(signo)
   {
     case SIGINT:
@@ -144,6 +168,7 @@ static void RELAY_INNO_Main_Signal_Handler(int signo)
       _DEBUG_PRINT("Signal %d received. Exit.\n", signo);
       (void)signo;
       G_relay_inno_config.v2x.tx_running = false;
+			
 			close(G_relay_v2x_tx_socket);
 			close(G_relay_v2x_rx_socket);
       exit(0);

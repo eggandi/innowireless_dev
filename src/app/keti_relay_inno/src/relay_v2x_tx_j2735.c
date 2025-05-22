@@ -19,10 +19,10 @@ EXTERN_API int RELAY_INNO_V2X_Tx_J2735_BSM(dot3ShortMsgNpdu *wsm_in)
 	{
 		//_DEBUG_PRINT("Check to transmit BSM - wsm_in is NULL. And Will make wsm.\n");
 	}
-	spdu_payload_bsm = REPLAY_INNO_J2736_Construct_BSM(&spdu_payload_bsm_size);
+	spdu_payload_bsm = RELAY_INNO_J2735_Construct_BSM(&spdu_payload_bsm_size);
 	if(spdu_payload_bsm == NULL)
 	{
-		_DEBUG_PRINT("Fail to construct BSM - REPLAY_INNO_J2736_Construct_BSM() failed\n");
+		_DEBUG_PRINT("Fail to construct BSM - RELAY_INNO_J2735_Construct_BSM() failed\n");
 		return -1;
 	}
 	/*
@@ -105,3 +105,4 @@ re_ContstructSPDU:
 #endif
 	return 0;
 }
+

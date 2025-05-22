@@ -90,7 +90,7 @@ extern int RELAY_INNO_V2X_Dot2_Security_Init()
 	}
 
 	Dot2_RegisterProcessSPDUCallback(RELAY_INNO_ProcessSPDUCallback);
-  printf("Success to initialize dot2 library\n");
+  _DEBUG_PRINT("Success to initialize dot2 library\n");
 
   _DEBUG_PRINT("Success to initialize security\n");
   return 0;

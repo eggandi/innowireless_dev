@@ -6,6 +6,7 @@
 
 #include "dot2-2016/dot2.h"
 #include "dot3-2016/dot3.h"
+#include "j29451/j29451.h"
 
 #include "ltev2x-hal/ltev2x-hal.h"
 #include "ffasn1c/ffasn1-dot2-2021.h"

@@ -1,0 +1,28 @@
+Found file ./sw_config_internal.txt
+Platform without TEE support
+Found file ./sw_config.txt
+Using default value v2x_service_broadcast_disable=1
+Using default value ivn_service_broadcast_disable=0
+Using default value log_level_host=3
+ivn_service_broadcast_disable and v2x_service_broadcast_disable will affect only server application
+GNSS device source config: internal poti disable = 1 internal baud rate = 0 internal 1Hz cycle ender = 0 internal poti type = 1 internal poti message format 1
+           external baud rate = 0 external device=1 external port = 0 external 1Hz cycle ender = 0 external poti type = 1 external poti message format 1
+GNSS device source config: offset seconds = 0
+Device and services are registered and initialized
+Device is alive
+log_reader_database_init failed, rc = 5 
+Using default value lmac_rf_config_file_location=1
+Using default value force_csk_generate=0
+Using default value log_level_device=3
+Using default value log_burst_size=10
+Using default value lmac_loopback_enable=0
+Using default value lmac_phy_loopback_enable=0
+Using default value lmac_trace_verbose=0
+Using default value swc_version=1
+Using default value lmac_ranging_enable=0
+Using default value lmac_dcc_indication_enable=1
+Using default value physical_interfaces_in_use=0
+Using default value lmac_diversity_enable=0
+Using default value lmac_tx_q_descriptors_count=8
+Using default value lmac_rx_q_descriptors_count=8
+POTI not found. Skip leap-second-change-event registration

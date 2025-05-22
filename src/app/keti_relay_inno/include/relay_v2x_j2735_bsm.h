@@ -17,6 +17,7 @@
 struct relay_inno_config_v2x_j2735_bsm_t
 {
 		bool enable; ///< BSM 송신 여부
+		bool j29451_enable;
 		bool rx_enable;
 		bool tx_forced; ///< BSM 송신 강제 여부
 		unsigned int psid;
@@ -30,7 +31,9 @@ struct relay_inno_config_v2x_j2735_bsm_t
 };
 
 #endif //?_D_HEADER_RELAY_INNO_V2X_J2735_BSM
-EXTERN_API uint8_t *REPLAY_INNO_J2736_Construct_BSM(size_t *bsm_size);
+EXTERN_API uint8_t *RELAY_INNO_J2735_Construct_BSM(size_t *bsm_size);
 EXTERN_API int RELAY_INNO_J2735_Fill_BSM(struct j2735BasicSafetyMessage *bsm);
-EXTERN_API int RELAY_INNO_BSM_Gnss_Info_Ptr_Instrall(struct j2735BSMcoreData **core_ptr);
-EXTERN_API int RELAY_INNO_BSM_Fill_VarLengthNumber(int psid, dot3VarLengthNumber *to);
+EXTERN_API int RELAY_INNO_J2735_BSM_Gnss_Info_Ptr_Instrall(struct j2735BSMcoreData **core_ptr);
+EXTERN_API int RELAY_INNO_J2735_BSM_Fill_VarLengthNumber(int psid, dot3VarLengthNumber *to);
+EXTERN_API int RELAY_INNO_J2736_J29451_Initial();
+

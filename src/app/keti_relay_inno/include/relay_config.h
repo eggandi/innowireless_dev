@@ -6,7 +6,7 @@
 #include "relay_v2x.h"
 
 #define RELAY_INNO_INITAIL_SETUP_CONFIGURAION_FILE_PATH "./"
-#define RELAY_INNO_INITAIL_SETUP_CONFIGURAION_FILE_NAME "keti_relay_inno.conf"
+#define RELAY_INNO_INITAIL_SETUP_CONFIGURAION_FILE_NAME "kRelay.conf"
 
 enum relay_inno_relay_data_type_e
 {

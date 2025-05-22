@@ -89,7 +89,7 @@ void RELAY_INNO_ProcessSPDUCallback(Dot2ResultCode result, void *priv)
 		}	
 		case RELAY_DATA_TYPE_V2X_SSDU:
 		{
-			ret = sendto(G_relay_v2x_rx_socket, parsed->ssdu, parsed->ssdu_size, 0, (struct sockaddr *)&G_relay_v2x_rx_addr, sizeof(G_relay_v2x_rx_addr));_DEBUG_LINE
+			ret = sendto(G_relay_v2x_rx_socket, parsed->ssdu, parsed->ssdu_size, 0, (struct sockaddr *)&G_relay_v2x_rx_addr, sizeof(G_relay_v2x_rx_addr));
 			break;
 		}	
 		default:

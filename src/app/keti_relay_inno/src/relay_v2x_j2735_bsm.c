@@ -4,6 +4,8 @@
 extern struct relay_inno_gnss_data_t *G_gnss_data;
 extern struct relay_inno_gnss_data_bsm_t *G_gnss_bsm_data;
 
+uint8_t G_j29451_mac_addr_arry[6];
+
 static struct j2735BSMcoreData *g_core; 
 static bool g_bsm_core_data_installed = false; 
 
@@ -30,13 +32,235 @@ struct relay_inno_PathHistoryPointList_t
 	j2735PathHistoryPoint tab[RELAY_INNO_MAX_PATHHISTORYPOINT];
   size_t count;
 };
-static struct relay_inno_PathHistoryPointList_t g_pathhistorypointlistlist = {.count = 0};
 
-static int RELAY_INNO_BSM_SecMark(); 
-static int RELAY_INNO_BSM_Fill_CoreData(struct j2735BSMcoreData *core_ptr); 
-static int RELAY_INNO_BSM_Fill_PartII(struct j2735PartIIcontent_1 *partII_ptr);
-static size_t RELAY_INNO_BSM_Push_Pathhistroty();
-static size_t RELAY_INNO_BSM_Move_Pathhistroty();
+static struct relay_inno_PathHistoryPointList_t g_pathhistorypointlistlist = {.count = 0};
+static void RELAY_INNO_J2736_J29451_Tx_Callback(const uint8_t *bsm, size_t bsm_size, bool event, bool cert_sign, bool id_change, uint8_t *addr);
+static int RELAY_INNO_J2735_J29451_RegisterTransmitFlow(J29451BSMTxInterval interval, LTEV2XHALPriority priority);
+
+static int RELAY_INNO_J2735_BSM_SecMark(); 
+static int RELAY_INNO_J2735_BSM_Fill_CoreData(struct j2735BSMcoreData *core_ptr); 
+static int RELAY_INNO_J2735_BSM_Fill_PartII(struct j2735PartIIcontent_1 *partII_ptr);
+static size_t RELAY_INNO_J2735_BSM_Push_Pathhistroty();
+static size_t RELAY_INNO_J2735_BSM_Move_Pathhistroty();
+
+/**
+ * @brief LTE-V2X 송신 플로우를 등록한다.
+ * @retval 0: 성공
+ * @retval -1: 실패
+ */
+static int RELAY_INNO_J2735_J29451_RegisterTransmitFlow(J29451BSMTxInterval interval, LTEV2XHALPriority priority)
+{
+  _DEBUG_PRINT("Preapare LTE-V2X transmit\n");
+
+  struct LTEV2XHALTxFlowParams params;
+  memset(&params, 0x00, sizeof(struct LTEV2XHALTxFlowParams));
+  params.index = kLTEV2XHALTxFLowIndex_SPS1;
+  params.interval = interval;
+  params.priority = priority;
+  params.size = kLTEV2XHALMSDUSize_Max;
+
+  int ret = LTEV2XHAL_RegisterTransmitFlow(params);
+  if (ret < 0) {
+    _DEBUG_PRINT("Fail to prepare LTE-V2X transmit - LTEV2XHAL_RegisterTransmitFlow() failed: %d\n", ret);
+    return -1;
+  }
+
+  _DEBUG_PRINT("Success to prepare LTE-V2X transmit\n");
+  return 0;
+}
+
+EXTERN_API int RELAY_INNO_J2736_J29451_Initial()
+{
+	int ret;
+	ret = J29451_Init(G_relay_inno_config.v2x.lib_dbg, G_j29451_mac_addr_arry);
+  if (ret < 0) {
+    _DEBUG_PRINT("Fail to initialize j29451 library - J29451_Init() failed: %d\n", ret);
+    return -1;
+  }
+  J29451_RegisterBSMTransmitCallback(RELAY_INNO_J2736_J29451_Tx_Callback);
+  J29451_LoadPathInfoBackupFile("./bsm_path.history"); // 백업된 Path 정보 로딩
+  _DEBUG_PRINT("Success to initialize j29451 libraries\n");
+	
+	ret = RELAY_INNO_J2735_J29451_RegisterTransmitFlow(G_relay_inno_config.v2x.j2735.bsm.interval, G_relay_inno_config.v2x.j2735.bsm.priority);
+	if (ret < 0) {
+    return -2;
+  }
+	/*
+   * BSM 필수정보를 설정한다.
+   */
+  ret = J29451_SetVehicleSize(150, 250);
+  if (ret < 0) 
+	{
+    _DEBUG_PRINT("Fail to start BSM transmit - J29451_SetVehicleSize() failed: %d\n", ret);
+    return -3;
+  }
+
+	return 0;
+}
+
+/**
+ * @brief j29451 라이브러리가 호출하는 BSM 송신 콜백함수
+ * @param[in] bsm BSM 메시지 UPER 인코딩 바이트열
+ * @param[in] bsm_size BSM 메시지의 길이
+ * @param[in] event 이벤트 발생 여부
+ * @param[in] cert_sign 인증서로 서명해야 하는지 여부
+ * @param[in] id_change ID/인증서 변경 필요 여부
+ * @param[in] addr 랜덤하게 생성된 MAC 주소. id_change=true일 경우 본 MAC 주소를 장치에 설정해야 한다.
+ */
+static void RELAY_INNO_J2736_J29451_Tx_Callback(const uint8_t *bsm, size_t bsm_size, bool event, bool cert_sign, bool id_change, uint8_t *addr)
+{
+  _DEBUG_PRINT("BSM tx callback - event: %u, cert_sign: %u, id_change: %u\n", event, cert_sign, id_change);
+
+	#if 1
+	ASN1Error ans1_err;
+	j2735MessageFrame *frame = NULL;
+	j2735BasicSafetyMessage *bsm_tmp = NULL;
+	j2735PartIIcontent_1 *tab = NULL;
+	// BSM 메시지 UPER 인코딩 바이트열을 j2735MessageFrame 구조체로 디코딩한다.
+	asn1_uper_decode((void **)&frame, asn1_type_j2735MessageFrame, bsm, bsm_size, &ans1_err);
+	if (frame == NULL) {
+		_DEBUG_PRINT("Fail to Asn1 UPER Decode[%s]\n", ans1_err.msg);
+	}else{
+			
+		// BSM 메시지 PartII에 SupplementalVehicleExtensions을 추가한다.
+		bsm_tmp = (j2735BasicSafetyMessage *)frame->value.u.data;
+		bsm_tmp->partII.count = 2;
+		j2735PartIIcontent_1 *content_tmp = (j2735PartIIcontent_1 *)(bsm_tmp->partII.tab);
+		tab = asn1_mallocz(asn1_get_size(asn1_type_j2735PartIIcontent_1) * bsm_tmp->partII.count);
+		asn1_copy_value(asn1_type_j2735PartIIcontent_1, tab, bsm_tmp->partII.tab);
+		bsm_tmp->partII.tab = tab;
+		asn1_free_value(asn1_type_j2735PartIIcontent_1, content_tmp);
+		struct j2735PartIIcontent_1 *tab_now = tab + 1;
+		if(tab_now != NULL)
+		{
+			tab_now->partII_Id = 0x02;//SupplementalVehicleExtensions
+			RELAY_INNO_J2735_BSM_Fill_PartII(tab_now);
+		}	
+	}
+	uint8_t *encoded_bsm = NULL;
+		// BSM 메시지 구조체를 다시 UPER 인코딩한다
+	size_t encoded_bsm_size = (size_t)asn1_uper_encode(&encoded_bsm, asn1_type_j2735MessageFrame, frame);
+	asn1_free_value(asn1_type_j2735MessageFrame, frame);
+	if (encoded_bsm == NULL) {
+		_DEBUG_PRINT("Fail to encode BSM - asn1_uper_encode() failed\n");
+		return;
+	}
+	#else
+		uint8_t *encoded_bsm = (uint8_t *)bsm;
+		size_t encoded_bsm_size = bsm_size;
+	#endif
+	#if 1
+  /*
+   * 필요 시 MAC 주소를 변경한다.
+   */
+  if (id_change == true) {
+    _DEBUG_PRINT("BSM tx callback - id changed - new MAC addr: "MAC_ADDR_FMT"\n", MAC_ADDR_FMT_ARGS(addr));
+    memcpy(G_j29451_mac_addr_arry, addr, MAC_ALEN);
+  }
+
+  /*
+   * Signed SPDU를 생성한다.
+   */
+  Dot2SignerIdType signer_id;
+  if (cert_sign == true) {
+    _DEBUG_PRINT("BSM tx callback - Force to sign with certificate\n");
+    signer_id = kDot2SignerId_Certificate;
+  } else {
+    signer_id = kDot2SignerId_Profile;
+  }
+	
+  struct Dot2SPDUConstructParams params;
+  struct Dot2SPDUConstructResult res;
+  memset(&params, 0, sizeof(params));
+  params.type = G_relay_inno_config.v2x.dot2.enable ? kDot2SPDUConstructType_Signed : kDot2SPDUConstructType_Unsecured;
+	params.time = 0; // SPDU 생성 시각 (어플리케이션이 0으로 설정할 경우, API 내부에서 현재시각으로 설정된다)
+  params.signed_data.psid = 32; // BSM_PSID;
+  params.signed_data.signer_id_type = signer_id;
+  params.signed_data.cmh_change = id_change;
+	
+  res = Dot2_ConstructSPDU(&params, encoded_bsm, encoded_bsm_size);
+  if (res.ret < 0) {
+		//free(encoded_bsm);
+    _DEBUG_PRINT("BSM tx callback - Dot2_ConstructSPDU() failed: %d\n", res.ret);
+    return;
+  }
+	
+  uint8_t *wsdu = res.spdu;
+	size_t wsdu_size = (size_t)res.ret;
+	LTEV2XHALPriority priority = (event == true) ? 7 : G_relay_inno_config.v2x.j2735.bsm.priority;
+  struct Dot3WSMConstructParams wsm_params;
+  memset(&wsm_params, 0, sizeof(wsm_params));
+  wsm_params.chan_num = G_relay_inno_config.v2x.chan_num;
+  wsm_params.datarate =  G_relay_inno_config.v2x.tx_datarate;
+  wsm_params.transmit_power =  G_relay_inno_config.v2x.tx_power;
+  wsm_params.psid = 32; // BSM_PSID;
+  size_t wsm_size;
+	int ret = 0;
+  uint8_t *wsm = Dot3_ConstructWSM(&wsm_params, wsdu, wsdu_size, &wsm_size, &ret);
+  if (wsm == NULL) 
+	{
+		//free(encoded_bsm);
+		free(res.spdu);
+    _DEBUG_PRINT("Fail to construct LTE-V2X WSM - Dot3_ConstructWSM() failed - %d\n", ret);
+    return;
+  }
+  _DEBUG_PRINT("Success to construct %ld-bytes LTE-V2X WSM\n", wsm_size);
+
+  /*
+   * WSM을 전송한다.
+   */
+  struct LTEV2XHALMSDUTxParams tx_params;
+  memset(&tx_params, 0x00, sizeof(struct LTEV2XHALMSDUTxParams));
+  tx_params.tx_flow_type = G_relay_inno_config.v2x.j2735.bsm.tx_type;
+  tx_params.tx_flow_index = kLTEV2XHALTxFLowIndex_SPS1;
+  tx_params.priority = priority;
+  tx_params.tx_power = G_relay_inno_config.v2x.j2735.bsm.tx_power;
+  tx_params.dst_l2_id = kLTEV2XHALL2ID_Broadcast;
+
+  ret = LTEV2XHAL_TransmitMSDU(wsm, wsm_size, tx_params);
+	if(ret == 0 || ret == -7)
+	{
+		switch(G_relay_inno_config.relay.relay_data_type)
+		{
+			case RELAY_DATA_TYPE_V2X_SSDU:
+			{
+				int udp_ret = sendto(G_relay_v2x_tx_socket, encoded_bsm, encoded_bsm_size, 0, (struct sockaddr *)&G_relay_v2x_tx_addr, sizeof(G_relay_v2x_tx_addr));
+				if(udp_ret < 0)
+				{
+					_DEBUG_PRINT("Fail to sendto - %d sendto() failed: %d\n",G_relay_inno_config.relay.relay_data_type, udp_ret);
+				}else{
+					_DEBUG_PRINT("Success to sendto - %d sendto() success: %d\n",G_relay_inno_config.relay.relay_data_type, udp_ret);
+				}
+				break;
+			}	
+			default:
+			{
+				break;
+			}
+		}
+	}
+	free(encoded_bsm);
+  free(wsm);
+	free(res.spdu);
+  // 현재 인증서가 이미 만기되었거나 다음번 BSM 서명 시에 만기될 경우에는, BSM ID 변경을 요청한다.
+  // 다음번 BSM 콜백함수가 호출될 때, id_change=true, cert_sign=true 가 전달된다.
+  if (res.cmh_expiry == true) {
+    printf("BSM tx callback - Certificate will be expired. Request to change BSM ID\n");
+    J29451_RequestBSMIDChange();
+  }
+  
+  /*
+   * Power off가 된 상태이면,
+   * BSM 전송을 중지하고 Path 정보를 백업한다.
+   */
+  if (G_power_off == true) {
+    _DEBUG_PRINT("Power off detected - stop BSM transmit and backup path info\n");
+    J29451_StopBSMTransmit();
+    J29451_SavePathInfoBackupFile("./bsm_path.history");
+		system("sync"); // 낸드 플래시 싱크 명령 강제 입력 (=전원이 꺼지기 전에 낸드플래시에 즉각 저장되도록 한다)
+  }
+	#endif
+}
 
 
 /** 
@@ -44,7 +268,7 @@ static size_t RELAY_INNO_BSM_Move_Pathhistroty();
  * @param[out] bsm_size BSM 크기
  * @retval BSM 인코딩정보 포인터
 */
-EXTERN_API uint8_t *REPLAY_INNO_J2736_Construct_BSM(size_t *bsm_size)
+EXTERN_API uint8_t *RELAY_INNO_J2735_Construct_BSM(size_t *bsm_size)
 {
 	uint8_t *buf = NULL;
   struct j2735MessageFrame *frame = NULL;
@@ -52,7 +276,7 @@ EXTERN_API uint8_t *REPLAY_INNO_J2736_Construct_BSM(size_t *bsm_size)
 
 	if (((frame = (struct j2735MessageFrame *)asn1_mallocz_value(asn1_type_j2735MessageFrame)) == NULL) ||
       ((bsm = (struct j2735BasicSafetyMessage *)asn1_mallocz_value(asn1_type_j2735BasicSafetyMessage)) == NULL)) {
-    printf("Fail to encode BSM - asn1_mallocz_value() failed\n");
+    _DEBUG_PRINT("Fail to encode BSM - asn1_mallocz_value() failed\n");
     goto out;
   }
 	
@@ -60,29 +284,7 @@ EXTERN_API uint8_t *REPLAY_INNO_J2736_Construct_BSM(size_t *bsm_size)
 	{
 		return NULL;
 	}
-#if 0
-	_DEBUG_PRINT("G_gnss_data->status.is_healthy:%d\n", G_gnss_data->status.is_healthy);
-	_DEBUG_PRINT("G_gnss_data->status.unavailable:%d\n", G_gnss_data->status.unavailable);
-	_DEBUG_PRINT("bsm->coreData.msgCnt: %d\n", bsm->coreData.msgCnt);
-	_DEBUG_PRINT("bsm->coreData.secMark: %d\n", bsm->coreData.secMark);	
-	_DEBUG_PRINT("bsm->coreData.id: %02X %02X %02X %02X\n", bsm->coreData.id.buf[0], bsm->coreData.id.buf[1], bsm->coreData.id.buf[2], bsm->coreData.id.buf[3]);
-	_DEBUG_PRINT("bsm->coreData.lat: %d\n", bsm->coreData.lat);
-	_DEBUG_PRINT("bsm->coreData.Long: %d\n", bsm->coreData.Long);
-	_DEBUG_PRINT("bsm->coreData.elev: %d\n", bsm->coreData.elev);
-	_DEBUG_PRINT("bsm->coreData.accuracy.semiMajor: %d\n", bsm->coreData.accuracy.semiMajor);
-	_DEBUG_PRINT("bsm->coreData.accuracy.semiMinor: %d\n", bsm->coreData.accuracy.semiMinor);
-	_DEBUG_PRINT("bsm->coreData.accuracy.orientation: %d\n", bsm->coreData.accuracy.orientation);
-	_DEBUG_PRINT("bsm->coreData.transmission: %d\n", bsm->coreData.transmission);
-	_DEBUG_PRINT("bsm->coreData.speed: %d\n", bsm->coreData.speed);
-	_DEBUG_PRINT("bsm->coreData.heading: %d\n", bsm->coreData.heading);
-	_DEBUG_PRINT("bsm->coreData.angle: %d\n", bsm->coreData.angle);
-	_DEBUG_PRINT("bsm->coreData.accelSet.lat: %d\n", bsm->coreData.accelSet.lat);
-	_DEBUG_PRINT("bsm->coreData.accelSet.Long: %d\n", bsm->coreData.accelSet.Long);
-	_DEBUG_PRINT("bsm->coreData.accelSet.vert: %d\n", bsm->coreData.accelSet.vert);
-	_DEBUG_PRINT("bsm->coreData.accelSet.yaw: %d\n", bsm->coreData.accelSet.yaw);
-	_DEBUG_PRINT("bsm->coreData.size.length: %d\n", bsm->coreData.size.length);
-	_DEBUG_PRINT("bsm->coreData.size.width: %d\n", bsm->coreData.size.width);
-#endif
+
   frame->messageId = 20; // BasicSafetyMessage (per SAE j2735)
   frame->value.type = (ASN1CType *)asn1_type_j2735BasicSafetyMessage;
   frame->value.u.data = bsm;
@@ -95,7 +297,7 @@ EXTERN_API uint8_t *REPLAY_INNO_J2736_Construct_BSM(size_t *bsm_size)
   }else{
 		if(1)
 		{
-			g_pathhistorypointlistlist.count = RELAY_INNO_BSM_Push_Pathhistroty();	
+			g_pathhistorypointlistlist.count = RELAY_INNO_J2735_BSM_Push_Pathhistroty();	
 		}
 		
 		g_msg_bsm_tx_cnt = (g_msg_bsm_tx_cnt + 1) % 128;
@@ -121,24 +323,24 @@ EXTERN_API int RELAY_INNO_J2735_Fill_BSM(struct j2735BasicSafetyMessage *bsm)
 	if(g_bsm_core_data_installed == false)
 	{
 		struct j2735BSMcoreData *core = NULL;
-		ret = RELAY_INNO_BSM_Gnss_Info_Ptr_Instrall(&core);
+		ret = RELAY_INNO_J2735_BSM_Gnss_Info_Ptr_Instrall(&core);
 		if(ret < 0)
 		{
 			_DEBUG_PRINT("Fail to install BSM core data\n");
 			return ret;
 		}else{
-			printf("BSM core data installed\n");
+			_DEBUG_PRINT("BSM core data installed\n");
 			return -1;
 		}
 	}
 
-	ret = RELAY_INNO_BSM_Fill_CoreData(&bsm->coreData);
+	ret = RELAY_INNO_J2735_BSM_Fill_CoreData(&bsm->coreData);
 	if(ret < 0)
 	{
 		_DEBUG_PRINT("Fail to fill BSM core data\n");
 		return ret;
 	}
-	bsm->partII_option = true;
+	bsm->partII_option = false;
 	if(bsm->partII_option == true)
 	{
 		bsm->partII.count = 3;
@@ -149,12 +351,12 @@ EXTERN_API int RELAY_INNO_J2735_Fill_BSM(struct j2735BasicSafetyMessage *bsm)
 			if(tab_now != NULL)
 			{
 				tab_now->partII_Id = count_num;
-				ret = RELAY_INNO_BSM_Fill_PartII(tab_now);
+				ret = RELAY_INNO_J2735_BSM_Fill_PartII(tab_now);
 			}
 		}
 	}
 
-	bsm->regional_option = true;
+	bsm->regional_option = false;
 	if(bsm->regional_option == true)
 	{
 		bsm->regional.count = 1;
@@ -187,7 +389,7 @@ EXTERN_API int RELAY_INNO_J2735_Fill_BSM(struct j2735BasicSafetyMessage *bsm)
  * @retval void
  * @note BSM Core 데이터의 포인터를 전달하지 않으면 내부적으로 생성된 구조체를 사용한다.
  */
-EXTERN_API int RELAY_INNO_BSM_Gnss_Info_Ptr_Instrall(struct j2735BSMcoreData **core_ptr)
+EXTERN_API int RELAY_INNO_J2735_BSM_Gnss_Info_Ptr_Instrall(struct j2735BSMcoreData **core_ptr)
 {
 	struct j2735BSMcoreData *core;
 	if(*core_ptr == NULL)
@@ -230,7 +432,7 @@ EXTERN_API int RELAY_INNO_BSM_Gnss_Info_Ptr_Instrall(struct j2735BSMcoreData **c
  * @retval 0: 성공
  * @retval -1: 실패
  */
-static int RELAY_INNO_BSM_Fill_CoreData(struct j2735BSMcoreData *core_ptr)
+static int RELAY_INNO_J2735_BSM_Fill_CoreData(struct j2735BSMcoreData *core_ptr)
 {
   int ret = -1;
 	struct j2735BSMcoreData *core = core_ptr;
@@ -253,7 +455,7 @@ static int RELAY_INNO_BSM_Fill_CoreData(struct j2735BSMcoreData *core_ptr)
     if (core->id.buf) {
       memcpy(core->id.buf, g_temporary_id, RELAY_INNO_TEMPORARY_ID_LEN);
 		}
-		core->secMark = RELAY_INNO_BSM_SecMark();
+		core->secMark = RELAY_INNO_J2735_BSM_SecMark();
 		g_core->secMark = core->secMark;
 		core->transmission = g_transmission;
 		core->angle = g_angle;
@@ -292,7 +494,7 @@ static int RELAY_INNO_BSM_Fill_CoreData(struct j2735BSMcoreData *core_ptr)
  * @param[out] partII_ptr 값을 채울 BSM Part II 인코딩정보 구조체 포인터
  * @retval 0: 성공
  */
-static int RELAY_INNO_BSM_Fill_PartII(struct j2735PartIIcontent_1 *partII_ptr)
+static int RELAY_INNO_J2735_BSM_Fill_PartII(struct j2735PartIIcontent_1 *partII_ptr)
 {
 	switch(partII_ptr->partII_Id)
 	{
@@ -323,11 +525,11 @@ static int RELAY_INNO_BSM_Fill_PartII(struct j2735PartIIcontent_1 *partII_ptr)
 							pathhistorypoint_ptr->timeOffset += 65535;
 						}
 						#if 0
-						printf("count_num: %ld\n", count_num);
-						printf("latOffset: %d - %d = %d\n", g_core->lat, pathhistorypoint->latOffset, pathhistorypoint_ptr->latOffset);
-						printf("lonOffset: %d - %d = %d\n", g_core->Long, pathhistorypoint->lonOffset, pathhistorypoint_ptr->lonOffset);
-						printf("elevationOffset: %d - %d = %d\n", g_core->elev, pathhistorypoint->elevationOffset, pathhistorypoint_ptr->elevationOffset);
-						printf("timeOffset: %d - %d = %d\n", g_core->secMark, pathhistorypoint->timeOffset, pathhistorypoint_ptr->timeOffset);
+						_DEBUG_PRINT("count_num: %ld\n", count_num);
+						_DEBUG_PRINT("latOffset: %d - %d = %d\n", g_core->lat, pathhistorypoint->latOffset, pathhistorypoint_ptr->latOffset);
+						_DEBUG_PRINT("lonOffset: %d - %d = %d\n", g_core->Long, pathhistorypoint->lonOffset, pathhistorypoint_ptr->lonOffset);
+						_DEBUG_PRINT("elevationOffset: %d - %d = %d\n", g_core->elev, pathhistorypoint->elevationOffset, pathhistorypoint_ptr->elevationOffset);
+						_DEBUG_PRINT("timeOffset: %d - %d = %d\n", g_core->secMark, pathhistorypoint->timeOffset, pathhistorypoint_ptr->timeOffset);
 						#endif
 					}
 					
@@ -372,7 +574,7 @@ static int RELAY_INNO_BSM_Fill_PartII(struct j2735PartIIcontent_1 *partII_ptr)
  * @brief PathHistoryPoint를 이동한다.
  * @retval PathHistoryPoint 개수(디버깅용)
  */
-static size_t RELAY_INNO_BSM_Move_Pathhistroty()
+static size_t RELAY_INNO_J2735_BSM_Move_Pathhistroty()
 {
 	if(g_pathhistorypointlistlist.count == RELAY_INNO_MAX_PATHHISTORYPOINT)
 	{
@@ -398,37 +600,34 @@ static size_t RELAY_INNO_BSM_Move_Pathhistroty()
  * @brief PathHistoryPoint를 추가한다.
  * @retval PathHistoryPoint 개수
  */
-static size_t RELAY_INNO_BSM_Push_Pathhistroty()
+static size_t RELAY_INNO_J2735_BSM_Push_Pathhistroty()
 {
-	RELAY_INNO_BSM_Move_Pathhistroty();
+	RELAY_INNO_J2735_BSM_Move_Pathhistroty();
 	j2735PathHistoryPoint *pathhistorypoint = &g_pathhistorypointlistlist.tab[0];
 	pathhistorypoint->latOffset = g_core->lat; // unavailable
 	pathhistorypoint->lonOffset = g_core->Long; // unavailable
 	pathhistorypoint->elevationOffset = g_core->elev; // unavailable
 	pathhistorypoint->timeOffset = g_core->secMark;
-	#if 0
-	if(0 < *G_gnss_bsm_data->speed && *G_gnss_bsm_data->speed < 8191)
+
+	ASN1Error *error = NULL;
+	pathhistorypoint->speed_option = asn1_check_constraints(asn1_type_j2735Speed, G_gnss_bsm_data->speed, error);
+	if(pathhistorypoint->speed_option)
 	{
-		pathhistorypoint->speed_option = true;
 		pathhistorypoint->speed = (j2735Speed)*G_gnss_bsm_data->speed; // Units of 0.02 m/s
 	}else{
-		pathhistorypoint->speed_option = false;
-		pathhistorypoint->speed = 8191;//(j2735Speed)*G_gnss_bsm_data->speed; // Units of 0.02 m/s
+		pathhistorypoint->speed = 0;
+		_DEBUG_PRINT("Fail to check constraints - %s\n", error->type_path);
+		_DEBUG_PRINT("Fail to check constraints - %s\n", error->msg);
 	}
-	pathhistorypoint->posAccuracy_option = false;
-	if(0 < *G_gnss_bsm_data->heading && *G_gnss_bsm_data->heading < 240)
+	pathhistorypoint->heading_option = asn1_check_constraints(asn1_type_j2735Heading, G_gnss_bsm_data->heading, error);
+	if(pathhistorypoint->heading_option)
 	{
-		pathhistorypoint->heading_option = true;
-		pathhistorypoint->heading = (j2735Heading)*G_gnss_bsm_data->heading; // Units of 0.1 degrees
+		pathhistorypoint->heading = (j2735Speed)*G_gnss_bsm_data->heading; // Units of 0.02 m/s
 	}else{
-		pathhistorypoint->heading_option = false;
-		pathhistorypoint->heading = 0;//(j2735Heading)*G_gnss_bsm_data->heading; // Units of 0.1 degrees
+		pathhistorypoint->heading = 0;
+		_DEBUG_PRINT("Fail to check constraints - %s\n", error->type_path);
+		_DEBUG_PRINT("Fail to check constraints - %s\n", error->msg);
 	}
-	#else
-	pathhistorypoint->speed_option = false;
-	pathhistorypoint->heading_option = false;
-
-	#endif
 
 	_DEBUG_PRINT("pathhistorypoint->speed_option:%d\n", pathhistorypoint->speed_option);
 	_DEBUG_PRINT("pathhistorypoint->speed:%d\n", pathhistorypoint->speed);
@@ -448,7 +647,7 @@ static size_t RELAY_INNO_BSM_Push_Pathhistroty()
  * @param[in] msg_cnt BSM 메시지 카운트
  * @retval BSM 메시지 카운트
  */
-static int RELAY_INNO_BSM_SecMark()
+static int RELAY_INNO_J2735_BSM_SecMark()
 {
 	struct timespec tv;
 	clock_gettime(CLOCK_REALTIME, &tv); 
@@ -460,3 +659,4 @@ static int RELAY_INNO_BSM_SecMark()
 	
 	return ret % 65535;
 }
+
