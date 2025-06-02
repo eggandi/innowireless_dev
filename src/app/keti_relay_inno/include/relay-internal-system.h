@@ -18,3 +18,4 @@
 #include <ifaddrs.h> // 사용된 함수: getifaddrs, freeifaddrs
 #include <getopt.h> // 사용된 함수: getopt_long, optarg, optind, 타입: option
 #include <stdarg.h> // 사용된 함수: va_list, va_start, va_end, vsnprintf, 타입: va_list
+#include <malloc.h> // 사용된 함수: va_list, va_start, va_end, vsnprintf, 타입: va_list

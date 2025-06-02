@@ -60,6 +60,7 @@ extern int RELAY_INNO_Config_Setup_Configuration_Read(struct relay_inno_config_t
         {
             printf("Failed to open config file for writing\n");
             free(config_file);
+						config_file = NULL;
             return -1;
         }
 
@@ -135,6 +136,7 @@ extern int RELAY_INNO_Config_Setup_Configuration_Read(struct relay_inno_config_t
 
         fclose(config_fp);
         free(config_file);
+				config_file = NULL;
         printf("Fill the config_file in %s/relay_inno_config.conf\n", g_config_path);
         return 0;
     }
@@ -145,6 +147,7 @@ extern int RELAY_INNO_Config_Setup_Configuration_Read(struct relay_inno_config_t
         {
             printf("Failed to open config file for reading\n");
             free(config_file);
+						config_file = NULL;
             return -1;
         }
         char str[256] = {0};
@@ -186,6 +189,7 @@ extern int RELAY_INNO_Config_Setup_Configuration_Read(struct relay_inno_config_t
                             printf("Configuration not enable.\n");
                             fclose(config_fp);
                             free(config_file);
+														config_file = NULL;
                             return -1 * __LINE__;
                         }
                     }else if(strcmp(ptr_name, "Relay_Eth_Interface_Name") == 0)
@@ -322,9 +326,13 @@ extern int RELAY_INNO_Config_Setup_Configuration_Read(struct relay_inno_config_t
         fclose(config_fp);
     }
     if(g_config_path != NULL)
-        free(g_config_path);
+		{
+      free(g_config_path);
+			g_config_path = NULL;
+		}
 
     free(config_file);
+		config_file = NULL;
     return 0;
 }
 

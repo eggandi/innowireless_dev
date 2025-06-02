@@ -16,5 +16,5 @@ extern int G_relay_v2x_rx_socket;
 extern struct sockaddr_in G_relay_v2x_tx_addr;
 extern struct sockaddr_in G_relay_v2x_rx_addr;
 extern bool G_power_off;
-
+extern bool G_BSM_TX_RUNNING;
 #endif // _D_HEADER_RELAY_INNO_EXTERN_DEFINES

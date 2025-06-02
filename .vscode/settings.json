@@ -35,6 +35,14 @@
 			"relay-internal-system.h": "c",
 			"relay-extern-defines.h": "c",
 			"relay_v2x_rx.h": "c",
-			"v2x-sw.h": "c"
+			"v2x-sw.h": "c",
+			"atomic": "c",
+			"compare": "c",
+			"cstdint": "c",
+			"j29451-internal.h": "c",
+			"j29451-internal-defines.h": "c",
+			"j29451-internal-inline.h": "c",
+			"math.h": "c",
+			"stdatomic.h": "c"
 		}
 }

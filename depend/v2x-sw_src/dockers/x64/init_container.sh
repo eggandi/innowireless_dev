@@ -1,0 +1,1 @@
+docker-compose -f docker-compose.yml run --name v2x-sw-x64-22.04 v2x-sw-x64-22.04-service bash

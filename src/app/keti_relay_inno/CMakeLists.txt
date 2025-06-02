@@ -6,6 +6,7 @@ target_compile_definitions(${TARGET_APP} PRIVATE _D_DEBUG_LOG=1)
 
 target_compile_options(${TARGET_APP} PRIVATE -Wall -Werror -g)
 target_include_directories(${TARGET_APP} PRIVATE ${TARGET_ROOT}/include)
+target_include_directories(${TARGET_APP} PRIVATE ${TARGET_ROOT}/include/v2x)
 target_include_directories(${TARGET_APP} PRIVATE ${PROJECT_ROOT}/depend/v2x-sw/include/kvh1a/)
 
 target_link_options(${TARGET_APP} PRIVATE -Wl,--hash-style=gnu -Wl,--as-needed -Wl,--allow-shlib-undefined)
@@ -21,14 +22,13 @@ target_link_libraries(${TARGET_APP} PRIVATE ltev2x-hal atlkremote_linux_u atlkcv
 target_sources(${TARGET_APP} PRIVATE    src/relay_main.c
                                         src/relay_gnss.c
                                         src/relay_utils.c
-                                        src/relay_buffer.c
                                         src/relay_config.c
-                                        src/relay_v2x.c
-																				src/relay_v2x_tx_wsm.c
-																				src/relay_v2x_tx_j2735.c
-																				src/relay_v2x_j2735_bsm.c
-																				src/relay_v2x_dot2.c
-																				src/relay_v2x_rx.c
+                                        src/v2x/relay_v2x.c
+																				src/v2x/relay_v2x_tx_wsm.c
+																				src/v2x/relay_v2x_tx_j2735.c
+																				src/v2x/relay_v2x_j2735_bsm.c
+																				src/v2x/relay_v2x_dot2.c
+																				src/v2x/relay_v2x_rx.c
 )
 
 set(OUTPUT_DIR ${PROJECT_ROOT}/output/bin)

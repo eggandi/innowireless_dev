@@ -10,6 +10,8 @@ struct sockaddr_in G_relay_v2x_tx_addr;
 struct sockaddr_in G_relay_v2x_rx_addr;
 bool G_power_off = false;
 
+bool G_BSM_TX_RUNNING = false;
+
 static void RELAY_INNO_Main_Signal_Set();
 static int RELAY_INNO_Main_Socket_Init();
 
@@ -23,7 +25,7 @@ static void RELAY_INNO_Main_Signal_Handler(int signo);
 
 pthread_t g_thread_gnss;
 
-int main()//(int argc, char *argv[])
+int main()
 {
   int ret;
 	// 
@@ -45,16 +47,17 @@ int main()//(int argc, char *argv[])
   }else{
     _DEBUG_PRINT("V2X initialization success.\n");
   }
-	
-	ret = RELAY_INNO_V2X_Dot2_Security_Init();
-	if(ret < 0)
+	if(G_relay_inno_config.v2x.dot2.enable == true)
 	{
-		_DEBUG_PRINT("V2X security initialization failed.\n");
-		goto out;
-	}else{
-		_DEBUG_PRINT("V2X security initialization success.\n");
+		ret = RELAY_INNO_V2X_Dot2_Security_Init();
+		if(ret < 0)
+		{
+			_DEBUG_PRINT("V2X security initialization failed.\n");
+			goto out;
+		}else{
+			_DEBUG_PRINT("V2X security initialization success.\n");
+		}
 	}
-
 	ret = RELAY_INNO_Gnss_Init_Gnssata(&g_thread_gnss);
 	if(ret < 0)
 	{
@@ -88,7 +91,10 @@ int main()//(int argc, char *argv[])
 	}else{
 		_DEBUG_PRINT("Socket initialization success.\n");
 	}
-	
+	/*
+	 * J29451 라이브러리 사용에 따라 BSM 송신 방식이 달라진다.
+	 * J29451 라이브러리 사용 시, BSM 자체 생성 방식은 사용하지 않는다.
+	*/
 	if(G_relay_inno_config.v2x.j2735.bsm.j29451_enable == true)
 	{
 		ret = RELAY_INNO_J2736_J29451_Initial();
@@ -99,14 +105,15 @@ int main()//(int argc, char *argv[])
 		}else{
 			_DEBUG_PRINT("BSM initialization success.\n");
 		}
-		//ret = J29451_StartBSMTransmit(G_relay_inno_config.v2x.j2735.bsm.interval);
+		ret = J29451_StartBSMTransmit(G_relay_inno_config.v2x.j2735.bsm.interval);
 		if (ret < 0) {
 			_DEBUG_PRINT("Fail to start BSM transmit - J29451_StartBSMTransmit() failed: %d\n", ret);
 			return -1;
 		}
 	}
-
-
+	time_t bsm_check_prev = time(NULL);
+	int reboot_timer = 20;
+	G_BSM_TX_RUNNING = false;
   while(1)
   {
     ret = read(time_fd, &res, sizeof(res));
@@ -118,6 +125,26 @@ int main()//(int argc, char *argv[])
 			goto out;
       break;
     }
+		if(time_tick_10ms % 100 == 0)
+		{
+			time_t current_time = time(NULL);
+			if(G_BSM_TX_RUNNING == true)
+			{
+				bsm_check_prev = current_time;
+				G_BSM_TX_RUNNING = false;
+			}
+			if (current_time < bsm_check_prev) {
+			// 시스템 시간이 역전된 경우, 시간을 리셋
+				bsm_check_prev = current_time;
+			} else {
+				if (current_time - bsm_check_prev > reboot_timer) {
+						_DEBUG_PRINT("BSM transmission timeout.\n");
+						RELAY_INNO_Main_Signal_Handler(SIGINT);
+				}
+			}
+			_DEBUG_PRINT("BSM transmission check - %ld/%d\n", current_time - bsm_check_prev, reboot_timer);
+		}
+
 		if(G_relay_inno_config.v2x.j2735.bsm.j29451_enable == false)
 		{
 			if(time_tick_10ms % (G_relay_inno_config.v2x.j2735.bsm.interval / 10) == 0)
@@ -132,6 +159,7 @@ int main()//(int argc, char *argv[])
 			}
 		}
   }
+
 out:
   RELAY_INNO_Main_Signal_Handler(SIGINT);
   return 0;
@@ -217,10 +245,12 @@ static int RELAY_INNO_Main_Socket_Init()
 	G_relay_v2x_rx_addr.sin_port = htons(G_relay_inno_config.relay.port_v2x_rx);
 	G_relay_v2x_rx_addr.sin_addr.s_addr = inet_addr(G_relay_inno_config.relay.gatewayip);
 	G_relay_inno_config.relay.enable = true;
+
 	_DEBUG_PRINT("Success to create UDP T/Rx socket\n");
 	_DEBUG_PRINT("Tx socket: %d, Rx socket: %d\n", G_relay_v2x_tx_socket, G_relay_v2x_rx_socket);
 	_DEBUG_PRINT("Tx port: %d, Rx port: %d\n", G_relay_inno_config.relay.port_v2x_tx, G_relay_inno_config.relay.port_v2x_rx);
 	_DEBUG_PRINT("Tx IP: %s, Rx IP: %s\n", G_relay_inno_config.relay.gatewayip, G_relay_inno_config.relay.gatewayip);
 	_DEBUG_PRINT("Tx socket addr: %s:%d, Rx socket addr: %s:%d\n", inet_ntoa(G_relay_v2x_tx_addr.sin_addr), ntohs(G_relay_v2x_tx_addr.sin_port), inet_ntoa(G_relay_v2x_rx_addr.sin_addr), ntohs(G_relay_v2x_rx_addr.sin_port));
+	
 	return 0;
 }

@@ -1,0 +1,1 @@
+docker run -it --privileged --device /dev/net/tun --sysctl net.ipv6.conf.all.disable_ipv6=0 --mac-address d8:c4:97:43:3c:ca --volume="$PWD/../..:/workspace/v2x-sw" v2x-sw-x64-22.04:latest

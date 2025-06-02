@@ -139,6 +139,7 @@ static void *RELAY_INNO_Gnss_Task_Reading(void *pData)
 	if(G_gnss_data !=	NULL)
 	{
 		free(G_gnss_data);
+		G_gnss_data = NULL;
 	}
 }
 
