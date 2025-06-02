@@ -4,7 +4,7 @@ SET(TARGET_ROOT ${CMAKE_CURRENT_LIST_DIR})
 add_executable(${TARGET_APP})
 target_compile_definitions(${TARGET_APP} PRIVATE _D_DEBUG_LOG=1)
 
-target_compile_options(${TARGET_APP} PRIVATE -Wall -Werror -g)
+target_compile_options(${TARGET_APP} PRIVATE -Wall -Werror)
 target_include_directories(${TARGET_APP} PRIVATE ${TARGET_ROOT}/include)
 target_include_directories(${TARGET_APP} PRIVATE ${TARGET_ROOT}/include/v2x)
 target_include_directories(${TARGET_APP} PRIVATE ${PROJECT_ROOT}/depend/v2x-sw/include/kvh1a/)
@@ -14,7 +14,6 @@ target_link_directories(${TARGET_APP} PRIVATE ${PROJECT_ROOT}/depend/v2x-sw/lib/
 
 
 target_link_libraries(${TARGET_APP} PRIVATE pthread rt gps m)
-
 target_link_libraries(${TARGET_APP} PRIVATE dot3-2016 dot2-2016 j29451)
 target_link_libraries(${TARGET_APP} PRIVATE ffasn1-dot2-2021 ffasn1-dot3-2016 ffasn1-j2735-2016 ffasn1-base)
 target_link_libraries(${TARGET_APP} PRIVATE ltev2x-hal atlkremote_linux_u atlkcv2x atlkcli atlkpoti atlksmx atlktest)

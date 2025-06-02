@@ -44,7 +44,7 @@ endif ()
 if (BUILD_UNIT_TEST)
   set(CMAKE_C_OUTPUT_EXTENSION_REPLACE ON)
   set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE ON)
-  add_compile_options(-g -O0 -fprofile-arcs -ftest-coverage)
+  add_compile_options(-fprofile-arcs -ftest-coverage)
   add_compile_definitions(_EXPORT_INTERNAL_FUNC_ _UNIT_TEST_)
   link_libraries(gcov)
   set(TARGET_STD_VER 2020) # 단위테스트는 2020 버전으로 진행한다.
