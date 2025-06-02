@@ -37,6 +37,7 @@ void INTERNAL j29451_FlushGNSSDataBuf(void)
   struct J29451GNSSDataBuf *buf = &(g_j29451_mib.obu.gnss.gnss_data_buf);
   struct J29451GNSSDataBufEntry *entry, *tmp;
   TAILQ_FOREACH_SAFE(entry, &(buf->head), entries, tmp) {
+		/* 20250622 누수 원인 proc.recent eggandi@KETI */
 		if(entry != buf->proc.recent || entry != buf->proc.prev)
 		{
 			TAILQ_REMOVE(&(buf->head), entry, entries);
@@ -62,9 +63,11 @@ static struct J29451GNSSDataBufEntry * j29451_AddGNSSDataBufEntry(void)
     if (buf->entry_num == kJ29451GNSSDataBufEntryNum_Max) {
       /* 누수 지점 young@KETI */
       struct J29451GNSSDataBufEntry *first_entry = TAILQ_FIRST(&(buf->head));
+			/* 20250622 누수 관련 수정 eggandi@KETI */
 			if(first_entry == buf->proc.prev) {
 				buf->proc.prev = TAILQ_NEXT(first_entry, entries); // proc.prev가 entry를 가리키고 있으면 NULL로 초기화
 			}
+			/* 20250622 누수 원인 proc.recent eggandi@KETI */
 			if(first_entry == buf->proc.recent) {
 				buf->proc.recent = TAILQ_NEXT(first_entry, entries); // proc.recent가 entry를 가리키고 있으면 NULL로 초기화
 			}
@@ -93,9 +96,11 @@ static struct J29451GNSSDataBufEntry * j29451_AddAfterGNSSDataBufEntry(struct J2
     // 버퍼가 가득 차 있으면, 가장 오래된 엔트리를 제거한다.
     if (buf->entry_num == kJ29451GNSSDataBufEntryNum_Max) {
       struct J29451GNSSDataBufEntry *first_entry = TAILQ_FIRST(&(buf->head));
+			/* 20250622 누수 관련 수정 eggandi@KETI */
 			if(first_entry == buf->proc.prev) {
 				buf->proc.prev = TAILQ_NEXT(first_entry, entries); // proc.prev가 entry를 가리키고 있으면 NULL로 초기화
 			}
+			/* 20250622 누수 원인 proc.recent eggandi@KETI */
 			if(first_entry == buf->proc.recent) {
 				buf->proc.recent = TAILQ_NEXT(first_entry, entries); // proc.recent가 entry를 가리키고 있으면 NULL로 초기화
 			}
@@ -145,12 +150,13 @@ struct J29451GNSSDataBufEntry INTERNAL * j29451_GetGNSSDataBufEntryToUpdate(stru
 static void j29451_RemoveGNSSDataBufEntry(struct J29451GNSSDataBufEntry *entry)
 {
 	struct J29451GNSSDataBuf *buf = &(g_j29451_mib.obu.gnss.gnss_data_buf);
-		if(entry != buf->proc.recent || entry != buf->proc.prev)
-		{
-			TAILQ_REMOVE(&(buf->head), entry, entries);
-			free(entry);
-			buf->entry_num--;
-		}
+	/* 20250622 누수 원인 proc.recent eggandi@KETI */
+	if(entry != buf->proc.recent || entry != buf->proc.prev)
+	{
+		TAILQ_REMOVE(&(buf->head), entry, entries);
+		free(entry);
+		buf->entry_num--;
+	}
 }
 
 

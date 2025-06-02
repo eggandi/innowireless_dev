@@ -164,18 +164,6 @@ static uint8_t * j29451_PrepareBSM(size_t *bsm_size, bool *event, bool *cert_sig
       g_j29451_mib.bsm_tx.id_change.change_req = false;
     }
   }
-	#if 0 // buf->entry_num과 실제 엔트리 개수 확인
-	printf("[%s][%d]check GNSS data entry\n", __func__, __LINE__);
-	struct J29451GNSSDataBuf *buf = &(g_j29451_mib.obu.gnss.gnss_data_buf);
-	printf("[%s][%d]buf->entry_cnt=%d\n", __func__, __LINE__, buf->entry_num);
-	struct J29451GNSSDataBufEntry *tmp1, *tmp2;
-	int entry_num = 0;
-	TAILQ_FOREACH_SAFE(tmp1, &(buf->head), entries, tmp2) {
-		printf("[%s][%d]", __func__, __LINE__);
-		printf("[entry[%d/%d] tmp1: %p, time: %"PRIu64", mode: %d, status: %d\n", entry_num + 1, buf->entry_num, tmp1, tmp1->gnss.time, tmp1->gnss.mode, tmp1->gnss.status);
-		entry_num++;
-	}
-	#endif
 
   pthread_mutex_unlock(&(g_j29451_mib.mtx));
 
