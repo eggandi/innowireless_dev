@@ -1,1 +1,0 @@
-docker run -it --privileged --volume="$PWD/../..:/workspace/kvh" kvh1a-22.04:latest

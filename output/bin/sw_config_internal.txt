@@ -1,4 +1,0 @@
-ll_spi_clock=8000000
-ll_spi_element_data_bits=8
-ll_spi_page_size=704
-ll_spi_transfer_size=704

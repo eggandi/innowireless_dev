@@ -1,2 +1,0 @@
-lmac_calib_file_location=0
-internal_poti_disable=1

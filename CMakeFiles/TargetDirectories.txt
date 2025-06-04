@@ -1,5 +1,5 @@
-/root/ws_relay/CMakeFiles/edit_cache.dir
-/root/ws_relay/CMakeFiles/rebuild_cache.dir
-/root/ws_relay/src/app/keti_relay_inno/CMakeFiles/keti_relay_inno.dir
-/root/ws_relay/src/app/keti_relay_inno/CMakeFiles/edit_cache.dir
-/root/ws_relay/src/app/keti_relay_inno/CMakeFiles/rebuild_cache.dir
+/workspace/kvh/CMakeFiles/edit_cache.dir
+/workspace/kvh/CMakeFiles/rebuild_cache.dir
+/workspace/kvh/src/app/keti_relay_inno/CMakeFiles/kRelay.dir
+/workspace/kvh/src/app/keti_relay_inno/CMakeFiles/edit_cache.dir
+/workspace/kvh/src/app/keti_relay_inno/CMakeFiles/rebuild_cache.dir

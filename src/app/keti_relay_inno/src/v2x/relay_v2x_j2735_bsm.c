@@ -159,7 +159,7 @@ static void RELAY_INNO_J2736_J29451_Tx_Callback(const uint8_t *bsm, size_t bsm_s
     memcpy(G_j29451_mac_addr_arry, addr, MAC_ALEN);
   }
 
-	uint8_t *wsdu = NULL;
+	const uint8_t *wsdu = NULL;
 	size_t wsdu_size = 0;
 	struct Dot2SPDUConstructResult res;
 	if(G_relay_inno_config.v2x.dot2.enable == true)
@@ -178,7 +178,7 @@ static void RELAY_INNO_J2736_J29451_Tx_Callback(const uint8_t *bsm, size_t bsm_s
 		struct Dot2SPDUConstructParams params;
 
 		memset(&params, 0, sizeof(params));
-		params.type = G_relay_inno_config.v2x.dot2.enable ? kDot2SPDUConstructType_Signed : kDot2SPDUConstructType_Unsecured;
+		params.type = kDot2SPDUConstructType_Unsecured;
 		params.time = 0; // SPDU 생성 시각 (어플리케이션이 0으로 설정할 경우, API 내부에서 현재시각으로 설정된다)
 		params.signed_data.psid = 32; // BSM_PSID;
 		params.signed_data.signer_id_type = signer_id;
@@ -186,7 +186,7 @@ static void RELAY_INNO_J2736_J29451_Tx_Callback(const uint8_t *bsm, size_t bsm_s
 		
 		res = Dot2_ConstructSPDU(&params, encoded_bsm, encoded_bsm_size);
 		if (res.ret < 0) {
-			//free(encoded_bsm);
+			free(encoded_bsm);
 			_DEBUG_PRINT("BSM tx callback - Dot2_ConstructSPDU() failed: %d\n", res.ret);
 			return;
 		}
@@ -194,8 +194,8 @@ static void RELAY_INNO_J2736_J29451_Tx_Callback(const uint8_t *bsm, size_t bsm_s
 		wsdu = res.spdu;
 		wsdu_size = (size_t)res.ret;
 	}else{
-		wsdu = encoded_bsm;
-		wsdu_size = encoded_bsm_size;
+		wsdu = bsm;
+		wsdu_size = bsm_size;
 	}
 
 	/*
@@ -563,13 +563,6 @@ static int RELAY_INNO_J2735_BSM_Fill_PartII(struct j2735PartIIcontent_1 *partII_
 						{
 							pathhistorypoint_ptr->timeOffset += 65535;
 						}
-						#if 0
-						_DEBUG_PRINT("count_num: %ld\n", count_num);
-						_DEBUG_PRINT("latOffset: %d - %d = %d\n", g_core->lat, pathhistorypoint->latOffset, pathhistorypoint_ptr->latOffset);
-						_DEBUG_PRINT("lonOffset: %d - %d = %d\n", g_core->Long, pathhistorypoint->lonOffset, pathhistorypoint_ptr->lonOffset);
-						_DEBUG_PRINT("elevationOffset: %d - %d = %d\n", g_core->elev, pathhistorypoint->elevationOffset, pathhistorypoint_ptr->elevationOffset);
-						_DEBUG_PRINT("timeOffset: %d - %d = %d\n", g_core->secMark, pathhistorypoint->timeOffset, pathhistorypoint_ptr->timeOffset);
-						#endif
 					}
 					
 				}
@@ -655,8 +648,6 @@ static size_t RELAY_INNO_J2735_BSM_Push_Pathhistroty()
 		pathhistorypoint->speed = (j2735Speed)*G_gnss_bsm_data->speed; // Units of 0.02 m/s
 	}else{
 		pathhistorypoint->speed = 0;
-		_DEBUG_PRINT("Fail to check constraints - %s\n", error->type_path);
-		_DEBUG_PRINT("Fail to check constraints - %s\n", error->msg);
 	}
 	pathhistorypoint->heading_option = asn1_check_constraints(asn1_type_j2735Heading, G_gnss_bsm_data->heading, error);
 	if(pathhistorypoint->heading_option)
@@ -664,18 +655,7 @@ static size_t RELAY_INNO_J2735_BSM_Push_Pathhistroty()
 		pathhistorypoint->heading = (j2735Speed)*G_gnss_bsm_data->heading; // Units of 0.02 m/s
 	}else{
 		pathhistorypoint->heading = 0;
-		_DEBUG_PRINT("Fail to check constraints - %s\n", error->type_path);
-		_DEBUG_PRINT("Fail to check constraints - %s\n", error->msg);
 	}
-
-	_DEBUG_PRINT("pathhistorypoint->speed_option:%d\n", pathhistorypoint->speed_option);
-	_DEBUG_PRINT("pathhistorypoint->speed:%d\n", pathhistorypoint->speed);
-	_DEBUG_PRINT("G_gnss_bsm_data->speed:%d\n", *G_gnss_bsm_data->speed);
-
-	_DEBUG_PRINT("pathhistorypoint->heading_option:%d\n", pathhistorypoint->heading_option);
-	_DEBUG_PRINT("pathhistorypoint->heading:%d\n", pathhistorypoint->heading);
-	_DEBUG_PRINT("G_gnss_bsm_data->heading:%d\n", *G_gnss_bsm_data->heading);
-
 	g_pathhistorypointlistlist.count++;
 	return g_pathhistorypointlistlist.count;
 }

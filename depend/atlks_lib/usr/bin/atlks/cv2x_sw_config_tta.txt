@@ -1,6 +1,0 @@
-cv2x_lmac_flags=0x200
-cv2x_rr_harq_window_subframes=0
-cv2x_us_sae_tbs_enabled=1
-cv2x_us_sae_win_adjustment_enable=1
-cv2x_rr_min_one_shot_counter=0
-cv2x_rr_max_one_shot_counter=0
